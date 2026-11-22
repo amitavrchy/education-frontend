@@ -1,0 +1,50 @@
+/*
+ * Typography system.
+ * Semantic text utilities so headings and body copy stay consistent across portals.
+ * Bangla conjuncts render taller than Latin, so line-heights are slightly relaxed.
+ */
+
+@utility text-display {
+  font-family: var(--font-heading);
+  font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@utility text-h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+@utility text-h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+@utility text-h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+@utility text-body {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+@utility text-caption {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+
+@utility font-bangla {
+  font-family: var(--font-hind-siliguri), "Noto Sans Bengali", "SolaimanLipi", sans-serif;
+}
