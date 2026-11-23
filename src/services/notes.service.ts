@@ -57,7 +57,7 @@ export function generateNoteHtml(kind: NoteKind, opts: { chapterId?: string; top
       html = `<h2>রিভিশন: ${heading}</h2><ol>${kp.map((k) => `<li>${plain(k)}</li>`).join("")}</ol><p><strong>শেষ মুহূর্তের টিপ:</strong> প্রতিটি টপিকের একটি করে উদাহরণ মনে রাখো।</p>`;
       break;
     case "formula":
-      html = `<h2>সূত্র শিট: ${heading}</h2>${sc?.formula ? `<p><code>${plain(sc.formula.tex)}</code></p><table><tbody><tr><th>প্রতীক</th><th>অর্থ</th><th>একক</th></tr>${sc.formula.symbols.map((s) => `<tr><td>${plain(s.sym)}</td><td>${s.bn}</td><td>${plain(s.unit ?? "—")}</td></tr>`).join("")}</tbody></table>` : `<p>এই অধ্যায়ের জন্য নির্দিষ্ট সূত্র নেই। মূল সংজ্ঞাগুলো দেখো।</p>`}`;
+      html = `<h2>সূত্র শিট: ${heading}</h2>${sc?.formula ? `<p><code>${plain(sc.formula.tex)}</code></p><h3>প্রতীকের অর্থ</h3><ul>${sc.formula.symbols.map((s) => `<li><strong>${plain(s.sym)}</strong> — ${s.bn}${s.unit ? ` (একক: ${plain(s.unit)})` : ""}</li>`).join("")}</ul>` : `<p>এই অধ্যায়ের জন্য নির্দিষ্ট সূত্র নেই। মূল সংজ্ঞাগুলো দেখো।</p>`}`;
       break;
     case "definition":
       html = `<h2>সংজ্ঞা শিট: ${heading}</h2><ul>${(sc ? [`<strong>${sc.title.bn}:</strong> ${plain(sc.definition.bn)}`] : []).concat(tlist.map((t) => `<strong>${t}:</strong> (পাঠ্যবই থেকে সংজ্ঞাটি লেখো)`)).map((x) => `<li>${x}</li>`).join("")}</ul>`;

@@ -9,7 +9,7 @@
  * Nothing outside src/services should import this module.
  */
 
-export const MOCK_SEED_VERSION = 7;
+export const MOCK_SEED_VERSION = 8;
 
 const DB_NAME = "shikkhaai-mock-db";
 const STORE = "collections";

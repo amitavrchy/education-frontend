@@ -877,7 +877,7 @@ function RecentResources({ d }: { d: DashboardData }) {
         const b = books.find((x) => x.id === r.bookId);
         return { id: `b-${r.id}`, title: b ? f.pick(b.title) : r.bookId, sub: l(`পৃষ্ঠা ${f.digits(r.lastPage)}`, `Page ${r.lastPage}`), at: r.updatedAt, href: `/student/library/${r.bookId}?page=${r.lastPage}`, kind: "book" as const };
       });
-      const noteItems = notes.map((n) => ({ id: `n-${n.id}`, title: n.title, sub: l("নোট", "Note"), at: n.updatedAt, href: `/student/notes?id=${n.id}`, kind: "note" as const }));
+      const noteItems = notes.map((n) => ({ id: `n-${n.id}`, title: n.title, sub: l("নোট", "Note"), at: n.updatedAt, href: `/student/notes/${n.id}`, kind: "note" as const }));
       return [...bookItems, ...noteItems].sort((a, b) => b.at.localeCompare(a.at)).slice(0, 5);
     },
   });
