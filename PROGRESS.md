@@ -29,14 +29,32 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 ## Plan / phases
 
 1. ✅ Inspect repo, install deps, feature inventory
-2. ⏳ Core: contracts, roles/permissions, i18n, mock DB + repositories, shell (guards, role switcher, search palette, notifications, offline)
-3. Auth + onboarding + marketing site
-4. Student modules
+2. ✅ Core: contracts, roles/permissions, i18n, mock DB + repositories, shell (guards, role switcher, search palette, notifications, offline)
+3. ⏳ Auth + onboarding (done, 2732ec3) + marketing site (todo)
+4. ⏳ Student modules — curriculum, question bank, practice sets, exams done; AI tutor in progress (WIP commit)
 5. Teacher/reviewer, institution, parent portals
 6. Admin dashboard modules
 7. Tests (Vitest + Playwright), docs set from §57, audit + fixes
 
+## Continue on another PC
+
+1. `git clone https://github.com/amitavrchy/education-frontend.git && cd education-frontend && npm install`
+2. `cp .env.example .env.local` (keep `NEXT_PUBLIC_USE_MOCK_API=true`), `npm run dev -- -p 3001`
+3. Start Claude Code in the repo and say: *"Read docs/MASTER_PROMPT.md, PROGRESS.md and
+   docs/product/FEATURE_MATRIX.md; continue implementing the remaining incomplete features."*
+4. The last commit may be a `wip:` commit — finish/verify it first (`npm run lint`, `npx tsc --noEmit`).
+
 ## Log
+
+### 2026-11-23 — sessions 2–3
+- Core shell, auth & onboarding, learning engine foundations (2732ec3).
+- Curriculum explorer, question bank, practice sets (41e9263).
+- Online exam system and results (76566ec).
+- AI tutor (page, components, mock scenarios, tutor/kb/notes/flashcards/usage services) started;
+  stopped mid-way at the usage limit and committed as WIP — **unverified, may not build yet**.
+- Next: finish AI tutor → voice tutor → image solver → library → board/institution archives →
+  planner/adaptive/flashcards/notes UI → remaining student modules → portals → admin → tests/docs.
+
 
 ### 2026-11-23 — session 1
 - Read master prompt; inspected scaffold (Next 16.4, React 19.3, Tailwind 4, shadcn nova, TanStack Query, Zustand).
