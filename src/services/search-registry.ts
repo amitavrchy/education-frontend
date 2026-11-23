@@ -3,6 +3,7 @@
  * search service. UI should import search from here so global search always covers all content.
  */
 import "./archive.service";
+import "./audio.service";
 import "./flashcards.service";
 import "./library.service";
 import "./notes.service";
