@@ -6,6 +6,7 @@ import type { WithChildren } from "@/types";
 import { AuthBridge } from "./auth-bridge";
 import { PreferencesBridge } from "./preferences-bridge";
 import { QueryProvider } from "./query-provider";
+import { ServiceWorkerRegistrar } from "./service-worker";
 import { ThemeProvider } from "./theme-provider";
 
 export function AppProviders({ children }: WithChildren) {
@@ -15,6 +16,7 @@ export function AppProviders({ children }: WithChildren) {
         <TooltipProvider delayDuration={200}>
           <AuthBridge />
           <PreferencesBridge />
+          <ServiceWorkerRegistrar />
           {children}
           <Toaster richColors position="top-center" closeButton />
         </TooltipProvider>

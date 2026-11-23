@@ -94,7 +94,7 @@ export function TrendChart({ data, x, series, height = 240, label, area = true, 
           </defs>
           <CartesianGrid vertical={false} stroke="var(--border)" />
           <XAxis dataKey={x} {...axis} minTickGap={16} />
-          <YAxis {...axis} domain={yDomain} unit={unit} width={44} />
+          <YAxis {...axis} domain={yDomain} unit={unit} width={unit ? 54 : 44} />
           <Tooltip {...tooltipStyle} />
           {series.length > 1 && <Legend wrapperStyle={{ fontSize: 12 }} />}
           {series.map((s, i) =>
@@ -124,7 +124,7 @@ export function BarsChart({ data, x, series, height = 240, label, horizontal, st
           ) : (
             <>
               <XAxis dataKey={x} {...axis} interval={0} minTickGap={4} />
-              <YAxis {...axis} unit={unit} width={44} />
+              <YAxis {...axis} unit={unit} width={unit ? 54 : 44} />
             </>
           )}
           <Tooltip {...tooltipStyle} />
