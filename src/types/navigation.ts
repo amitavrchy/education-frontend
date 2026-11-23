@@ -1,30 +1,33 @@
 import type { LucideIcon } from "lucide-react";
-import type { UserRole } from "./user";
-
-export type PortalKey = UserRole;
+import type { Permission } from "@/lib/auth/permissions";
+import type { MessageKey } from "@/i18n";
+import type { PortalKey } from "./user";
 
 export interface NavItem {
   /** Route segment under the portal, e.g. "ai-tutor". */
   slug: string;
-  title: string;
-  description?: string;
+  titleKey: MessageKey;
   icon: LucideIcon;
   badge?: string;
+  /** Hidden unless the user holds at least one of these permissions. */
+  permission?: Permission | Permission[];
+  /** Show in the student mobile bottom bar. */
+  mobile?: boolean;
 }
 
 export interface NavSection {
-  label?: string;
+  labelKey?: MessageKey;
   items: NavItem[];
 }
 
 export interface PortalNavigation {
   key: PortalKey;
-  title: string;
+  titleKey: MessageKey;
   basePath: `/${PortalKey}`;
   sections: NavSection[];
 }
 
 export interface MarketingNavLink {
-  title: string;
+  titleKey: MessageKey;
   href: string;
 }

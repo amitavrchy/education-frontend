@@ -1,4 +1,4 @@
-import type { UserRole } from "@/types";
+import type { PortalKey } from "@/types";
 
 export const ROUTES = {
   home: "/",
@@ -7,14 +7,24 @@ export const ROUTES = {
   pricing: "/pricing",
   contact: "/contact",
   faq: "/faq",
+  help: "/help",
+  terms: "/terms",
+  privacy: "/privacy",
+  accessibility: "/accessibility",
+  welcome: "/welcome",
   login: "/login",
   register: "/register",
+  verifyOtp: "/verify-otp",
   forgotPassword: "/forgot-password",
+  resetPassword: "/reset-password",
+  sessionExpired: "/session-expired",
+  consent: "/consent",
+  guardianConsent: "/consent/guardian",
   onboarding: "/onboarding",
 } as const;
 
-/** Landing route for each role after sign-in. */
-export const ROLE_HOME: Record<UserRole, string> = {
+/** Landing route for each portal after sign-in. */
+export const PORTAL_HOME: Record<PortalKey, string> = {
   student: "/student/dashboard",
   teacher: "/teacher/dashboard",
   institution: "/institution/dashboard",
@@ -22,27 +32,12 @@ export const ROLE_HOME: Record<UserRole, string> = {
   admin: "/admin/dashboard",
 };
 
-export const ROLE_LABELS: Record<UserRole, string> = {
-  student: "শিক্ষার্থী",
-  teacher: "শিক্ষক",
-  institution: "প্রতিষ্ঠান",
-  parent: "অভিভাবক",
-  admin: "অ্যাডমিন",
-};
-
 export const STORAGE_KEYS = {
   auth: "shikkhaai-auth",
   ui: "shikkhaai-ui",
+  preferences: "shikkhaai-preferences",
+  onboardingDraft: "shikkhaai-onboarding-draft",
 } as const;
-
-export const ACADEMIC_LEVELS = [
-  "Class 6",
-  "Class 7",
-  "Class 8",
-  "SSC",
-  "HSC",
-  "Admission",
-] as const;
 
 export const DEFAULT_PAGE_SIZE = 10;
 

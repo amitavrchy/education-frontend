@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { SectionPlaceholder } from "@/components/common/section-placeholder";
+import { RegisterScreen } from "@/components/auth/register-screen";
 
-export const metadata: Metadata = { title: "রেজিস্ট্রেশন" };
+export const metadata: Metadata = { title: "নিবন্ধন" };
 
 export default function Page() {
-  return <SectionPlaceholder title="রেজিস্ট্রেশন" />;
+  return <RegisterScreen />;
 }

@@ -1,2 +1,2 @@
-export { authService } from "./auth.service";
-export { notificationService } from "./notification.service";
+export { authService, usersRepo } from "./auth.service";
+export { notificationService, notificationsRepo, noticesRepo } from "./notification.service";

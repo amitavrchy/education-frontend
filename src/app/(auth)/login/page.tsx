@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { SectionPlaceholder } from "@/components/common/section-placeholder";
+import { Suspense } from "react";
+import { LoginScreen } from "@/components/auth/login-screen";
 
 export const metadata: Metadata = { title: "লগইন" };
 
 export default function Page() {
-  return <SectionPlaceholder title="লগইন" />;
+  return (
+    <Suspense>
+      <LoginScreen />
+    </Suspense>
+  );
 }

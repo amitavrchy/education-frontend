@@ -194,3 +194,82 @@
     cursor: pointer;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Accessibility preferences (set as data-attributes on <html> by            */
+/*  <PreferencesBridge>): high contrast, text scale, reduced motion.          */
+/* -------------------------------------------------------------------------- */
+html[data-text-scale="sm"] { font-size: 93.75%; }
+html[data-text-scale="lg"] { font-size: 112.5%; }
+html[data-text-scale="xl"] { font-size: 125%; }
+
+html[data-contrast="high"] {
+  --foreground: oklch(0.1 0 0);
+  --muted-foreground: oklch(0.3 0 0);
+  --border: oklch(0.35 0 0);
+  --input: oklch(0.35 0 0);
+  --primary: oklch(0.38 0.12 160);
+  --ring: oklch(0.3 0.15 260);
+  --sidebar-foreground: oklch(0.1 0 0);
+  --sidebar-border: oklch(0.35 0 0);
+}
+html.dark[data-contrast="high"] {
+  --background: oklch(0 0 0);
+  --card: oklch(0.08 0 0);
+  --popover: oklch(0.08 0 0);
+  --sidebar: oklch(0.05 0 0);
+  --foreground: oklch(1 0 0);
+  --card-foreground: oklch(1 0 0);
+  --muted-foreground: oklch(0.88 0 0);
+  --border: oklch(0.75 0 0);
+  --input: oklch(0.75 0 0);
+  --primary: oklch(0.8 0.15 160);
+  --primary-foreground: oklch(0 0 0);
+  --ring: oklch(0.9 0.15 90);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.75 0 0);
+}
+html[data-contrast="high"] :focus-visible {
+  outline: 3px solid var(--ring) !important;
+  outline-offset: 2px;
+}
+
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Rich content (Markdown + KaTeX answers, notes). */
+.prose-content { line-height: 1.75; overflow-wrap: anywhere; }
+.prose-content > * + * { margin-top: 0.75em; }
+.prose-content h1, .prose-content h2, .prose-content h3 { font-weight: 600; line-height: 1.4; }
+.prose-content h1 { font-size: 1.35rem; }
+.prose-content h2 { font-size: 1.2rem; }
+.prose-content h3 { font-size: 1.05rem; }
+.prose-content ul { list-style: disc; padding-left: 1.4em; }
+.prose-content ol { list-style: decimal; padding-left: 1.4em; }
+.prose-content li + li { margin-top: 0.25em; }
+.prose-content code { background: var(--muted); border-radius: 0.3rem; padding: 0.05em 0.35em; font-size: 0.9em; }
+.prose-content pre { background: var(--muted); border-radius: 0.6rem; padding: 0.8rem; overflow-x: auto; }
+.prose-content blockquote { border-left: 3px solid var(--primary); padding-left: 0.8rem; color: var(--muted-foreground); }
+.prose-content table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+.prose-content th, .prose-content td { border: 1px solid var(--border); padding: 0.35rem 0.55rem; text-align: left; }
+.prose-content a { color: var(--primary); text-decoration: underline; }
+.prose-content mark { background: oklch(0.92 0.12 95); color: inherit; border-radius: 0.2rem; padding: 0 0.1em; }
+.katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}

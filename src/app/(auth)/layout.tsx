@@ -1,4 +1,4 @@
-import { AuthLayout } from "@/components/layouts/auth-layout";
+import { AuthLayout } from "@/components/auth/auth-layout";
 
 export default function Layout({ children }: LayoutProps<"/">) {
   return <AuthLayout>{children}</AuthLayout>;

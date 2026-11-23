@@ -1,5 +1,5 @@
-import { ParentLayout } from "@/components/layouts/role-layouts";
+import { PortalShell } from "@/components/shell/portal-shell";
 
 export default function Layout({ children }: LayoutProps<"/parent">) {
-  return <ParentLayout>{children}</ParentLayout>;
+  return <PortalShell portal="parent">{children}</PortalShell>;
 }

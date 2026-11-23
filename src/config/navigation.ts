@@ -1,14 +1,15 @@
 import {
   Activity,
+  AudioLines,
   Award,
   Baby,
   Bell,
-  Bookmark,
+  BookCopy,
   BookOpen,
   Bot,
-  Briefcase,
   Building,
   CalendarDays,
+  CalendarRange,
   Camera,
   ChartLine,
   ClipboardCheck,
@@ -17,125 +18,104 @@ import {
   Database,
   FileCheck,
   FileQuestionMark,
+  FileStack,
   FileText,
   FlaskConical,
   FolderOpen,
-  GitBranch,
+  GalleryVerticalEnd,
   GraduationCap,
-  Layers,
+  HeartHandshake,
+  History,
+  Languages,
   LayoutDashboard,
+  Layers,
   Library,
+  LifeBuoy,
   ListChecks,
   Megaphone,
+  Mic,
   NotebookPen,
   PenLine,
+  Radar,
   Receipt,
   School,
+  Search,
   Settings,
-  ShieldX,
   ShieldCheck,
+  ShieldX,
   Sparkles,
+  Target,
   TrendingUp,
   Trophy,
-  User,
   UserCog,
   Users,
-  Video,
-  Wallet,
+  WifiOff,
 } from "lucide-react";
 import type { MarketingNavLink, NavItem, PortalKey, PortalNavigation } from "@/types";
 
-const settings: NavItem = { slug: "settings", title: "সেটিংস", icon: Settings };
+const settings: NavItem = { slug: "settings", titleKey: "nav.settings", icon: Settings };
+const notifications: NavItem = { slug: "notifications", titleKey: "nav.notifications", icon: Bell };
 
 /**
  * Single source of truth for portal navigation.
- * Sidebar links, breadcrumbs and placeholder page titles are all derived from this.
+ * Sidebar, mobile drawer, bottom bar, breadcrumbs and the command palette all derive from this.
+ * Items carry an optional `permission`; the shell hides items the current role cannot use and
+ * the route guard renders the access-denied state for direct URL access.
  */
 export const portalNavigation: Record<PortalKey, PortalNavigation> = {
   student: {
     key: "student",
-    title: "শিক্ষার্থী পোর্টাল",
+    titleKey: "portals.student",
     basePath: "/student",
     sections: [
       {
         items: [
-          { slug: "dashboard", title: "ড্যাশবোর্ড", icon: LayoutDashboard },
-          { slug: "ai-tutor", title: "AI টিউটর", icon: Bot, badge: "AI" },
-          { slug: "photo-solver", title: "ফটো সলভার", icon: Camera },
+          { slug: "dashboard", titleKey: "nav.dashboard", icon: LayoutDashboard, mobile: true },
+          { slug: "ai-tutor", titleKey: "nav.aiTutor", icon: Bot, badge: "AI", mobile: true },
+          { slug: "voice-tutor", titleKey: "nav.voiceTutor", icon: Mic },
+          { slug: "photo-solver", titleKey: "nav.photoSolver", icon: Camera },
         ],
       },
       {
-        label: "পড়াশোনা",
+        labelKey: "navGroups.learn",
         items: [
-          { slug: "library", title: "লাইব্রেরি", icon: Library },
-          { slug: "questions", title: "প্রশ্ন ব্যাংক", icon: FileQuestionMark },
-          { slug: "practice", title: "অনুশীলন", icon: PenLine },
-          { slug: "notes", title: "নোটস", icon: NotebookPen },
-          { slug: "videos", title: "ভিডিও ক্লাস", icon: Video },
-          { slug: "practical-lab", title: "প্র্যাকটিক্যাল ল্যাব", icon: FlaskConical },
+          { slug: "curriculum", titleKey: "nav.curriculum", icon: Layers, mobile: true },
+          { slug: "library", titleKey: "nav.library", icon: Library },
+          { slug: "questions", titleKey: "nav.questions", icon: FileQuestionMark },
+          { slug: "board-questions", titleKey: "nav.boardQuestions", icon: ListChecks },
+          { slug: "institution-questions", titleKey: "nav.institutionQuestions", icon: School },
+          { slug: "practice", titleKey: "nav.practice", icon: PenLine },
+          { slug: "notes", titleKey: "nav.notes", icon: NotebookPen },
+          { slug: "flashcards", titleKey: "nav.flashcards", icon: GalleryVerticalEnd },
+          { slug: "english-coach", titleKey: "nav.englishCoach", icon: Languages },
+          { slug: "labs", titleKey: "nav.labs", icon: FlaskConical },
+          { slug: "audio", titleKey: "nav.audio", icon: AudioLines },
         ],
       },
       {
-        label: "পরীক্ষা ও ফলাফল",
+        labelKey: "navGroups.exams",
         items: [
-          { slug: "exams", title: "পরীক্ষা", icon: ClipboardList },
-          { slug: "results", title: "ফলাফল", icon: Trophy },
-          { slug: "answer-evaluation", title: "উত্তর মূল্যায়ন", icon: FileCheck },
-          { slug: "analytics", title: "অ্যানালিটিক্স", icon: ChartLine },
-          { slug: "study-planner", title: "স্টাডি প্ল্যানার", icon: CalendarDays },
+          { slug: "exams", titleKey: "nav.exams", icon: ClipboardList, mobile: true },
+          { slug: "results", titleKey: "nav.results", icon: Trophy },
+          { slug: "answer-evaluation", titleKey: "nav.answerEvaluation", icon: FileCheck },
         ],
       },
       {
-        label: "আরও",
+        labelKey: "navGroups.progress",
         items: [
-          { slug: "community", title: "কমিউনিটি", icon: Users },
-          { slug: "career", title: "ক্যারিয়ার", icon: Briefcase },
-          { slug: "scholarships", title: "স্কলারশিপ", icon: Award },
-          { slug: "notices", title: "নোটিশ", icon: Megaphone },
-          settings,
+          { slug: "analytics", titleKey: "nav.adaptive", icon: Radar },
+          { slug: "study-planner", titleKey: "nav.studyPlanner", icon: CalendarDays },
+          { slug: "achievements", titleKey: "nav.achievements", icon: Award },
         ],
       },
-    ],
-  },
-  teacher: {
-    key: "teacher",
-    title: "শিক্ষক পোর্টাল",
-    basePath: "/teacher",
-    sections: [
       {
+        labelKey: "navGroups.account",
         items: [
-          { slug: "dashboard", title: "ড্যাশবোর্ড", icon: LayoutDashboard },
-          { slug: "classes", title: "ক্লাসসমূহ", icon: School },
-          { slug: "students", title: "শিক্ষার্থী", icon: Users },
-          { slug: "assignments", title: "অ্যাসাইনমেন্ট", icon: ClipboardCheck },
-          { slug: "exams", title: "পরীক্ষা", icon: ClipboardList },
-          { slug: "question-generator", title: "প্রশ্ন জেনারেটর", icon: Sparkles, badge: "AI" },
-          { slug: "materials", title: "শিক্ষা উপকরণ", icon: FolderOpen },
-          { slug: "evaluation", title: "মূল্যায়ন", icon: FileCheck },
-          { slug: "analytics", title: "অ্যানালিটিক্স", icon: ChartLine },
-          settings,
-        ],
-      },
-    ],
-  },
-  institution: {
-    key: "institution",
-    title: "প্রতিষ্ঠান পোর্টাল",
-    basePath: "/institution",
-    sections: [
-      {
-        items: [
-          { slug: "dashboard", title: "ড্যাশবোর্ড", icon: LayoutDashboard },
-          { slug: "profile", title: "প্রোফাইল", icon: Building },
-          { slug: "branches", title: "শাখাসমূহ", icon: GitBranch },
-          { slug: "classes", title: "ক্লাসসমূহ", icon: School },
-          { slug: "students", title: "শিক্ষার্থী", icon: Users },
-          { slug: "teachers", title: "শিক্ষক", icon: GraduationCap },
-          { slug: "subjects", title: "বিষয়সমূহ", icon: BookOpen },
-          { slug: "exams", title: "পরীক্ষা", icon: ClipboardList },
-          { slug: "results", title: "ফলাফল", icon: Trophy },
-          { slug: "analytics", title: "অ্যানালিটিক্স", icon: ChartLine },
-          { slug: "billing", title: "বিলিং", icon: CreditCard },
+          { slug: "bookmarks", titleKey: "nav.bookmarks", icon: BookCopy },
+          { slug: "offline", titleKey: "nav.offline", icon: WifiOff },
+          notifications,
+          { slug: "subscription", titleKey: "nav.subscription", icon: CreditCard },
+          { slug: "help", titleKey: "nav.help", icon: LifeBuoy },
           settings,
         ],
       },
@@ -143,17 +123,111 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
   },
   parent: {
     key: "parent",
-    title: "অভিভাবক পোর্টাল",
+    titleKey: "portals.parent",
     basePath: "/parent",
     sections: [
       {
         items: [
-          { slug: "dashboard", title: "ড্যাশবোর্ড", icon: LayoutDashboard },
-          { slug: "children", title: "সন্তান", icon: Baby },
-          { slug: "progress", title: "অগ্রগতি", icon: TrendingUp },
-          { slug: "results", title: "ফলাফল", icon: Trophy },
-          { slug: "reports", title: "রিপোর্ট", icon: FileText },
-          { slug: "notifications", title: "নোটিফিকেশন", icon: Bell },
+          { slug: "dashboard", titleKey: "nav.dashboard", icon: LayoutDashboard },
+          { slug: "children", titleKey: "nav.children", icon: Baby },
+          { slug: "progress", titleKey: "nav.progress", icon: TrendingUp },
+          { slug: "results", titleKey: "nav.results", icon: Trophy },
+          { slug: "calendar", titleKey: "nav.calendar", icon: CalendarRange },
+          { slug: "goals", titleKey: "nav.goals", icon: Target },
+          { slug: "feedback", titleKey: "nav.feedback", icon: HeartHandshake },
+          { slug: "reports", titleKey: "nav.reports", icon: FileText },
+        ],
+      },
+      {
+        labelKey: "navGroups.account",
+        items: [
+          notifications,
+          { slug: "privacy", titleKey: "nav.privacy", icon: ShieldCheck },
+          { slug: "subscription", titleKey: "nav.subscription", icon: CreditCard },
+          settings,
+        ],
+      },
+    ],
+  },
+  teacher: {
+    key: "teacher",
+    titleKey: "portals.teacher",
+    basePath: "/teacher",
+    sections: [
+      { items: [{ slug: "dashboard", titleKey: "nav.dashboard", icon: LayoutDashboard }] },
+      {
+        labelKey: "navGroups.review",
+        items: [
+          { slug: "review", titleKey: "nav.review", icon: ShieldCheck, permission: "content.review" },
+          { slug: "questions", titleKey: "nav.questions", icon: FileQuestionMark, permission: "content.create" },
+          { slug: "rubrics", titleKey: "nav.rubrics", icon: ListChecks, permission: ["rubric.manage", "content.create"] },
+          { slug: "evaluations", titleKey: "nav.evaluations", icon: FileCheck, permission: "evaluation.review" },
+          { slug: "history", titleKey: "nav.history", icon: History, permission: ["content.review", "content.submit"] },
+        ],
+      },
+      {
+        labelKey: "navGroups.teaching",
+        items: [
+          { slug: "subjects", titleKey: "nav.subjects", icon: BookOpen, permission: "teacher.dashboard" },
+          { slug: "exams", titleKey: "nav.exams", icon: ClipboardList, permission: "exam.create" },
+          { slug: "assignments", titleKey: "nav.assignments", icon: ClipboardCheck, permission: "assignment.manage" },
+          { slug: "submissions", titleKey: "nav.submissions", icon: FileStack, permission: "submission.review" },
+          { slug: "students", titleKey: "nav.students", icon: Users, permission: "students.view" },
+          { slug: "analytics", titleKey: "nav.analytics", icon: ChartLine, permission: "students.view" },
+        ],
+      },
+      { labelKey: "navGroups.account", items: [notifications, settings] },
+    ],
+  },
+  institution: {
+    key: "institution",
+    titleKey: "portals.institution",
+    basePath: "/institution",
+    sections: [
+      {
+        items: [
+          { slug: "dashboard", titleKey: "nav.dashboard", icon: LayoutDashboard },
+          { slug: "onboarding", titleKey: "nav.onboarding", icon: Sparkles },
+        ],
+      },
+      {
+        labelKey: "navGroups.setup",
+        items: [
+          { slug: "profile", titleKey: "nav.profile", icon: Building },
+          { slug: "sessions", titleKey: "nav.sessions", icon: CalendarRange },
+          { slug: "classes", titleKey: "nav.classes", icon: School },
+          { slug: "subjects", titleKey: "nav.subjects", icon: BookOpen },
+        ],
+      },
+      {
+        labelKey: "navGroups.people",
+        items: [
+          { slug: "students", titleKey: "nav.students", icon: Users },
+          { slug: "teachers", titleKey: "nav.teachers", icon: GraduationCap },
+        ],
+      },
+      {
+        labelKey: "navGroups.academics",
+        items: [
+          { slug: "exams", titleKey: "nav.exams", icon: ClipboardList },
+          { slug: "assignments", titleKey: "nav.assignments", icon: ClipboardCheck },
+          { slug: "question-papers", titleKey: "nav.questionPapers", icon: FileStack },
+          { slug: "question-bank", titleKey: "nav.questionBank", icon: FileQuestionMark },
+          { slug: "resources", titleKey: "nav.resources", icon: FolderOpen },
+          { slug: "analytics", titleKey: "nav.analytics", icon: ChartLine },
+        ],
+      },
+      {
+        labelKey: "navGroups.communication",
+        items: [
+          { slug: "announcements", titleKey: "nav.announcements", icon: Megaphone },
+          notifications,
+        ],
+      },
+      {
+        labelKey: "navGroups.account",
+        items: [
+          { slug: "billing", titleKey: "nav.billing", icon: CreditCard, permission: "institution.billing" },
           settings,
         ],
       },
@@ -161,67 +235,83 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
   },
   admin: {
     key: "admin",
-    title: "অ্যাডমিন প্যানেল",
+    titleKey: "portals.admin",
     basePath: "/admin",
     sections: [
       {
-        items: [{ slug: "dashboard", title: "ড্যাশবোর্ড", icon: LayoutDashboard }],
-      },
-      {
-        label: "ব্যবহারকারী",
         items: [
-          { slug: "users", title: "ব্যবহারকারী", icon: UserCog },
-          { slug: "students", title: "শিক্ষার্থী", icon: Users },
-          { slug: "teachers", title: "শিক্ষক", icon: GraduationCap },
-          { slug: "institutions", title: "প্রতিষ্ঠান", icon: Building },
+          { slug: "dashboard", titleKey: "nav.dashboard", icon: LayoutDashboard, permission: "admin.access" },
+          { slug: "analytics", titleKey: "nav.analytics", icon: ChartLine, permission: "analytics.view" },
         ],
       },
       {
-        label: "কনটেন্ট",
+        labelKey: "navGroups.content",
         items: [
-          { slug: "books", title: "বই", icon: Bookmark },
-          { slug: "subjects", title: "বিষয়", icon: BookOpen },
-          { slug: "chapters", title: "অধ্যায়", icon: Layers },
-          { slug: "questions", title: "প্রশ্ন", icon: FileQuestionMark },
-          { slug: "board-questions", title: "বোর্ড প্রশ্ন", icon: ListChecks },
-          { slug: "model-tests", title: "মডেল টেস্ট", icon: ClipboardList },
-          { slug: "content-review", title: "কনটেন্ট রিভিউ", icon: ShieldCheck },
+          { slug: "curriculum", titleKey: "nav.curriculum", icon: Layers, permission: "curriculum.manage" },
+          { slug: "books", titleKey: "nav.books", icon: Library, permission: "books.manage" },
+          { slug: "questions", titleKey: "nav.questions", icon: FileQuestionMark, permission: "questions.manage" },
+          { slug: "board-questions", titleKey: "nav.boardQuestions", icon: ListChecks, permission: "board.manage" },
+          { slug: "institution-questions", titleKey: "nav.institutionQuestions", icon: School, permission: "institutionPapers.moderate" },
+          { slug: "exams", titleKey: "nav.exams", icon: ClipboardList, permission: "exams.manage" },
+          { slug: "content-review", titleKey: "nav.contentReview", icon: ShieldCheck, permission: "content.review" },
+          { slug: "coverage", titleKey: "nav.coverage", icon: Activity, permission: "coverage.view" },
         ],
       },
       {
-        label: "AI",
+        labelKey: "navGroups.ai",
+        items: [{ slug: "knowledge-base", titleKey: "nav.knowledgeBase", icon: Database, permission: ["kb.view", "kb.manage"] }],
+      },
+      {
+        labelKey: "navGroups.people",
         items: [
-          { slug: "ai-knowledge", title: "AI নলেজ বেস", icon: Database },
-          { slug: "ai-monitoring", title: "AI মনিটরিং", icon: Activity },
+          { slug: "users", titleKey: "nav.users", icon: UserCog, permission: ["users.view", "users.manage"] },
+          { slug: "teachers", titleKey: "nav.teachers", icon: GraduationCap, permission: "teachers.manage" },
+          { slug: "institutions", titleKey: "nav.institutions", icon: Building, permission: "users.manage" },
         ],
       },
       {
-        label: "ব্যবসা ও সিস্টেম",
+        labelKey: "navGroups.business",
+        items: [{ slug: "subscriptions", titleKey: "nav.subscriptions", icon: Receipt, permission: ["billing.view", "billing.manage"] }],
+      },
+      {
+        labelKey: "navGroups.system",
         items: [
-          { slug: "subscriptions", title: "সাবস্ক্রিপশন", icon: Wallet },
-          { slug: "payments", title: "পেমেন্ট", icon: Receipt },
-          { slug: "analytics", title: "অ্যানালিটিক্স", icon: ChartLine },
-          { slug: "moderation", title: "মডারেশন", icon: ShieldX },
-          settings,
+          { slug: "moderation", titleKey: "nav.moderation", icon: ShieldX, permission: "moderation.handle" },
+          { slug: "security", titleKey: "nav.security", icon: ShieldCheck, permission: ["audit.view", "security.manage"] },
+          { slug: "notifications", titleKey: "nav.notifications", icon: Bell },
+          { slug: "settings", titleKey: "nav.settings", icon: Settings },
         ],
       },
     ],
   },
 };
 
-export function getNavItem(portal: PortalKey, slug: string): NavItem | undefined {
-  return portalNavigation[portal].sections
-    .flatMap((section) => section.items)
-    .find((item) => item.slug === slug);
+export function portalItems(portal: PortalKey): NavItem[] {
+  return portalNavigation[portal].sections.flatMap((section) => section.items);
 }
 
+export function getNavItem(portal: PortalKey, slug: string): NavItem | undefined {
+  return portalItems(portal).find((item) => item.slug === slug);
+}
+
+/** Extra command-palette entries that are not sidebar items. */
+export const extraStudentCommands = [{ slug: "search", titleKey: "nav.search", icon: Search }] as const;
+
 export const marketingNavigation: MarketingNavLink[] = [
-  { title: "ফিচারসমূহ", href: "/features" },
-  { title: "মূল্য", href: "/pricing" },
-  { title: "আমাদের সম্পর্কে", href: "/about" },
-  { title: "প্রশ্নোত্তর", href: "/faq" },
-  { title: "যোগাযোগ", href: "/contact" },
+  { titleKey: "marketingNav.features", href: "/features" },
+  { titleKey: "marketingNav.pricing", href: "/pricing" },
+  { titleKey: "marketingNav.parents", href: "/for-parents" },
+  { titleKey: "marketingNav.teachers", href: "/for-teachers" },
+  { titleKey: "marketingNav.schools", href: "/for-schools" },
+  { titleKey: "marketingNav.faq", href: "/faq" },
 ];
 
-/** Icon used for the user menu's profile entry. */
-export const profileIcon = User;
+export const marketingFooterNavigation: MarketingNavLink[] = [
+  { titleKey: "marketingNav.about", href: "/about" },
+  { titleKey: "marketingNav.contact", href: "/contact" },
+  { titleKey: "marketingNav.help", href: "/help" },
+  { titleKey: "marketingNav.terms", href: "/terms" },
+  { titleKey: "marketingNav.privacy", href: "/privacy" },
+  { titleKey: "marketingNav.accessibility", href: "/accessibility" },
+];
+

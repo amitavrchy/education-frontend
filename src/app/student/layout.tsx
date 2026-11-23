@@ -1,5 +1,5 @@
-import { StudentLayout } from "@/components/layouts/role-layouts";
+import { PortalShell } from "@/components/shell/portal-shell";
 
 export default function Layout({ children }: LayoutProps<"/student">) {
-  return <StudentLayout>{children}</StudentLayout>;
+  return <PortalShell portal="student">{children}</PortalShell>;
 }

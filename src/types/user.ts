@@ -1,6 +1,25 @@
-export const USER_ROLES = ["student", "teacher", "institution", "parent", "admin"] as const;
+/** Every role the platform supports (master prompt §5). */
+export const USER_ROLES = [
+  "student",
+  "parent",
+  "teacher",
+  "content_reviewer",
+  "content_manager",
+  "school_admin",
+  "college_admin",
+  "support",
+  "platform_admin",
+  "super_admin",
+] as const;
 
 export type UserRole = (typeof USER_ROLES)[number];
+
+/** Portals are UI shells. Several roles can share one portal with different permissions. */
+export const PORTALS = ["student", "parent", "teacher", "institution", "admin"] as const;
+
+export type PortalKey = (typeof PORTALS)[number];
+
+export type AccountStatus = "active" | "suspended" | "pending_deletion" | "invited";
 
 export interface User {
   id: string;
@@ -12,6 +31,9 @@ export interface User {
   /** e.g. "HSC 2026", "Class 10" — only meaningful for students. */
   academicLevel?: string;
   institutionId?: string;
+  status?: AccountStatus;
+  /** True once the student finished the onboarding wizard. */
+  onboarded?: boolean;
   createdAt: string;
 }
 
@@ -20,4 +42,6 @@ export interface AuthSession {
   accessToken: string;
   refreshToken?: string;
   expiresAt: string;
+  /** Set when "remember me" was ticked: session survives a browser restart. */
+  remember?: boolean;
 }

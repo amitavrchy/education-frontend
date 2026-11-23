@@ -1,5 +1,5 @@
-import { AdminLayout } from "@/components/layouts/role-layouts";
+import { PortalShell } from "@/components/shell/portal-shell";
 
 export default function Layout({ children }: LayoutProps<"/admin">) {
-  return <AdminLayout>{children}</AdminLayout>;
+  return <PortalShell portal="admin">{children}</PortalShell>;
 }

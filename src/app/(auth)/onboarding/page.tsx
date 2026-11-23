@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { SectionPlaceholder } from "@/components/common/section-placeholder";
+import { OnboardingWizard } from "@/components/auth/onboarding-wizard";
 
-export const metadata: Metadata = { title: "অনবোর্ডিং" };
+export const metadata: Metadata = { title: "প্রোফাইল সেটআপ" };
 
 export default function Page() {
-  return <SectionPlaceholder title="অনবোর্ডিং" />;
+  return <OnboardingWizard />;
 }
