@@ -111,7 +111,6 @@ export function InstitutionOnboarding() {
 }
 
 export function InstitutionProfile() {
-  const l = useL();
   const inst = useInstitution();
   if (!inst.data) return <Skeleton className="h-96" />;
   return <ProfileForm key={inst.data.updatedAt} initial={inst.data} />;

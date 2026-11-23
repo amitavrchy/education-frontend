@@ -30,7 +30,6 @@ import { INSTITUTION_EXAM_CATEGORIES, type Announcement, type Exam, type Institu
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useCurriculum } from "@/hooks/use-curriculum";
 import { useFormat, useL } from "@/i18n";
-import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { rng } from "@/mock-data/utils";
 import { INSTITUTION_CATEGORY_LABELS, institutionPapersRepo, scanSvg } from "@/services/archive.service";
