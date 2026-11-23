@@ -23,6 +23,11 @@ const CODES: Record<string, [string, string]> = {
   FILE_TOO_LARGE: ["ফাইলটি অনেক বড় (সর্বোচ্চ ১০ MB)।", "The file is too large (max 10 MB)."],
   UNSUPPORTED_FILE: ["এই ধরনের ফাইল সমর্থিত নয়।", "This file type is not supported."],
   UNREADABLE_IMAGE: ["ছবিটি পড়া যাচ্ছে না — আরও পরিষ্কার ছবি তোলো।", "The image is unreadable — take a clearer photo."],
+  COUPON_INVALID: ["কুপন কোডটি সঠিক নয় বা মেয়াদোত্তীর্ণ।", "This coupon code is invalid or expired."],
+  COUPON_NOT_APPLICABLE: ["এই প্ল্যানে কুপনটি প্রযোজ্য নয়।", "This coupon doesn't apply to this plan."],
+  COUPON_EXHAUSTED: ["কুপনের ব্যবহার সীমা শেষ।", "This coupon has been fully redeemed."],
+  NO_SUBSCRIPTION: ["কোনো সক্রিয় সাবস্ক্রিপশন নেই।", "No active subscription."],
+  REFUND_EXISTS: ["এই পেমেন্টের জন্য আগেই রিফান্ড অনুরোধ আছে।", "A refund request already exists for this payment."],
   DOWNLOAD_NOT_PERMITTED: ["লাইসেন্স অনুযায়ী এটি ডাউনলোড করা যাবে না।", "Downloading is not permitted by the license."],
 };
 
