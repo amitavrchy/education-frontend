@@ -18,6 +18,12 @@ const CODES: Record<string, [string, string]> = {
   FORBIDDEN: ["এই কাজের অনুমতি নেই", "You don't have permission to do this"],
   NO_QUESTIONS: ["এই সেটআপে কোনো প্রশ্ন পাওয়া যায়নি — অধ্যায় বা ধরন পরিবর্তন করুন।", "No questions match this setup — change the chapters or types."],
   QUOTA_EXCEEDED: ["আপনার প্ল্যানের সীমা শেষ। আপগ্রেড করুন বা পরে চেষ্টা করুন।", "You've reached your plan limit. Upgrade or try later."],
+  STORAGE_FULL: ["অফলাইন স্টোরেজ পূর্ণ। কিছু ডাউনলোড মুছে জায়গা খালি করো।", "Offline storage is full. Remove some downloads to free space."],
+  OFFLINE_DOWNLOAD: ["ডাউনলোড করতে ইন্টারনেট সংযোগ লাগবে।", "You need an internet connection to download."],
+  FILE_TOO_LARGE: ["ফাইলটি অনেক বড় (সর্বোচ্চ ১০ MB)।", "The file is too large (max 10 MB)."],
+  UNSUPPORTED_FILE: ["এই ধরনের ফাইল সমর্থিত নয়।", "This file type is not supported."],
+  UNREADABLE_IMAGE: ["ছবিটি পড়া যাচ্ছে না — আরও পরিষ্কার ছবি তোলো।", "The image is unreadable — take a clearer photo."],
+  DOWNLOAD_NOT_PERMITTED: ["লাইসেন্স অনুযায়ী এটি ডাউনলোড করা যাবে না।", "Downloading is not permitted by the license."],
 };
 
 /** Maps service error codes/messages to a localized, user-facing sentence. */

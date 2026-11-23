@@ -36,7 +36,7 @@ export const PRIORITY_LABEL = (p: StudyTask["priority"], l: L) => ({ high: l("рж
 
 /** Practical next step for a task: deep link into the right module. */
 export function taskHref(t: StudyTask): string {
-  if (t.type === "practice") return `/student/practice${t.chapterId ? `?chapter=${t.chapterId}` : ""}`;
+  if (t.type === "practice") return `/student/questions${t.chapterId ? `?chapter=${t.chapterId}` : ""}`;
   if (t.type === "exam_prep") return "/student/exams";
   if (t.type === "reading") return "/student/library";
   if (t.type === "revision") return "/student/flashcards";

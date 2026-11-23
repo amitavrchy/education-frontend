@@ -434,7 +434,7 @@ function WeakTopics({ d }: { d: DashboardData }) {
                   </span>
                 </span>
                 <Button asChild size="sm" variant="outline" className="h-7 text-xs">
-                  <Link href={`/student/practice?topic=${t.topicId}`}>{l("অনুশীলন", "Practise")}</Link>
+                  <Link href={`/student/questions?topic=${t.topicId}`}>{l("অনুশীলন", "Practise")}</Link>
                 </Button>
               </li>
             );

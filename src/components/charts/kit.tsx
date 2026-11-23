@@ -119,7 +119,7 @@ export function BarsChart({ data, x, series, height = 240, label, horizontal, st
           {horizontal ? (
             <>
               <XAxis type="number" {...axis} unit={unit} />
-              <YAxis type="category" dataKey={x} {...axis} width={120} />
+              <YAxis type="category" dataKey={x} {...axis} width={120} interval={0} />
             </>
           ) : (
             <>
