@@ -16,6 +16,7 @@ const CODES: Record<string, [string, string]> = {
   SIMULATED_FAILURE: ["নেটওয়ার্ক সমস্যা (ডেমো সিমুলেশন)। আবার চেষ্টা করুন।", "Network problem (demo simulation). Please retry."],
   NOT_FOUND: ["খুঁজে পাওয়া যায়নি", "Not found"],
   FORBIDDEN: ["এই কাজের অনুমতি নেই", "You don't have permission to do this"],
+  NO_QUESTIONS: ["এই সেটআপে কোনো প্রশ্ন পাওয়া যায়নি — অধ্যায় বা ধরন পরিবর্তন করুন।", "No questions match this setup — change the chapters or types."],
   QUOTA_EXCEEDED: ["আপনার প্ল্যানের সীমা শেষ। আপগ্রেড করুন বা পরে চেষ্টা করুন।", "You've reached your plan limit. Upgrade or try later."],
 };
 
