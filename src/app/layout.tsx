@@ -3,6 +3,7 @@ import { fontVariables } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { AppProviders } from "@/providers/app-providers";
+import "katex/dist/katex.min.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
