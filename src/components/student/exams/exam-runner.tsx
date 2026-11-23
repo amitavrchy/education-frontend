@@ -5,7 +5,6 @@ import { AlertTriangle, ArrowLeft, ArrowRight, Bookmark, CheckCircle2, Clock, Ex
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { RichText } from "@/components/content/rich-text";
 import { ErrorState } from "@/components/feedback/error-state";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -80,9 +79,10 @@ function Runner({ attempt, exam, questions }: Loaded) {
   const practice = exam.mode === "practice";
   const immediate = exam.reviewPolicy === "immediate";
   const fresh = Object.keys(attempt.answers).length === 0 && attempt.currentIndex === 0;
-  const elapsedAway = (Date.now() - new Date(attempt.lastSavedAt).getTime()) / 1000;
   // Session recovery: the exam clock keeps running while away (exam mode); practice mode pauses.
-  const recoveredRemaining = practice ? attempt.remainingSec : attempt.remainingSec - (fresh ? 0 : elapsedAway);
+  const [recoveredRemaining] = useState(() =>
+    practice || fresh ? attempt.remainingSec : attempt.remainingSec - (Date.now() - new Date(attempt.lastSavedAt).getTime()) / 1000,
+  );
 
   const [started, setStarted] = useState(!fresh);
   const [answers, setAnswers] = useState<Record<string, AttemptAnswer>>(attempt.answers);
