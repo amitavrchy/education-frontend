@@ -22,6 +22,7 @@ const CODES: Record<string, [string, string]> = {
   OFFLINE_DOWNLOAD: ["ডাউনলোড করতে ইন্টারনেট সংযোগ লাগবে।", "You need an internet connection to download."],
   FILE_TOO_LARGE: ["ফাইলটি অনেক বড় (সর্বোচ্চ ১০ MB)।", "The file is too large (max 10 MB)."],
   UNSUPPORTED_FILE: ["এই ধরনের ফাইল সমর্থিত নয়।", "This file type is not supported."],
+  NO_PAGES: ["কমপক্ষে একটি পৃষ্ঠার ছবি যোগ করো।", "Add at least one page image."],
   INVALID_IMAGE: ["ফাইলটি সঠিক ছবি নয় বা খালি।", "This file is not a valid image or is empty."],
   UNREADABLE_IMAGE: ["ছবিটি পড়া যাচ্ছে না — আরও পরিষ্কার ছবি তোলো।", "The image is unreadable — take a clearer photo."],
   COUPON_INVALID: ["কুপন কোডটি সঠিক নয় বা মেয়াদোত্তীর্ণ।", "This coupon code is invalid or expired."],
