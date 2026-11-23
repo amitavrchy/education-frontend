@@ -31,7 +31,10 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 1. ✅ Inspect repo, install deps, feature inventory
 2. ✅ Core: contracts, roles/permissions, i18n, mock DB + repositories, shell (guards, role switcher, search palette, notifications, offline)
 3. ⏳ Auth + onboarding (done, 2732ec3) + marketing site (todo)
-4. ⏳ Student modules — curriculum, question bank, practice sets, exams done; AI tutor in progress (WIP commit)
+4. ⏳ Student modules — done: dashboard, AI tutor, voice tutor, photo solver, curriculum, library (+PDF.js),
+   question bank, board & institution archives, practice, exams, planner, adaptive analytics, flashcards,
+   notes, achievements, offline (+PWA), bookmarks, notifications, subscription, help, settings, search.
+   Todo: answer evaluation, English coach, labs, audio revision.
 5. Teacher/reviewer, institution, parent portals
 6. Admin dashboard modules
 7. Tests (Vitest + Playwright), docs set from §57, audit + fixes
@@ -45,6 +48,18 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 4. The last commit may be a `wip:` commit — finish/verify it first (`npm run lint`, `npx tsc --noEmit`).
 
 ## Log
+
+### 2026-11-23 — session 4
+- Fixed WIP lint errors; verified AI tutor works end-to-end (Playwright flow).
+- Built: student dashboard (customisable widgets), study planner (board/calendar/timeline/list, drag
+  reschedule), flashcards (SM-2 study + quick review + generators), notes (Tiptap, autosave, history,
+  links, print), library + PDF reader (sample PDFs via `npm run pdf:samples`), board archive (synthetic,
+  9 boards x 10 years, HSC 2020 omitted) + institution archive, adaptive analytics, achievements,
+  offline page + service worker (prod only), shared notification center / settings / subscription
+  (checkout simulator) for all portals, global search page + `services/search-registry.ts`,
+  voice tutor (VoiceAdapter mock + device speech APIs), photo solver (OCR fixtures).
+- New services: offline, archive (board + institution papers), billing, voice, ocr.
+- Verification: `npm run typecheck`, smoke + interaction scripts with Playwright against `next dev -p 3001`.
 
 ### 2026-11-23 — sessions 2–3
 - Core shell, auth & onboarding, learning engine foundations (2732ec3).
