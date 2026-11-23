@@ -14,7 +14,8 @@ export type SearchKind =
   | "note"
   | "flashcard"
   | "conversation"
-  | "audio";
+  | "audio"
+  | "exam";
 
 export interface SearchHit {
   kind: SearchKind;

@@ -18,7 +18,7 @@ import { portalItems } from "@/config/navigation";
 import { useCan } from "@/hooks/use-auth";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useFormat, useL, useT } from "@/i18n";
-import { searchService, type SearchHit } from "@/services/search.service";
+import { searchService, type SearchHit } from "@/services/search-registry";
 import { usePreferencesStore } from "@/stores/preferences-store";
 import { usePortal } from "./portal-context";
 
