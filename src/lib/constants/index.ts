@@ -19,7 +19,6 @@ export const ROUTES = {
   resetPassword: "/reset-password",
   sessionExpired: "/session-expired",
   consent: "/consent",
-  guardianConsent: "/consent/guardian",
   onboarding: "/onboarding",
 } as const;
 
@@ -27,7 +26,6 @@ export const ROUTES = {
 export const PORTAL_HOME: Record<PortalKey, string> = {
   student: "/student/dashboard",
   teacher: "/teacher/dashboard",
-  institution: "/institution/dashboard",
   parent: "/parent/dashboard",
   admin: "/admin/dashboard",
 };

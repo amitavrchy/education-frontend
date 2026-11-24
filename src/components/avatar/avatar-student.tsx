@@ -24,7 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { AvatarMessage, AvatarSession, Book, BookAvatar } from "@/contracts";
-import { useCurrentUser } from "@/hooks/use-auth";
+
 import { useCurriculum } from "@/hooks/use-curriculum";
 import { useOnline } from "@/hooks/use-online";
 import { useStudentId } from "@/hooks/use-student";
@@ -37,7 +37,7 @@ import { TeacherAvatar, type AvatarState } from "./teacher-avatar";
 import { useAvatarSpeech } from "./use-avatar-speech";
 
 const keys = {
-  available: (inst?: string) => ["avatars", "available", inst ?? ""] as const,
+  available: () => ["avatars", "available"] as const,
   sessions: (s: string) => ["avatars", "sessions", s] as const,
   messages: (s: string, id: string) => ["avatars", "messages", s, id] as const,
 };
@@ -49,12 +49,11 @@ const keys = {
 export function AvatarGallery() {
   const l = useL();
   const f = useFormat();
-  const user = useCurrentUser();
   const studentId = useStudentId();
   const { index: cur } = useCurriculum();
   const [q, setQ] = useState("");
   const [level, setLevel] = useState<"all" | "SSC" | "HSC">("all");
-  const list = useQuery({ queryKey: keys.available(user?.institutionId), queryFn: () => avatarService.availableForStudents(user?.institutionId) });
+  const list = useQuery({ queryKey: keys.available(), queryFn: () => avatarService.availableForStudents() });
   const sessions = useQuery({ queryKey: keys.sessions(studentId), queryFn: () => avatarService.sessions(studentId) });
   const shown = useMemo(
     () => (list.data ?? []).filter(({ book, avatar }) => (level === "all" || book.levelCode === level) && (!q.trim() || `${book.title.bn} ${book.title.en} ${avatar.name.bn} ${avatar.name.en}`.toLowerCase().includes(q.trim().toLowerCase()))),

@@ -6,7 +6,7 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 
 ## Ground rules (from the user, this repo only)
 
-- This repo = Next.js app: student web, marketing site, admin, teacher/reviewer, institution, parent
+- This repo = Next.js app: student web, marketing site, admin, teacher/reviewer, parent
   portals (route groups + role guards), docs, shared contracts and mock data. Flutter is a separate repo.
 - Do **not** edit `docs/MASTER_PROMPT.md`.
 - `NEXT_PUBLIC_USE_MOCK_API` stays `true`; the frontend must never hit real APIs.
@@ -19,7 +19,7 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 | Decision | Why |
 | --- | --- |
 | Keep the existing "ShikkhaAI" brand, centralised in `src/config/site.ts` + env | Master prompt asks for a centrally swappable temporary name; repo already chose ShikkhaAI. Changing `NEXT_PUBLIC_APP_NAME` rebrands everything. |
-| 5 portals (`student`, `parent`, `teacher`, `institution`, `admin`) host 10 roles | Teacher portal = teacher + content reviewer; institution = school + college admin; admin = content manager, support, platform admin, super admin. Navigation is filtered by permissions. |
+| 4 portals (`student`, `parent`, `teacher`, `admin`) host 8 roles | Teacher portal = teacher + content reviewer; admin = content manager, support, platform admin, super admin. Navigation is filtered by permissions. The institution portal (school/college admin) was removed on 2026-11-24. |
 | All domain data goes through repositories in `src/services/**` | UI never imports mock data directly; `NEXT_PUBLIC_USE_MOCK_API=false` swaps **every** repository (factory-level switch in `services/core/repository.ts`) to a REST adapter with the same interface. |
 | Mock DB = IndexedDB (one store, one record per collection) with in-memory fallback | Survives reloads, resettable from Settings, works in tests via fake-indexeddb. |
 | Preferences (locale, theme extras, dashboard layout) in localStorage via Zustand | Prompt: localStorage only for lightweight settings. |
@@ -54,6 +54,35 @@ Lighthouse budget on a low-end device profile; backend endpoints per `docs/archi
 
 ## Log
 
+### 2026-11-24 — session 6b (scope cut: institution portal + guardian consent)
+- Product decision from the user:
+  - Schools/colleges are no longer onboarded as clients.
+  - Students under 18 no longer need guardian permission.
+- Removed (institution):
+  - `school_admin` / `college_admin` roles and the `institution.*` permissions.
+  - The whole `/institution/*` portal and its components, and admin `/admin/institutions`.
+  - The institution plan and its `SCHOOL30` coupon (replaced by `FAMILY30`).
+  - Institution exam kind (seed exams became teacher-assigned).
+  - Marketing `/for-schools` and `/for-colleges`.
+  - The avatar on/off per institution.
+  - Institution notifications and demo logins.
+- Kept:
+  - The student "school & college questions" archive and its admin moderation.
+  - A student's school affiliation (onboarding, settings, admin user detail).
+  - The `Institution` directory data that the archive uses.
+- Removed (guardian consent):
+  - The under-18 checkbox at signup and `/consent/guardian` with its screen.
+  - `ConsentRecord`, `consentRepo` and `consentService`.
+  - `UserAccount.consent` and `profile.guardian.consent`.
+  - The admin moderation consent tab, admin consent column/filter/stat, and the system min-age setting.
+  - Consent records in the parent privacy page.
+  - The guardian-consent wording on the site, help and FAQ.
+  - The parent portal stays; guardians still see only what the student shares.
+- Feature matrix: new 🚫 Removed status (37 features). `npm run docs` regenerated.
+- Verification:
+  - Typecheck clean, lint 0 errors. 70/70 unit, 26/26 e2e.
+  - Removed routes return 404, and changed pages were smoke-tested per role with no console errors.
+
 ### 2026-11-24 — session 6 (per-book avatar teacher)
 - New main feature: every book has its own live 2D teacher avatar.
   - Students ask by text or voice. The avatar answers only from that book, with page citations, and declines
@@ -64,7 +93,6 @@ Lighthouse budget on a low-end device profile; backend endpoints per `docs/archi
   - Admin: editor, test chat and reports. Uploading a book auto-creates its avatar, and the books table links
     to it.
   - Teacher: own subjects, plus report fixes.
-  - Institution: on/off per avatar.
   - Parent: counts only.
   - The book reader has an "ask this book's teacher" button.
 - Code: `src/components/avatar/*`, `src/services/avatar.service.ts`, `src/services/ai/book-avatar-engine.ts`.

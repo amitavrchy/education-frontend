@@ -26,7 +26,6 @@ import { useFormat, useL } from "@/i18n";
 import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { DEMO_LINK_CODE, guardianService, type GuardianGoal } from "@/services/guardian.service";
-import { consentRepo } from "@/services/people.service";
 import { ChildSwitcher, guardianKeys, NotShared, useChildren, WithChild } from "./child-context";
 
 type L = (bn: string, en: string) => string;
@@ -381,41 +380,15 @@ function ReportsBody({ child }: { child: GuardianLink }) {
 
 export function ParentPrivacy() {
   const l = useL();
-  const f = useFormat();
   const links = useChildren();
-  const consents = useQuery({ queryKey: ["consents", "guardian"], queryFn: () => consentRepo.all() });
-  const mine = (consents.data ?? []).filter((c) => (links.data ?? []).some((x) => x.studentId === c.studentId));
   return (
     <>
-      <PageHeader title={l("গোপনীয়তা ও সম্মতি", "Privacy & consent")} description={l("সন্তানের তথ্য কীভাবে ব্যবহার হয় তা নিয়ন্ত্রণ করুন", "Control how your child's data is used")} />
+      <PageHeader title={l("গোপনীয়তা", "Privacy")} description={l("সন্তানের তথ্য কীভাবে ব্যবহার হয় তা নিয়ন্ত্রণ করুন", "Control how your child's data is used")} />
       <Alert className="mb-5 border-info/40 bg-info/5">
         <ShieldCheck className="text-info" />
-        <AlertDescription>{l("শিশুর গোপনীয়তা আমাদের অগ্রাধিকার: AI কথোপকথন ডিফল্টে ব্যক্তিগত, তথ্য বিক্রি হয় না, এবং যেকোনো সময় সম্মতি প্রত্যাহার করা যায়।", "Child privacy comes first: AI conversations are private by default, data is never sold, and consent can be withdrawn any time.")}</AlertDescription>
+        <AlertDescription>{l("শিশুর গোপনীয়তা আমাদের অগ্রাধিকার: AI কথোপকথন ডিফল্টে ব্যক্তিগত, তথ্য বিক্রি হয় না, আর কী শেয়ার হবে তা সন্তান নিজে ঠিক করে।", "Child privacy comes first: AI conversations are private by default, data is never sold, and your child decides what is shared.")}</AlertDescription>
       </Alert>
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{l("সম্মতির রেকর্ড", "Consent records")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {consents.isPending ? (
-              <Skeleton className="h-24" />
-            ) : !mine.length ? (
-              <p className="text-sm text-muted-foreground">{l("কোনো রেকর্ড নেই।", "No records.")}</p>
-            ) : (
-              <ul className="space-y-2 text-sm">
-                {mine.map((c) => (
-                  <li key={c.id} className="flex items-center justify-between gap-2 rounded-lg border p-2">
-                    <span>
-                      {c.studentName} · {c.method.toUpperCase()} · {f.date(c.createdAt)}
-                    </span>
-                    <Badge variant={c.status === "granted" ? "default" : "outline"}>{c.status}</Badge>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
+      <div className="grid gap-4">
         <Card>
           <CardHeader>
             <CardTitle className="text-base">{l("শেয়ার করা তথ্য", "Shared data")}</CardTitle>

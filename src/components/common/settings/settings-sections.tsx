@@ -486,15 +486,9 @@ export function PrivacySection({ profile }: { profile: StudentProfile }) {
               <p className="font-medium">{profile.guardian.name}</p>
               <p className="text-xs text-muted-foreground">{profile.guardian.relation}</p>
             </div>
-            <Badge variant={profile.guardian.consent === "granted" ? "default" : "outline"}>{{ granted: l("সম্মতি দেওয়া", "Consent granted"), pending: l("অপেক্ষমাণ", "Pending"), withdrawn: l("প্রত্যাহার", "Withdrawn") }[profile.guardian.consent]}</Badge>
           </div>
         ) : (
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm text-muted-foreground">{l("কোনো অভিভাবক যুক্ত নেই।", "No guardian connected.")}</p>
-            <Button asChild size="sm" variant="outline">
-              <Link href="/consent/guardian">{l("অভিভাবক যুক্ত করো", "Connect guardian")}</Link>
-            </Button>
-          </div>
+          <p className="text-sm text-muted-foreground">{l("কোনো অভিভাবক যুক্ত নেই। অভিভাবক চাইলে নিজের অ্যাকাউন্ট থেকে তোমাকে যুক্ত করতে পারেন।", "No guardian connected. A guardian can link you from their own account.")}</p>
         )}
       </Section>
       <Section title={l("কী শেয়ার হবে", "What is shared")} description={l("AI কথোপকথন ডিফল্টে ব্যক্তিগত থাকে।", "AI conversations are private by default.")}>
@@ -503,7 +497,6 @@ export function PrivacySection({ profile }: { profile: StudentProfile }) {
             ["shareProgressWithGuardian", l("অভিভাবকের সাথে অগ্রগতি", "Progress with guardian")],
             ["shareScoresWithGuardian", l("অভিভাবকের সাথে নম্বর", "Scores with guardian")],
             ["shareConversationsWithGuardian", l("অভিভাবকের সাথে AI কথোপকথন", "AI conversations with guardian")],
-            ["shareWithInstitution", l("প্রতিষ্ঠানের সাথে অগ্রগতি", "Progress with institution")],
             ["showOnLeaderboard", l("লিডারবোর্ডে দেখাও", "Show me on leaderboards")],
           ] as const
         ).map(([k, label]) => (
@@ -724,7 +717,7 @@ export function AccountSection({ showStudentLinks }: { showStudentLinks?: boolea
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{l("অ্যাকাউন্ট মুছে ফেলবে?", "Delete your account?")}</DialogTitle>
-            <DialogDescription>{l("৩০ দিন পর সব তথ্য স্থায়ীভাবে মুছে যাবে। এর মধ্যে বাতিল করা যাবে। ১৮ বছরের নিচে হলে অভিভাবককেও জানানো হবে।", "All data is permanently deleted after 30 days; you can cancel before then. Guardians of under-18s are notified.")}</DialogDescription>
+            <DialogDescription>{l("৩০ দিন পর সব তথ্য স্থায়ীভাবে মুছে যাবে। এর মধ্যে বাতিল করা যাবে।", "All data is permanently deleted after 30 days; you can cancel before then.")}</DialogDescription>
           </DialogHeader>
           <Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder={l("কারণ (ঐচ্ছিক)", "Reason (optional)")} aria-label={l("কারণ", "Reason")} />
           <DialogFooter>

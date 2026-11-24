@@ -30,8 +30,6 @@ Any password works (`wrongpass` simulates a wrong-password error). OTP is always
 | Teacher | `teacher@shikkha.ai` | `/teacher/dashboard` |
 | Content reviewer | `reviewer@shikkha.ai` | `/teacher/dashboard` |
 | Content manager | `content@shikkha.ai` | `/admin/dashboard` |
-| School admin | `school@shikkha.ai` | `/institution/dashboard` |
-| College admin | `college@shikkha.ai` | `/institution/dashboard` |
 | Customer support | `support@shikkha.ai` | `/admin/dashboard` |
 | Platform admin | `admin@shikkha.ai` | `/admin/dashboard` |
 | Super admin | `super@shikkha.ai` | `/admin/dashboard` |
@@ -73,7 +71,7 @@ All variables are public and validated in `src/config/env.ts`.
 
 ```
 src/
-├── app/            Routes only — (marketing), (auth), student, parent, teacher, institution, admin
+├── app/            Routes only — (marketing), (auth), student, parent, teacher, admin
 ├── components/     UI by portal/feature + shared shell, data table, charts, feedback states, ui primitives
 ├── services/       Application logic + repositories (mock IndexedDB ⇄ REST switch in services/core)
 ├── contracts/      Typed domain models (the API contract)

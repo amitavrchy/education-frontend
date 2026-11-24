@@ -29,7 +29,7 @@ import type { PortalKey } from "@/types";
 
 const METHOD_LABEL: Record<Payment["method"], [string, string]> = { bkash_mock: ["বিকাশ (ডেমো)", "bKash (demo)"], nagad_mock: ["নগদ (ডেমো)", "Nagad (demo)"], card_mock: ["কার্ড (ডেমো)", "Card (demo)"], bank_mock: ["ব্যাংক (ডেমো)", "Bank (demo)"] };
 
-export function SubscriptionPage({ portal }: { portal: PortalKey }) {
+export function SubscriptionPage(_props: { portal: PortalKey }) {
   const l = useL();
   const f = useFormat();
   const user = useCurrentUser();
@@ -56,7 +56,7 @@ export function SubscriptionPage({ portal }: { portal: PortalKey }) {
   if (plans.isError) return <ErrorState error={plans.error} onRetry={() => void plans.refetch()} />;
   const current: PlanCode = sub.data?.status === "cancelled" || !sub.data ? (usage.data?.plan ?? "free") : sub.data.planCode;
   const currentPlan = plans.data?.find((p) => p.code === current);
-  const visiblePlans = (plans.data ?? []).filter((p) => p.active && (portal === "parent" ? p.code !== "institution" : p.code !== "institution"));
+  const visiblePlans = (plans.data ?? []).filter((p) => p.active);
   const pendingPayment = (payments.data ?? []).find((p) => p.status === "pending");
 
   return (

@@ -35,7 +35,6 @@ function seedAudit(): AuditLog[] {
     ["system", "config.update", "সিস্টেম কনফিগ হালনাগাদ"],
     ["ai", "prompt.activate", "প্রম্পট সংস্করণ সক্রিয়"],
     ["content", "chapter.update", "অধ্যায় সম্পাদনা"],
-    ["account", "consent.review", "অভিভাবক সম্মতি যাচাই"],
   ];
   return Array.from({ length: 60 }, (_, i) => {
     const [category, action, label] = r.pick(actions);
@@ -292,7 +291,7 @@ const seedKeys = (): ApiKeySetting[] => [
 ];
 export const apiKeysRepo = createMockRepository<ApiKeySetting>({ collection: "apiKeys", seed: seedKeys, timestamps: false });
 
-const seedConfig = (): SystemConfig => ({ id: "system", maintenanceMode: false, signupsEnabled: true, defaultLocale: "bn", minAgeWithoutConsent: 18, maxUploadMb: 10, featureFlags: { voiceTutor: true, photoSolver: true, handwritingEvaluation: true, leaderboards: true, institutionPapersPublic: true, betaLabs: false } });
+const seedConfig = (): SystemConfig => ({ id: "system", maintenanceMode: false, signupsEnabled: true, defaultLocale: "bn", maxUploadMb: 10, featureFlags: { voiceTutor: true, photoSolver: true, handwritingEvaluation: true, leaderboards: true, institutionPapersPublic: true, betaLabs: false } });
 
 export const securityService = {
   alerts: () => alertsRepo.all(),

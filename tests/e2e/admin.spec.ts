@@ -71,10 +71,10 @@ test.describe("admin workflows", () => {
     await page.getByRole("row").nth(1).click();
     const sheet = page.getByRole("dialog");
     await sheet.getByRole("combobox").first().click();
-    await page.getByRole("option", { name: "institution" }).click();
+    await page.getByRole("option", { name: "family" }).click();
     await sheet.getByRole("button", { name: /পরিবর্তন/ }).click();
     await expect(page.getByText(/এনটাইটেলমেন্ট পরিবর্তিত/)).toBeVisible();
-    await expect(sheet.getByText(/institution ·/)).toBeVisible();
+    await expect(sheet.getByText(/family ·/)).toBeVisible();
   });
 
   test("checkout simulator handles a failing test card", async ({ page }) => {

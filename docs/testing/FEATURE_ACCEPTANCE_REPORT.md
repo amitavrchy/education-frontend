@@ -1,6 +1,6 @@
 # Feature Acceptance Report — education-frontend
 
-Date: 2026-11-24 · Scope: Next.js web (public site, student, parent, teacher/reviewer, institution, admin).
+Date: 2026-11-24 · Scope: Next.js web (public site, student, parent, teacher/reviewer, admin).
 
 ## Result
 
@@ -40,8 +40,8 @@ Date: 2026-11-24 · Scope: Next.js web (public site, student, parent, teacher/re
   paper management (upload → OCR → split → chapter map, authenticity, frequency), institution paper moderation,
   exam management (wizard, templates, answer key, grade override, result publication), AI knowledge base (sources,
   chunks, retrieval simulator, prompts with version diff/rollback, models/routing/policy, cost, quality evals,
-  logs), users, teachers/reviewers, institutions, subscriptions & billing (plans, coupons, refunds, invoices,
-  checkout simulator, revenue analytics), moderation (reports, privacy requests, consent review), security &
+  logs), users, teachers/reviewers, subscriptions & billing (plans, coupons, refunds, invoices,
+  checkout simulator, revenue analytics), moderation (reports, privacy requests), security &
   audit (permission matrix, audit log, alerts, sessions, masked API keys, system config).
 - **Public website (§47):** interactive homepage (tutor, voice and quiz demos), features, live-plan pricing,
   four audience pages, searchable FAQ, validated contact form, about, help, terms, privacy, accessibility.

@@ -12,7 +12,7 @@ Public site (/)
 ├── FAQ · About · Contact · Help · Terms · Privacy · Accessibility
 └── Login / Register
 
-Auth: welcome · login · register · verify-otp · forgot/reset password · consent · guardian consent · onboarding · session-expired
+Auth: welcome · login · register · verify-otp · forgot/reset password · consent · onboarding · session-expired
 
 Student (/student)
 ├── Dashboard
@@ -29,18 +29,11 @@ Teacher (/teacher)
 ├── Review: Review queue · Questions · Rubrics · Evaluations · History
 └── Teaching: Subjects · Exams · Assignments · Submissions · Students · Analytics
 
-Institution (/institution)
-├── Dashboard · Onboarding
-├── Setup: Profile · Sessions · Classes · Subjects
-├── People: Students · Teachers
-├── Academics: Exams · Assignments · Question papers · Question bank · Resources · Analytics
-└── Communication & account: Announcements · Notifications · Billing · Settings
-
 Admin (/admin)
 ├── Dashboard · Analytics
 ├── Content: Curriculum · Books · Questions · Board questions · Institution questions · Exams · Content review · Coverage
-├── AI: Knowledge base
-├── People: Users · Teachers · Institutions
+├── AI: Knowledge base · Book avatars
+├── People: Users · Teachers
 ├── Business: Subscriptions & billing
 └── System: Moderation · Security & audit · Notifications · Settings
 ```
@@ -57,7 +50,7 @@ The full route list is in [`SCREEN_INVENTORY.md`](SCREEN_INVENTORY.md) (generate
 | Note created (incl. from tutor/voice/photo solver) | Notes page, search |
 | Admin uploads a book | Admin books + ingestion queue + KB sources |
 | Content approved → published | Review queue status; published questions appear in the student question bank |
-| Admin/teacher/institution publishes an exam | Student exam lists |
+| Admin/teacher publishes an exam | Student exam lists |
 | Subscription changed | User plan + entitlements (quotas) |
 | Every admin mutation | Audit log (`/admin/security`) |
 

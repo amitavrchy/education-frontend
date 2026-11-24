@@ -3,7 +3,7 @@ import { books } from "@/mock-data/books";
 import { hashString } from "@/mock-data/utils";
 import { answerFromBook } from "./ai/book-avatar-engine";
 import { createMockRepository } from "./core/repository";
-import { getDocument, saveDocument } from "@/lib/mock-db";
+
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { booksRepo } from "./library.service";
 
@@ -132,7 +132,6 @@ export function avatarMessagesRepo(studentId: string) {
   return r;
 }
 
-const INSTITUTION_KEY = (institutionId: string) => `avatarAvailability:${institutionId}`;
 
 export const avatarService = {
   list: () => avatarsRepo.all(),
@@ -158,14 +157,13 @@ export const avatarService = {
     return avatarsRepo.update(avatar.id, { ...avatar, updatedAt: nowIso() });
   },
 
-  /** Books students can talk to: published book + active avatar (+ institution availability). */
-  async availableForStudents(institutionId?: string) {
+  /** Books students can talk to: published book + active avatar. */
+  async availableForStudents() {
     const [all, list] = await Promise.all([avatarsRepo.raw(), booksRepo.raw()]);
-    const disabled = institutionId ? (await avatarService.institutionAvailability(institutionId)).disabledAvatarIds : [];
     return list
       .filter((b) => b.status === "published")
       .map((book) => ({ book, avatar: all.find((a) => a.bookId === book.id) ?? defaultAvatarFor(book) }))
-      .filter((x) => x.avatar.status === "active" && !disabled.includes(x.avatar.id));
+      .filter((x) => x.avatar.status === "active");
   },
 
   /** Pure preview (admin/teacher "test chat") — nothing is stored. */
@@ -230,14 +228,6 @@ export const avatarService = {
   reports: () => avatarReportsRepo.all(),
   resolveReport: (id: string, status: AvatarReport["status"], resolution: string, by: string) => avatarReportsRepo.update(id, { status, resolution, resolvedBy: by, updatedAt: nowIso() }),
 
-  async institutionAvailability(institutionId: string) {
-    return getDocument<{ id: string; disabledAvatarIds: string[] }>(INSTITUTION_KEY(institutionId), () => ({ id: INSTITUTION_KEY(institutionId), disabledAvatarIds: [] }));
-  },
-  async setInstitutionAvailability(institutionId: string, disabledAvatarIds: string[]) {
-    await mockRequest(200);
-    await saveDocument(INSTITUTION_KEY(institutionId), { id: INSTITUTION_KEY(institutionId), disabledAvatarIds });
-    return disabledAvatarIds;
-  },
 
   /** Guardian view: counts only, never message content (privacy). */
   async usageSummary(studentId: string) {

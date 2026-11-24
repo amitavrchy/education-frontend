@@ -73,13 +73,4 @@ describe("avatar service", () => {
     expect(s.voiceTurns).toBe(1);
     expect(await avatarService.messages("u-test", session.id)).toHaveLength(3);
   });
-
-  it("hides avatars an institution has switched off", async () => {
-    const all = await avatarService.availableForStudents();
-    const off = all[0].avatar.id;
-    await avatarService.setInstitutionAvailability("inst-test", [off]);
-    const visible = await avatarService.availableForStudents("inst-test");
-    expect(visible.some((x) => x.avatar.id === off)).toBe(false);
-    expect(visible.length).toBe(all.length - 1);
-  });
 });

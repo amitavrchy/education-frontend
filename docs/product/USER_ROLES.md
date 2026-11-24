@@ -13,11 +13,12 @@ The portal shell renders an access-denied state when a role opens a page it may 
 | Teacher | `/teacher` | `teacher@shikkha.ai` | create/submit content, exams, assignments, submissions, evaluations, students |
 | Content Reviewer | `/teacher` | `reviewer@shikkha.ai` | review + approve content, rubrics |
 | Content Manager | `/admin` | `content@shikkha.ai` | all content ops, publish, analytics |
-| School Administrator | `/institution` | `school@shikkha.ai` | `institution.manage`, `institution.billing` |
-| College Administrator | `/institution` | `college@shikkha.ai` | `institution.manage`, `institution.billing` |
 | Customer Support | `/admin` | `support@shikkha.ai` | view users, support, billing view, moderation, notifications |
 | Platform Administrator | `/admin` | `admin@shikkha.ai` | all admin except `security.manage`, `roles.manage` |
 | Super Administrator | `/admin` | `super@shikkha.ai` | everything, incl. role/permission matrix and API keys |
+
+School/college administrator roles and the institution portal were removed by product decision (2026-11-24).
+Students of any age sign up without guardian permission.
 
 Any password works for demo accounts; `wrongpass` simulates a wrong-password error. OTP is always `123456`.
 

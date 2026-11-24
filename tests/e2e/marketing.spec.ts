@@ -15,7 +15,7 @@ test.describe("public website", () => {
   });
 
   test("all marketing pages render", async ({ page }) => {
-    for (const path of ["/features", "/pricing", "/for-parents", "/for-teachers", "/for-schools", "/for-colleges", "/faq", "/about", "/contact", "/help", "/terms", "/privacy", "/accessibility"]) {
+    for (const path of ["/features", "/pricing", "/for-parents", "/for-teachers", "/faq", "/about", "/contact", "/help", "/terms", "/privacy", "/accessibility"]) {
       await page.goto(path);
       await expect(page.locator("h1").first(), path).toBeVisible();
     }

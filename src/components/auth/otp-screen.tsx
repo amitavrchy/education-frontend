@@ -68,11 +68,6 @@ export function OtpScreen() {
       }
       if (result.session) {
         const user = result.session.user;
-        if (result.purpose === "register" && user.role === "student" && pending?.registration?.under18) {
-          useAuthStore.getState().setSession(result.session);
-          router.replace(ROUTES.guardianConsent);
-          return;
-        }
         if (result.purpose === "register" && user.role === "parent") {
           useAuthStore.getState().setSession(result.session);
           router.replace("/parent/children?welcome=1");

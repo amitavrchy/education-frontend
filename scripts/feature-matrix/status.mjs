@@ -12,6 +12,21 @@
  */
 const S = "smoke";
 export const status = {
+  // Removed by product decision (2026-11-24): institution portal + guardian consent for under-18s
+  "INST-*": ["removed", "—", "Institution portal removed by product decision (2026-11-24)"],
+  "AUTH-17": ["removed", "—", "No guardian permission needed for under-18 users"],
+  "EXM-10": ["removed", "—", "Removed by product decision (2026-11-24)"],
+  "PAR-16": ["removed", "—", "No guardian permission needed for under-18 users"],
+  "ADM-16": ["removed", "—", "Removed by product decision (2026-11-24)"],
+  "AUSR-15": ["removed", "—", "No guardian permission needed for under-18 users"],
+  "BILL-05": ["removed", "—", "Removed by product decision (2026-11-24)"],
+  "BI-20": ["removed", "—", "Removed by product decision (2026-11-24)"],
+  "SEC-12": ["removed", "—", "No guardian permission needed for under-18 users"],
+  "MKT-12": ["removed", "—", "Removed by product decision (2026-11-24)"],
+  "MKT-13": ["removed", "—", "Removed by product decision (2026-11-24)"],
+  "A11Y-13": ["removed", "—", "No guardian permission needed for under-18 users"],
+  "AVT-11": ["removed", "—", "Removed by product decision (2026-11-24)"],
+
   // §4 design system & roles
   "DS-*": ["done", S],
   "DS-07": ["done", S, "High-contrast preference applies a contrast token set; not independently audited"],
@@ -29,7 +44,6 @@ export const status = {
   "AUTH-02": ["done", "e2e"],
   "AUTH-03": ["done", "e2e"],
   "AUTH-06": ["done", "e2e", "Demo OTP 123456"],
-  "AUTH-17": ["done", "e2e"],
   "AUTH-24": ["done", "e2e"],
   "AUTH-25": ["done", "unit+e2e"],
   "AUTH-28": ["done", "e2e"],
@@ -83,7 +97,6 @@ export const status = {
   "TCH-*": ["done", S],
   "TCH-08": ["done", "e2e"],
   "TCH-22": ["done", "e2e"],
-  "INST-*": ["done", S],
   "INST-11": ["done", "e2e"],
 
   // §30–§42 admin

@@ -22,14 +22,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import type { AuditLog, ConsentRecord, ContentReport, ModerationCase, PrivacyRequest, SystemConfig } from "@/contracts";
+import type { AuditLog, ContentReport, ModerationCase, PrivacyRequest, SystemConfig } from "@/contracts";
 import { useCan } from "@/hooks/use-auth";
 import { useFormat, useL } from "@/i18n";
 import { PERMISSIONS, type PermissionMatrix } from "@/lib/auth/permissions";
 import { USER_ROLES } from "@/types";
 import { audit, auditRepo, moderationRepo, securityService } from "@/services/admin.service";
 import { nowIso } from "@/services/core/mock-runtime";
-import { consentRepo, privacyRequestsRepo } from "@/services/people.service";
+import { privacyRequestsRepo } from "@/services/people.service";
 import { reportsRepo } from "@/services/question.service";
 import { ROLE_LABEL } from "./admin-people";
 import { ConfirmAction, KeyValue } from "./admin-shared";
@@ -52,13 +52,12 @@ export function AdminModeration() {
   const l = useL();
   return (
     <>
-      <PageHeader title={l("মডারেশন", "Moderation")} description={l("ব্যবহারকারী ও AI রিপোর্ট, সংবেদনশীল কনটেন্ট, গোপনীয়তা ও ডেটা মুছে ফেলার অনুরোধ, অভিভাবক সম্মতি যাচাই", "User and AI reports, sensitive content, privacy and data-deletion requests, guardian consent review")} />
+      <PageHeader title={l("মডারেশন", "Moderation")} description={l("ব্যবহারকারী ও AI রিপোর্ট, সংবেদনশীল কনটেন্ট, গোপনীয়তা ও ডেটা মুছে ফেলার অনুরোধ", "User and AI reports, sensitive content, privacy and data-deletion requests")} />
       <Tabs defaultValue="queue">
         <TabsList className="flex-wrap">
           <TabsTrigger value="queue">{l("মডারেশন কিউ", "Moderation queue")}</TabsTrigger>
           <TabsTrigger value="reports">{l("কনটেন্ট রিপোর্ট", "Content reports")}</TabsTrigger>
           <TabsTrigger value="privacy">{l("গোপনীয়তা অনুরোধ", "Privacy requests")}</TabsTrigger>
-          <TabsTrigger value="consent">{l("অভিভাবক সম্মতি", "Guardian consent")}</TabsTrigger>
         </TabsList>
         <TabsContent value="queue" className="mt-4">
           <ModerationQueue />
@@ -68,9 +67,6 @@ export function AdminModeration() {
         </TabsContent>
         <TabsContent value="privacy" className="mt-4">
           <PrivacyRequests />
-        </TabsContent>
-        <TabsContent value="consent" className="mt-4">
-          <ConsentReview />
         </TabsContent>
       </Tabs>
     </>
@@ -283,53 +279,6 @@ function PrivacyRequests() {
         );
       })}
       <p className="text-xs text-muted-foreground">{l("ফ্রন্টএন্ড সিমুলেশন — প্রকৃত ডেটা রপ্তানি/মুছে ফেলা ব্যাকএন্ড নিয়ন্ত্রণ ও আইনি পর্যালোচনা ছাড়া হয় না।", "Frontend simulation — real export/deletion requires backend controls and legal review.")}</p>
-    </div>
-  );
-}
-
-function ConsentReview() {
-  const l = useL();
-  const f = useFormat();
-  const actor = useActor();
-  const qc = useQueryClient();
-  const recs = useQuery({ queryKey: ["consentRecords"], queryFn: () => consentRepo.all() });
-  const set = useMutation({
-    mutationFn: async ({ r, status }: { r: ConsentRecord; status: ConsentRecord["status"] }) => {
-      await consentRepo.update(r.id, { status, updatedAt: nowIso() });
-      await audit(actor, "account", "consent.review", { type: "consent", id: r.studentId, label: `${r.studentName} → ${status}` });
-    },
-    onSuccess: () => (toast.success(l("সম্মতি হালনাগাদ", "Consent updated")), void qc.invalidateQueries({ queryKey: ["consentRecords"] })),
-  });
-  if (recs.isPending) return <Skeleton className="h-40" />;
-  return (
-    <div className="space-y-2">
-      {(recs.data ?? []).map((r) => (
-        <Card key={r.id}>
-          <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6 text-sm">
-            <div>
-              <div className="font-medium">
-                {r.studentName} ← {r.guardianName}
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {r.method} · {r.guardianContact.replace(/(.{3}).+(.{2})/, "$1•••$2")} · {l("পরিধি:", "Scope:")} {r.scope.join(", ")} · {f.date(r.updatedAt)}
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant={r.status === "granted" ? "secondary" : r.status === "pending" ? "outline" : "destructive"}>{r.status}</Badge>
-              {r.status === "pending" && (
-                <>
-                  <Button size="sm" variant="outline" className="text-destructive" onClick={() => set.mutate({ r, status: "rejected" })}>
-                    {l("প্রত্যাখ্যান", "Reject")}
-                  </Button>
-                  <Button size="sm" onClick={() => set.mutate({ r, status: "granted" })}>
-                    {l("যাচাই ও অনুমোদন", "Verify & grant")}
-                  </Button>
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
     </div>
   );
 }
@@ -649,10 +598,6 @@ function SystemConfigForm() {
                   <SelectItem value="en">English</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="cfg-age">{l("সম্মতি ছাড়া ন্যূনতম বয়স", "Min age without consent")}</Label>
-              <Input id="cfg-age" type="number" value={d.minAgeWithoutConsent} onChange={(e) => setD({ ...d, minAgeWithoutConsent: Number(e.target.value) })} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="cfg-up">{l("সর্বোচ্চ আপলোড (MB)", "Max upload (MB)")}</Label>

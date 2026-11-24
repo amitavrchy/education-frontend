@@ -199,9 +199,8 @@ export function ConsentScreen() {
   const items = [
     [l("আমরা কী সংগ্রহ করি", "What we collect"), l("নাম, শ্রেণি, পড়াশোনার অগ্রগতি, পরীক্ষার ফল এবং AI টিউটরের সাথে কথোপকথন (আপনি চাইলে বন্ধ করতে পারেন)।", "Name, class, study progress, exam results and AI tutor conversations (you can turn history off).")],
     [l("কেন সংগ্রহ করি", "Why"), l("ব্যক্তিগত স্টাডি প্ল্যান, দুর্বলতা শনাক্তকরণ ও উৎসসহ উত্তর দেওয়ার জন্য।", "To personalise your study plan, detect weak areas and give sourced answers.")],
-    [l("কে দেখতে পায়", "Who can see it"), l("আপনি। অভিভাবক ও প্রতিষ্ঠান শুধু আপনার অনুমতি দেওয়া তথ্য দেখতে পায়। AI কথোপকথন ডিফল্টভাবে গোপন।", "You. Guardians and institutions only see what you allow. AI conversations are private by default.")],
+    [l("কে দেখতে পায়", "Who can see it"), l("আপনি। অভিভাবক শুধু আপনার অনুমতি দেওয়া তথ্য দেখতে পান। AI কথোপকথন ডিফল্টভাবে গোপন।", "You. Guardians only see what you allow. AI conversations are private by default.")],
     [l("আপনার নিয়ন্ত্রণ", "Your controls"), l("সেটিংস থেকে ডেটা ডাউনলোড, শেয়ারিং পরিবর্তন বা অ্যাকাউন্ট মুছে ফেলার অনুরোধ করা যায়।", "Download your data, change sharing or request deletion from Settings.")],
-    [l("১৮ বছরের কম", "Under 18"), l("অভিভাবকের সম্মতি প্রয়োজন। সম্মতি না পাওয়া পর্যন্ত শেয়ারিং বন্ধ থাকে।", "Guardian consent is required. Sharing stays off until consent is given.")],
   ];
   return (
     <AuthCard title={t("auth.consentTitle")} subtitle={t("auth.consentSubtitle")}>

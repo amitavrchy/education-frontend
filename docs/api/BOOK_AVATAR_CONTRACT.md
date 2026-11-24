@@ -20,10 +20,7 @@ API only exchanges text, so a server TTS/STT can replace the browser's later wit
 2. The server creates the book's avatar from defaults (status `draft` until the book is published). This step
    is idempotent.
 3. The admin edits the avatar's appearance, voice, persona, greeting and scope, then activates it.
-4. Students can see the avatar when all of these are true:
-   - the book is `published`,
-   - the avatar is `active`,
-   - the student's institution has not disabled it.
+4. Students can see the avatar when the book is `published` and the avatar is `active`.
 
 ## Endpoints
 
@@ -42,7 +39,6 @@ API only exchanges text, so a server TTS/STT can replace the browser's later wit
 | Report answer | `POST /avatar-messages/:id/report { reason }` | `AvatarReport` |
 | Reports (admin/teacher) | `GET /avatar-reports?status=&bookId=` | `AvatarReport[]` |
 | Resolve report | `PATCH /avatar-reports/:id { status, resolution }` | `AvatarReport` |
-| Institution availability | `GET` and `PUT /institutions/:id/avatar-availability { disabledAvatarIds }` | same |
 | Parent usage (counts only) | `GET /guardian/children/:id/avatar-usage` | `{ sessions, questions, minutes, byBook[] }` |
 
 ## `AvatarAnswer`

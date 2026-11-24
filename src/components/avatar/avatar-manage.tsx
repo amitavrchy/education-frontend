@@ -5,7 +5,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { CheckCircle2, Clock, Loader2, MessageSquare, Mic, Play, Save, Send, Square, ThumbsDown, ThumbsUp, Users, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/common/page-header";
 import { StatCard } from "@/components/common/stat-card";
@@ -27,7 +27,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import type { AvatarAppearance, AvatarReport, Book, BookAvatar } from "@/contracts";
-import { useCurrentUser } from "@/hooks/use-auth";
+
 import { useCurriculum } from "@/hooks/use-curriculum";
 import { useFormat, useL } from "@/i18n";
 import { errorText } from "@/lib/errors";
@@ -612,75 +612,6 @@ export function TeacherAvatars() {
         </TabsContent>
       </Tabs>
       {open && <AvatarEditor row={open} readOnly onClose={() => setOpen(null)} />}
-    </>
-  );
-}
-
-// =====================================================================================
-// Institution: choose which avatars the institution's students can use
-// =====================================================================================
-
-export function InstitutionAvatars() {
-  const l = useL();
-  const f = useFormat();
-  const user = useCurrentUser();
-  const actor = useActor();
-  const qc = useQueryClient();
-  const instId = user?.institutionId ?? "inst-1";
-  const rows = useAvatarRows();
-  const avail = useQuery({ queryKey: ["avatars", "institution", instId], queryFn: () => avatarService.institutionAvailability(instId) });
-  const [disabled, setDisabled] = useState<string[] | null>(null);
-  useEffect(() => {
-    if (avail.data && disabled === null) setDisabled(avail.data.disabledAvatarIds);
-  }, [avail.data, disabled]);
-  const save = useMutation({
-    mutationFn: async () => {
-      await avatarService.setInstitutionAvailability(instId, disabled ?? []);
-      await audit(actor, "content", "book_avatar.institution_availability", { type: "institution", id: instId, label: l(`${(disabled ?? []).length}টি বন্ধ`, `${(disabled ?? []).length} disabled`) });
-    },
-    onSuccess: () => (toast.success(l("সংরক্ষিত — শিক্ষার্থীদের তালিকা হালনাগাদ হয়েছে", "Saved — students' list updated")), void qc.invalidateQueries({ queryKey: ["avatars"] })),
-  });
-  const list = (rows.data ?? []).filter((r) => r.book?.status === "published" && r.avatar.status === "active");
-  const dirty = JSON.stringify(disabled) !== JSON.stringify(avail.data?.disabledAvatarIds);
-  return (
-    <>
-      <PageHeader
-        title={l("অ্যাভাটার শিক্ষক — প্রতিষ্ঠান", "Avatar teachers — institution")}
-        description={l("আপনার প্রতিষ্ঠানের শিক্ষার্থীরা কোন বইয়ের অ্যাভাটার শিক্ষক ব্যবহার করতে পারবে তা নির্ধারণ করুন।", "Choose which book avatar teachers your institution's students can use.")}
-        actions={
-          <Button disabled={!dirty || save.isPending} onClick={() => save.mutate()}>
-            {save.isPending ? <Loader2 className="animate-spin" /> : <Save />} {l("সংরক্ষণ", "Save")}
-          </Button>
-        }
-      />
-      <div className="mb-4 grid gap-3 sm:grid-cols-3">
-        <StatCard label={l("উপলব্ধ অ্যাভাটার", "Available avatars")} value={f.digits(list.length - (disabled?.length ?? 0))} tone="success" />
-        <StatCard label={l("বন্ধ করা", "Turned off")} value={f.digits(disabled?.length ?? 0)} tone="warning" />
-        <StatCard label={l("প্ল্যাটফর্মে মোট প্রশ্ন", "Questions on platform")} value={f.number(list.reduce((s, r) => s + r.avatar.stats.questions, 0))} tone="info" />
-      </div>
-      {rows.isPending || disabled === null ? (
-        <Skeleton className="h-60" />
-      ) : (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {list.map((r) => {
-            const on = !disabled.includes(r.avatar.id);
-            return (
-              <Card key={r.avatar.id} className={cn(!on && "opacity-60")}>
-                <CardContent className="flex items-center gap-3 pt-6">
-                  <span className="size-14 shrink-0 overflow-hidden rounded-full border" style={{ background: r.avatar.appearance.background }}>
-                    <TeacherAvatar appearance={r.avatar.appearance} size={56} />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate font-medium">{f.pick(r.avatar.name)}</div>
-                    <div className="truncate text-xs text-muted-foreground">{f.pick(r.book?.title)}</div>
-                  </div>
-                  <Switch checked={on} onCheckedChange={(v) => setDisabled(v ? disabled.filter((x) => x !== r.avatar.id) : [...disabled, r.avatar.id])} aria-label={`${f.pick(r.avatar.name)} ${on ? l("চালু", "on") : l("বন্ধ", "off")}`} />
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
     </>
   );
 }

@@ -36,7 +36,7 @@ const FAQ: { topic: (typeof TOPICS)[number]["id"]; q: [string, string]; a: [stri
   { topic: "billing", q: ["কীভাবে প্ল্যান বাতিল করব?", "How do I cancel my plan?"], a: ["সাবস্ক্রিপশন পাতায় 'সাবস্ক্রিপশন বাতিল' চাপো। মেয়াদ শেষ পর্যন্ত সব ফিচার থাকবে।", "Use 'Cancel subscription' on the Subscription page. You keep features until the period ends."] },
   { topic: "billing", q: ["রিফান্ড কীভাবে পাব?", "How do I get a refund?"], a: ["বিলিং ইতিহাসে পেমেন্টের পাশে 'রিফান্ড' চাপো। সাপোর্ট টিম পর্যালোচনা করবে। (ডেমোতে কোনো আসল টাকা নেই।)", "Click 'Refund' next to the payment in billing history. Support will review it. (No real money in the demo.)"] },
   { topic: "privacy", q: ["আমার ডেটা কীভাবে মুছব?", "How do I delete my data?"], a: ["সেটিংস → অ্যাকাউন্ট ও ডেটা থেকে মুছে ফেলার অনুরোধ করো। ৩০ দিনের মধ্যে বাতিল করা যায়।", "Request deletion in Settings → Account & data. You can cancel within 30 days."] },
-  { topic: "privacy", q: ["১৮ বছরের নিচে হলে কী লাগবে?", "What if I'm under 18?"], a: ["অভিভাবকের সম্মতি প্রয়োজন। নিবন্ধনের সময় অভিভাবকের নম্বরে OTP পাঠানো হয়।", "Guardian consent is required. An OTP is sent to your guardian during sign-up."] },
+  { topic: "privacy", q: ["১৮ বছরের নিচে হলে কী লাগবে?", "What if I'm under 18?"], a: ["কিছু লাগবে না — যেকোনো বয়সের শিক্ষার্থী অভিভাবকের অনুমতি ছাড়াই অ্যাকাউন্ট খুলতে পারে।", "Nothing extra — students of any age can sign up without guardian permission."] },
   { topic: "offline", q: ["ইন্টারনেট ছাড়া কী কী ব্যবহার করা যাবে?", "What works without internet?"], a: ["ডাউনলোড করা বই, নোট, ফ্ল্যাশকার্ড ও কুইজ। AI টিউটর ও সিঙ্কের জন্য ইন্টারনেট লাগে।", "Downloaded books, notes, flashcards and quizzes. The AI tutor and sync need internet."] },
 ];
 

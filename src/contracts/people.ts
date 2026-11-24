@@ -16,7 +16,6 @@ export interface UserAccount extends Timestamps {
   studentIds: string[];
   planCode?: string;
   lastActiveAt?: string;
-  consent: "not_required" | "pending" | "granted" | "withdrawn";
   supportTickets: { id: string; subject: string; status: "open" | "resolved"; at: string }[];
   onboarded: boolean;
   /** Synthetic demo records only. */
@@ -65,11 +64,10 @@ export interface StudentProfile extends Timestamps {
     shareProgressWithGuardian: boolean;
     shareScoresWithGuardian: boolean;
     shareConversationsWithGuardian: boolean;
-    shareWithInstitution: boolean;
     showOnLeaderboard: boolean;
     dataRetentionMonths: number;
   };
-  guardian?: { id: string; name: string; relation: string; consent: "pending" | "granted" | "withdrawn" };
+  guardian?: { id: string; name: string; relation: string };
   age?: number;
 }
 

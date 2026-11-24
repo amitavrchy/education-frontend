@@ -17,10 +17,9 @@ export const seedPlans = (): Plan[] => [
   { id: "plan-free", code: "free", name: bi("ফ্রি", "Free"), description: bi("শুরু করার জন্য প্রয়োজনীয় সব", "Everything you need to get started"), priceMonthly: 0, priceYearly: 0, features: [bi("দৈনিক ২০টি AI প্রশ্ন", "20 AI questions a day"), bi("প্রশ্ন ব্যাংক ও অনুশীলন", "Question bank & practice"), bi("৩টি অফলাইন ডাউনলোড", "3 offline downloads")], limits: PLAN_LIMITS.free, trialDays: 0, active: true, highlighted: false, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
   { id: "plan-pro", code: "pro", name: bi("স্টুডেন্ট প্রো", "Student Pro"), description: bi("পূর্ণ প্রস্তুতির জন্য সব ফিচার", "Every feature for full exam prep"), priceMonthly: 299, priceYearly: 2990, features: [bi("দৈনিক ৩০০টি AI প্রশ্ন", "300 AI questions a day"), bi("মাসে ৩০০ মিনিট ভয়েস টিউটর", "300 voice-tutor minutes a month"), bi("হাতের লেখা মূল্যায়ন", "Handwriting evaluation"), bi("৫০টি অফলাইন ডাউনলোড", "50 offline downloads")], limits: PLAN_LIMITS.pro, trialDays: 7, active: true, highlighted: true, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
   { id: "plan-family", code: "family", name: bi("ফ্যামিলি", "Family"), description: bi("৪ জন শিক্ষার্থী + অভিভাবক ড্যাশবোর্ড", "4 students + guardian dashboard"), priceMonthly: 699, priceYearly: 6990, features: [bi("৪টি শিক্ষার্থী অ্যাকাউন্ট", "4 student accounts"), bi("প্রো-এর সব ফিচার", "All Pro features"), bi("অভিভাবক রিপোর্ট", "Guardian reports")], limits: PLAN_LIMITS.family, trialDays: 7, active: true, highlighted: false, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
-  { id: "plan-institution", code: "institution", name: bi("প্রতিষ্ঠান", "Institution"), description: bi("স্কুল ও কলেজের জন্য — প্রতি শিক্ষার্থী মূল্য", "For schools and colleges — priced per student"), priceMonthly: 79, priceYearly: 790, features: [bi("প্রতিষ্ঠান পোর্টাল", "Institution portal"), bi("শিক্ষক ও শ্রেণি ব্যবস্থাপনা", "Teacher & class management"), bi("বিশ্লেষণ ও রিপোর্ট", "Analytics & reports")], limits: PLAN_LIMITS.institution, trialDays: 30, active: true, highlighted: false, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
 ];
 
-const PRICE: Record<PlanCode, { monthly: number; yearly: number }> = { free: { monthly: 0, yearly: 0 }, pro: { monthly: 299, yearly: 2990 }, family: { monthly: 699, yearly: 6990 }, institution: { monthly: 79, yearly: 790 } };
+const PRICE: Record<PlanCode, { monthly: number; yearly: number }> = { free: { monthly: 0, yearly: 0 }, pro: { monthly: 299, yearly: 2990 }, family: { monthly: 699, yearly: 6990 } };
 const METHODS: Payment["method"][] = ["bkash_mock", "nagad_mock", "card_mock", "bank_mock"];
 
 function seedSubscriptions(): Subscription[] {
@@ -78,7 +77,7 @@ function seedPayments(): Payment[] {
 const seedCoupons = (): Coupon[] => [
   { id: "cp-1", code: "SSC2027", description: "SSC ২০২৭ পরীক্ষার্থীদের জন্য ২০% ছাড় (ডেমো)", percentOff: 20, planCodes: ["pro", "family"], validUntil: daysFromNow(60), maxRedemptions: 500, redeemed: 132, active: true, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
   { id: "cp-2", code: "WELCOME50", description: "প্রথম মাসে ৳৫০ ছাড় (ডেমো)", amountOff: 50, planCodes: ["pro"], validUntil: daysFromNow(15), maxRedemptions: 1000, redeemed: 871, active: true, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
-  { id: "cp-3", code: "SCHOOL30", description: "প্রতিষ্ঠানের জন্য ৩০% ছাড় (ডেমো)", percentOff: 30, planCodes: ["institution"], validUntil: daysFromNow(120), maxRedemptions: 50, redeemed: 9, active: true, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
+  { id: "cp-3", code: "FAMILY30", description: "ফ্যামিলি প্ল্যানে ৩০% ছাড় (ডেমো)", percentOff: 30, planCodes: ["family"], validUntil: daysFromNow(120), maxRedemptions: 50, redeemed: 9, active: true, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
   { id: "cp-4", code: "EID2026", description: "ঈদ অফার — মেয়াদোত্তীর্ণ (ডেমো)", percentOff: 25, planCodes: ["pro", "family"], validUntil: daysFromNow(-20), maxRedemptions: 300, redeemed: 300, active: false, createdAt: SEED_EPOCH, updatedAt: SEED_EPOCH },
 ];
 
