@@ -368,7 +368,7 @@ export function TutorPage() {
                 aria-label={l("বার্তা লিখুন", "Write a message")}
                 disabled={!online}
               />
-              <Button type="submit" size="icon-lg" disabled={!input.trim() || send.isPending || !online || (remaining !== null && remaining <= 0)} aria-label={l("পাঠান", "Send")}>
+              <Button type="submit" size="icon-lg" disabled={!input.trim() || send.isPending || !online || profile.isPending || (remaining !== null && remaining <= 0)} aria-label={l("পাঠান", "Send")}>
                 {send.isPending ? <Loader2 className="animate-spin" /> : <Send />}
               </Button>
             </form>

@@ -16,7 +16,9 @@ export const defaultContext = (patch: Partial<TutorContext> = {}): TutorContext 
   curriculumVersionId: CURRENT_VERSION_ID,
   language: "bn",
   mode: "simple",
-  ...patch,
+  // Undefined values (e.g. a profile that is still loading) must not erase the defaults —
+  // an undefined curriculum version makes retrieval reject every passage.
+  ...(Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined)) as Partial<TutorContext>),
 });
 
 function seedConversations(studentId: string): { conversations: Conversation[]; messages: ChatMessage[]; folders: ConversationFolder[] } {

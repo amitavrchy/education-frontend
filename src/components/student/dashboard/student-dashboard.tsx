@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { usePreferencesStore } from "@/stores/preferences-store";
 import { useDashboardData } from "./use-dashboard-data";
 import { WIDGETS } from "./widgets";
+import { useNow } from "@/hooks/use-now";
 
 function greeting(l: (bn: string, en: string) => string) {
   const h = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: "Asia/Dhaka" }).format(new Date()));
@@ -36,10 +37,11 @@ export function StudentDashboard() {
   const setPref = usePreferencesStore((s) => s.set);
   const [customizing, setCustomizing] = useState(false);
 
+  const now = useNow();
   const order = useMemo(() => resolveOrder(savedOrder, WIDGETS.map((w) => w.id)), [savedOrder]);
   const visible = order.map((id) => WIDGETS.find((w) => w.id === id)!).filter((w) => !hidden.includes(w.id));
   const firstName = (d.profile.data?.name || user?.name || "").split(" ")[0];
-  const examDays = d.profile.data ? Math.ceil((new Date(d.profile.data.targetExamDate).getTime() - Date.now()) / 864e5) : null;
+  const examDays = d.profile.data ? Math.ceil((new Date(d.profile.data.targetExamDate).getTime() - now) / 864e5) : null;
 
   const move = (id: string, dir: -1 | 1) => {
     const i = order.indexOf(id);

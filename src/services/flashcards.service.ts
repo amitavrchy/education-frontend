@@ -10,6 +10,9 @@ import { registerSearchProvider, scoreText } from "./search.service";
 
 export type Rating = "again" | "hard" | "medium" | "easy";
 
+/** Upper bound so repeated "easy" ratings cannot overflow the due date. */
+export const MAX_INTERVAL_DAYS = 365;
+
 /**
  * SM-2-lite scheduling (FC-13): ease 1.3–2.8; "again" resets, others grow the interval.
  * Pure so it is unit-tested.
@@ -25,7 +28,7 @@ export function schedule(card: Pick<Flashcard, "ease" | "intervalDays" | "repeti
     const q = { hard: 3, medium: 4, easy: 5 }[rating];
     ease = Math.min(2.8, Math.max(1.3, ease + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02))));
     repetitions += 1;
-    intervalDays = repetitions === 1 ? (rating === "easy" ? 3 : 1) : repetitions === 2 ? (rating === "hard" ? 3 : 6) : Math.round(intervalDays * ease * (rating === "hard" ? 0.8 : rating === "easy" ? 1.3 : 1));
+    intervalDays = repetitions === 1 ? (rating === "easy" ? 3 : 1) : repetitions === 2 ? (rating === "hard" ? 3 : 6) : Math.min(MAX_INTERVAL_DAYS, Math.round(intervalDays * ease * (rating === "hard" ? 0.8 : rating === "easy" ? 1.3 : 1)));
   }
   const due = new Date(now);
   if (intervalDays === 0) due.setMinutes(due.getMinutes() + 10);

@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { dateKey } from "@/mock-data/utils";
 import { addDays, CalendarView, ListView, TimelineView, WeekBoard } from "./planner-views";
 import { CompleteTaskDialog, TaskDetailDialog, TaskFormDialog } from "./task-dialogs";
+import { useNow } from "@/hooks/use-now";
 
 type View = "calendar" | "board" | "timeline" | "list";
 
@@ -49,11 +50,12 @@ export function PlannerPage() {
   const today = dateKey(0);
   const subjectIds = useMemo(() => [...(profile.data?.subjectIds ?? []), ...(profile.data?.optionalSubjectIds ?? [])], [profile.data]);
 
+  const now = useNow();
   const all = tasks.data ?? [];
   const missed = all.filter((t) => t.status === "missed");
   const todayTasks = all.filter((t) => t.date === today);
   const examDate = settings.data?.examDate;
-  const daysToExam = examDate ? Math.ceil((new Date(examDate).getTime() - Date.now()) / 864e5) : null;
+  const daysToExam = examDate ? Math.ceil((new Date(examDate).getTime() - now) / 864e5) : null;
 
   const move = (id: string, date: string, start?: string) => {
     const t = all.find((x) => x.id === id);

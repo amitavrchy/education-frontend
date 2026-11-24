@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useNow } from "@/hooks/use-now";
 import { useCurriculum } from "@/hooks/use-curriculum";
 import { useActivity, useChapterProgress, useGamification, useMastery } from "@/hooks/use-progress";
 import { useStudentId, useStudentProfile } from "@/hooks/use-student";
@@ -12,6 +13,7 @@ import { studyPlannerService } from "@/services/study-planner.service";
 
 /** Derived, shared dashboard data (each widget still owns its own query for independent states). */
 export function useDashboardData() {
+  const now = useNow();
   const studentId = useStudentId();
   const profile = useStudentProfile();
   const { index: cur } = useCurriculum();
@@ -73,13 +75,13 @@ export function useDashboardData() {
 
   /** Revision: completed chapters not touched for a week, oldest first. */
   const revisionDue = useMemo(() => {
-    const cutoff = Date.now() - 7 * 864e5;
+    const cutoff = now - 7 * 864e5;
     return (chapters.data ?? [])
       .filter((c) => c.status === "completed" && new Date(c.lastStudiedAt ?? c.completedAt ?? 0).getTime() < cutoff)
       .sort((a, b) => (a.lastStudiedAt ?? "").localeCompare(b.lastStudiedAt ?? ""));
-  }, [chapters.data]);
+  }, [chapters.data, now]);
 
-  const dueCards = useMemo(() => (cards.data ?? []).filter((c) => new Date(c.dueAt).getTime() <= Date.now()).length, [cards.data]);
+  const dueCards = useMemo(() => (cards.data ?? []).filter((c) => new Date(c.dueAt).getTime() <= now).length, [cards.data, now]);
 
   const upcomingTasks = useMemo(
     () =>
@@ -90,12 +92,11 @@ export function useDashboardData() {
   );
 
   const upcomingExams = useMemo(() => {
-    const now = Date.now();
     const doneExamIds = new Set((attempts.data ?? []).filter((a) => a.status !== "in_progress").map((a) => a.examId));
     return (exams.data ?? [])
       .filter((e) => (e.kind === "institution" || e.kind === "teacher_assigned") && e.status !== "archived" && !doneExamIds.has(e.id) && (!e.closesAt || new Date(e.closesAt).getTime() > now))
       .sort((a, b) => (a.scheduledAt ?? "").localeCompare(b.scheduledAt ?? ""));
-  }, [exams.data, attempts.data]);
+  }, [exams.data, attempts.data, now]);
 
   return {
     studentId,

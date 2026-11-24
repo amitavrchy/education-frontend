@@ -218,6 +218,13 @@ function Player({ lesson, progress, queue, onEnded, onRemoveFromQueue, onClose }
 
   // Speak the current segment whenever it changes during playback.
   const spokenSeg = useRef<number | null>(null);
+  const finish = () => {
+    setPlaying(false);
+    setPos(lesson.durationSec);
+    void audioService.complete(studentId, lesson, Math.round(listened.current / 60)).then(() => qc.invalidateQueries({ queryKey: ["audio", studentId] }));
+    onEnded();
+  };
+
   useEffect(() => {
     if (!playing) {
       tts.cancel();
@@ -235,12 +242,6 @@ function Player({ lesson, progress, queue, onEnded, onRemoveFromQueue, onClose }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, segIndex]);
 
-  const finish = () => {
-    setPlaying(false);
-    setPos(lesson.durationSec);
-    void audioService.complete(studentId, lesson, Math.round(listened.current / 60)).then(() => qc.invalidateQueries({ queryKey: ["audio", studentId] }));
-    onEnded();
-  };
   useEffect(() => {
     if (!tts.supported && playing && pos >= lesson.durationSec) finish();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -248,7 +249,9 @@ function Player({ lesson, progress, queue, onEnded, onRemoveFromQueue, onClose }
 
   // Persist position every 5 s of playback and on unmount.
   const posRef = useRef(pos);
-  posRef.current = pos;
+  useEffect(() => {
+    posRef.current = pos;
+  }, [pos]);
   useEffect(() => {
     if (!playing) return;
     const t = window.setInterval(() => void save({ positionSec: Math.round(posRef.current) }), 5000);

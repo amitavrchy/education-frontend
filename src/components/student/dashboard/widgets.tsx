@@ -56,6 +56,7 @@ import { levelFor } from "@/services/progress.service";
 import { tutorService } from "@/services/tutor.service";
 import { usageService } from "@/services/usage.service";
 import type { DashboardData } from "./use-dashboard-data";
+import { useNow } from "@/hooks/use-now";
 
 type L = (bn: string, en: string) => string;
 
@@ -308,6 +309,7 @@ function ContinueLearning({ d }: { d: DashboardData }) {
 }
 
 function UpcomingExams({ d }: { d: DashboardData }) {
+  const now = useNow();
   const l = useL();
   const f = useFormat();
   const router = useRouter();
@@ -321,7 +323,7 @@ function UpcomingExams({ d }: { d: DashboardData }) {
       ) : (
         <ul className="space-y-2">
           {d.upcomingExams.slice(0, 3).map((e) => {
-            const open = !e.scheduledAt || new Date(e.scheduledAt).getTime() <= Date.now();
+            const open = !e.scheduledAt || new Date(e.scheduledAt).getTime() <= now;
             return (
               <li key={e.id} className="flex items-center gap-3 rounded-lg border p-3">
                 <div className="min-w-0 flex-1">

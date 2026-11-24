@@ -193,9 +193,11 @@ export function createMockRepository<T extends Entity>(options: MockRepositoryOp
     async create(input) {
       await mockRequest(latency);
       const stamp = nowIso();
+      const given = input as { createdAt?: string; updatedAt?: string };
       const item = {
-        ...(timestamps ? { createdAt: stamp, updatedAt: stamp } : {}),
         ...input,
+        // Blank timestamps from form defaults must not override the stamp.
+        ...(timestamps ? { createdAt: given.createdAt || stamp, updatedAt: given.updatedAt || stamp } : {}),
         id: input.id ?? newId(idPrefix),
       } as unknown as T;
       await writeAll([item, ...(await load())]);
