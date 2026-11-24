@@ -137,6 +137,16 @@ export interface MockRepositoryOptions<T> {
   latency?: number;
   /** Stamp createdAt/updatedAt automatically when the entity has those fields. */
   timestamps?: boolean;
+  /**
+   * REST path used when NEXT_PUBLIC_USE_MOCK_API=false. Defaults to `/<collection-in-kebab-case>`
+   * (`examAttempts:u-1` → `/exam-attempts/u-1`). See docs/architecture/BACKEND_INTEGRATION_PLAN.md.
+   */
+  apiPath?: string;
+}
+
+/** `examAttempts:u-1` → `/exam-attempts/u-1` */
+export function defaultApiPath(collection: string): string {
+  return "/" + collection.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase().replace(/:/g, "/");
 }
 
 export function createMockRepository<T extends Entity>(options: MockRepositoryOptions<T>): Repository<T> & {
@@ -154,6 +164,19 @@ export function createMockRepository<T extends Entity>(options: MockRepositoryOp
     latency = 200,
     timestamps = true,
   } = options;
+
+  // Single switch point: with the mock API disabled every repository becomes a REST adapter with
+  // the same interface, so services and UI need no changes.
+  if (!env.NEXT_PUBLIC_USE_MOCK_API) {
+    const api = createApiRepository<T>(options.apiPath ?? defaultApiPath(collection));
+    return {
+      ...api,
+      raw: () => api.all(),
+      replaceAll: async () => {
+        throw new Error(`replaceAll(${collection}) is mock-only — implement a dedicated server endpoint`);
+      },
+    };
+  }
 
   const load = () => getCollection<T>(collection, seed);
 

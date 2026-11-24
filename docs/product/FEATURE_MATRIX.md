@@ -11,13 +11,13 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | Status | Count |
 | --- | --- |
-| ✅ Done | 0 |
-| 🟨 Partial | 0 |
-| ⬜ Todo | 1087 |
+| ✅ Done | 1084 |
+| 🟨 Partial | 3 |
+| ⬜ Todo | 0 |
 | ⛔ Blocked | 0 |
 | **Total** | **1087** |
 
-## §4 Design system & UI states (0/20)
+## §4 Design system & UI states (20/20)
 
 - **Roles:** All
 - **Flutter:** Mirrored in Flutter repo
@@ -26,28 +26,28 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| DS-01 | Color palette & semantic tokens (light/dark) | `src/components/**` | ⬜ Todo | — |
-| DS-02 | Typography (Inter + Hind Siliguri, Bangla readability) | `src/components/**` | ⬜ Todo | — |
-| DS-03 | Spacing / radius / elevation tokens | `src/components/**` | ⬜ Todo | — |
-| DS-04 | Light mode | `src/components/**` | ⬜ Todo | — |
-| DS-05 | Dark mode | `src/components/**` | ⬜ Todo | — |
-| DS-06 | System theme | `src/components/**` | ⬜ Todo | — |
-| DS-07 | High-contrast mode | `src/components/**` | ⬜ Todo | — |
-| DS-08 | Persistent appearance settings | `src/components/**` | ⬜ Todo | — |
-| DS-09 | Responsive layouts (desktop/laptop/tablet/mobile) | `src/components/**` | ⬜ Todo | — |
-| DS-10 | Student sidebar + top search + AI quick launch + notifications + profile menu | `src/components/**` | ⬜ Todo | — |
-| DS-11 | Student subject navigation & breadcrumbs | `src/components/**` | ⬜ Todo | — |
-| DS-12 | Student mobile bottom navigation | `src/components/**` | ⬜ Todo | — |
-| DS-13 | Admin collapsible sidebar, role-aware nav, global search, quick actions | `src/components/**` | ⬜ Todo | — |
-| DS-14 | Filtering toolbar & responsive tables | `src/components/**` | ⬜ Todo | — |
-| DS-15 | Empty / error / loading / skeleton state components | `src/components/**` | ⬜ Todo | — |
-| DS-16 | Permission-denied state | `src/components/**` | ⬜ Todo | — |
-| DS-17 | Offline / connectivity warning | `src/components/**` | ⬜ Todo | — |
-| DS-18 | Chart styles (themed Recharts) | `src/components/**` | ⬜ Todo | — |
-| DS-19 | Restrained motion + reduced-motion support | `src/components/**` | ⬜ Todo | — |
-| DS-20 | Central brand config (name/logo/colors) | `src/components/**` | ⬜ Todo | — |
+| DS-01 | Color palette & semantic tokens (light/dark) | `src/components/**` | ✅ Done | smoke |
+| DS-02 | Typography (Inter + Hind Siliguri, Bangla readability) | `src/components/**` | ✅ Done | smoke |
+| DS-03 | Spacing / radius / elevation tokens | `src/components/**` | ✅ Done | smoke |
+| DS-04 | Light mode | `src/components/**` | ✅ Done | smoke |
+| DS-05 | Dark mode | `src/components/**` | ✅ Done | smoke |
+| DS-06 | System theme | `src/components/**` | ✅ Done | smoke |
+| DS-07 | High-contrast mode <br><sub>High-contrast preference applies a contrast token set; not independently audited</sub> | `src/components/**` | ✅ Done | smoke |
+| DS-08 | Persistent appearance settings | `src/components/**` | ✅ Done | smoke |
+| DS-09 | Responsive layouts (desktop/laptop/tablet/mobile) | `src/components/**` | ✅ Done | smoke |
+| DS-10 | Student sidebar + top search + AI quick launch + notifications + profile menu | `src/components/**` | ✅ Done | smoke |
+| DS-11 | Student subject navigation & breadcrumbs | `src/components/**` | ✅ Done | smoke |
+| DS-12 | Student mobile bottom navigation | `src/components/**` | ✅ Done | smoke |
+| DS-13 | Admin collapsible sidebar, role-aware nav, global search, quick actions | `src/components/**` | ✅ Done | smoke |
+| DS-14 | Filtering toolbar & responsive tables | `src/components/**` | ✅ Done | smoke |
+| DS-15 | Empty / error / loading / skeleton state components | `src/components/**` | ✅ Done | smoke |
+| DS-16 | Permission-denied state | `src/components/**` | ✅ Done | smoke |
+| DS-17 | Offline / connectivity warning | `src/components/**` | ✅ Done | smoke |
+| DS-18 | Chart styles (themed Recharts) | `src/components/**` | ✅ Done | smoke |
+| DS-19 | Restrained motion + reduced-motion support <br><sub>prefers-reduced-motion respected; marketing + tutor demos verified</sub> | `src/components/**` | ✅ Done | e2e |
+| DS-20 | Central brand config (name/logo/colors) | `src/components/**` | ✅ Done | smoke |
 
-## §5 User roles & permissions (0/14)
+## §5 User roles & permissions (14/14)
 
 - **Roles:** All 10 roles
 - **Flutter:** Role access matrix documented
@@ -56,22 +56,22 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| ROLE-01 | Student role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-02 | Parent/Guardian role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-03 | Teacher role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-04 | Content Reviewer role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-05 | Content Manager role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-06 | School Administrator role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-07 | College Administrator role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-08 | Customer Support role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-09 | Platform Administrator role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-10 | Super Administrator role experience | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-11 | Role-specific navigation & dashboards | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-12 | Permission-based route guards | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-13 | Per-role profile, settings & notifications | `src/lib/auth/permissions.ts` | ⬜ Todo | — |
-| ROLE-14 | Demo role switcher (dev only, labeled) | `/login + user menu` | ⬜ Todo | — |
+| ROLE-01 | Student role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-02 | Parent/Guardian role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-03 | Teacher role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-04 | Content Reviewer role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-05 | Content Manager role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-06 | School Administrator role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-07 | College Administrator role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-08 | Customer Support role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-09 | Platform Administrator role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-10 | Super Administrator role experience | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-11 | Role-specific navigation & dashboards | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-12 | Permission-based route guards <br><sub>Client-side guard only; real enforcement must be server-side</sub> | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-13 | Per-role profile, settings & notifications | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
+| ROLE-14 | Demo role switcher (dev only, labeled) | `/login + user menu` | ✅ Done | unit+e2e |
 
-## §6 Authentication & onboarding (0/29)
+## §6 Authentication & onboarding (29/29)
 
 - **Roles:** Guest, Student, Parent
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -80,37 +80,37 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| AUTH-01 | Welcome screen | `/welcome` | ⬜ Todo | — |
-| AUTH-02 | Login | `/login` | ⬜ Todo | — |
-| AUTH-03 | Signup | `/register` | ⬜ Todo | — |
-| AUTH-04 | Email login | `/login` | ⬜ Todo | — |
-| AUTH-05 | Phone login | `/login` | ⬜ Todo | — |
-| AUTH-06 | Mock OTP verification | `/verify-otp` | ⬜ Todo | — |
-| AUTH-07 | Password recovery UI | `/forgot-password` | ⬜ Todo | — |
-| AUTH-08 | Reset password UI | `/reset-password` | ⬜ Todo | — |
-| AUTH-09 | Remember session | `/login` | ⬜ Todo | — |
-| AUTH-10 | Logout | `user menu` | ⬜ Todo | — |
-| AUTH-11 | Session expiration simulation | `/session-expired` | ⬜ Todo | — |
-| AUTH-12 | Account deletion request | `/student/settings?tab=account` | ⬜ Todo | — |
-| AUTH-13 | Profile editing | `/student/settings` | ⬜ Todo | — |
-| AUTH-14 | Avatar upload | `/student/settings` | ⬜ Todo | — |
-| AUTH-15 | Language selection | `/welcome + settings` | ⬜ Todo | — |
-| AUTH-16 | Consent & privacy screens | `/consent` | ⬜ Todo | — |
-| AUTH-17 | Guardian consent workflow | `/consent/guardian` | ⬜ Todo | — |
-| AUTH-18 | Onboarding: name, class, SSC/HSC, board, group, version | `/onboarding` | ⬜ Todo | — |
-| AUTH-19 | Onboarding: academic year, curriculum version, exam year, institution | `/onboarding` | ⬜ Todo | — |
-| AUTH-20 | Onboarding: subjects, optional subjects, target GPA | `/onboarding` | ⬜ Todo | — |
-| AUTH-21 | Onboarding: weak subjects & weak chapters | `/onboarding` | ⬜ Todo | — |
-| AUTH-22 | Onboarding: daily time, schedule, target exam date | `/onboarding` | ⬜ Todo | — |
-| AUTH-23 | Onboarding: preferred language & learning preferences | `/onboarding` | ⬜ Todo | — |
-| AUTH-24 | Wizard progress indicator & prev/next | `/onboarding` | ⬜ Todo | — |
-| AUTH-25 | Wizard validation | `/onboarding` | ⬜ Todo | — |
-| AUTH-26 | Wizard save & resume | `/onboarding` | ⬜ Todo | — |
-| AUTH-27 | Wizard review screen | `/onboarding` | ⬜ Todo | — |
-| AUTH-28 | Completion animation | `/onboarding` | ⬜ Todo | — |
-| AUTH-29 | Personalized dashboard introduction | `/student/dashboard` | ⬜ Todo | — |
+| AUTH-01 | Welcome screen | `/welcome` | ✅ Done | smoke |
+| AUTH-02 | Login | `/login` | ✅ Done | e2e |
+| AUTH-03 | Signup | `/register` | ✅ Done | e2e |
+| AUTH-04 | Email login | `/login` | ✅ Done | smoke |
+| AUTH-05 | Phone login | `/login` | ✅ Done | smoke |
+| AUTH-06 | Mock OTP verification <br><sub>Demo OTP 123456</sub> | `/verify-otp` | ✅ Done | e2e |
+| AUTH-07 | Password recovery UI | `/forgot-password` | ✅ Done | smoke |
+| AUTH-08 | Reset password UI | `/reset-password` | ✅ Done | smoke |
+| AUTH-09 | Remember session | `/login` | ✅ Done | smoke |
+| AUTH-10 | Logout | `user menu` | ✅ Done | smoke |
+| AUTH-11 | Session expiration simulation | `/session-expired` | ✅ Done | smoke |
+| AUTH-12 | Account deletion request | `/student/settings?tab=account` | ✅ Done | smoke |
+| AUTH-13 | Profile editing | `/student/settings` | ✅ Done | smoke |
+| AUTH-14 | Avatar upload | `/student/settings` | ✅ Done | smoke |
+| AUTH-15 | Language selection | `/welcome + settings` | ✅ Done | smoke |
+| AUTH-16 | Consent & privacy screens | `/consent` | ✅ Done | smoke |
+| AUTH-17 | Guardian consent workflow | `/consent/guardian` | ✅ Done | e2e |
+| AUTH-18 | Onboarding: name, class, SSC/HSC, board, group, version | `/onboarding` | ✅ Done | smoke |
+| AUTH-19 | Onboarding: academic year, curriculum version, exam year, institution | `/onboarding` | ✅ Done | smoke |
+| AUTH-20 | Onboarding: subjects, optional subjects, target GPA | `/onboarding` | ✅ Done | smoke |
+| AUTH-21 | Onboarding: weak subjects & weak chapters | `/onboarding` | ✅ Done | smoke |
+| AUTH-22 | Onboarding: daily time, schedule, target exam date | `/onboarding` | ✅ Done | smoke |
+| AUTH-23 | Onboarding: preferred language & learning preferences | `/onboarding` | ✅ Done | smoke |
+| AUTH-24 | Wizard progress indicator & prev/next | `/onboarding` | ✅ Done | e2e |
+| AUTH-25 | Wizard validation | `/onboarding` | ✅ Done | unit+e2e |
+| AUTH-26 | Wizard save & resume | `/onboarding` | ✅ Done | smoke |
+| AUTH-27 | Wizard review screen | `/onboarding` | ✅ Done | smoke |
+| AUTH-28 | Completion animation | `/onboarding` | ✅ Done | e2e |
+| AUTH-29 | Personalized dashboard introduction | `/student/dashboard` | ✅ Done | smoke |
 
-## §7 Student dashboard (0/25)
+## §7 Student dashboard (25/25)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -119,33 +119,33 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| DASH-01 | Personalized greeting | `/student/dashboard` | ⬜ Todo | — |
-| DASH-02 | Today's learning goal | `/student/dashboard` | ⬜ Todo | — |
-| DASH-03 | Weekly study progress chart | `/student/dashboard` | ⬜ Todo | — |
-| DASH-04 | Study streak | `/student/dashboard` | ⬜ Todo | — |
-| DASH-05 | Daily recommended chapters | `/student/dashboard` | ⬜ Todo | — |
-| DASH-06 | Continue learning | `/student/dashboard` | ⬜ Todo | — |
-| DASH-07 | Upcoming exams | `/student/dashboard` | ⬜ Todo | — |
-| DASH-08 | Quick AI tutor | `/student/dashboard` | ⬜ Todo | — |
-| DASH-09 | Recent conversations | `/student/dashboard` | ⬜ Todo | — |
-| DASH-10 | Weak topic alerts | `/student/dashboard` | ⬜ Todo | — |
-| DASH-11 | Revision reminders | `/student/dashboard` | ⬜ Todo | — |
-| DASH-12 | Upcoming study sessions | `/student/dashboard` | ⬜ Todo | — |
-| DASH-13 | Subject performance | `/student/dashboard` | ⬜ Todo | — |
-| DASH-14 | Chapter completion | `/student/dashboard` | ⬜ Todo | — |
-| DASH-15 | Daily quiz | `/student/dashboard` | ⬜ Todo | — |
-| DASH-16 | Saved questions | `/student/dashboard` | ⬜ Todo | — |
-| DASH-17 | Recommended model tests | `/student/dashboard` | ⬜ Todo | — |
-| DASH-18 | Learning achievements | `/student/dashboard` | ⬜ Todo | — |
-| DASH-19 | Latest verified educational notices | `/student/dashboard` | ⬜ Todo | — |
-| DASH-20 | Subscription status | `/student/dashboard` | ⬜ Todo | — |
-| DASH-21 | Study calendar | `/student/dashboard` | ⬜ Todo | — |
-| DASH-22 | Notification center widget | `/student/dashboard` | ⬜ Todo | — |
-| DASH-23 | Recent resources | `/student/dashboard` | ⬜ Todo | — |
-| DASH-24 | Today's learning summary | `/student/dashboard` | ⬜ Todo | — |
-| DASH-25 | Customize / reorder / hide widgets (persisted) | `/student/dashboard` | ⬜ Todo | — |
+| DASH-01 | Personalized greeting | `/student/dashboard` | ✅ Done | smoke |
+| DASH-02 | Today's learning goal | `/student/dashboard` | ✅ Done | smoke |
+| DASH-03 | Weekly study progress chart | `/student/dashboard` | ✅ Done | smoke |
+| DASH-04 | Study streak | `/student/dashboard` | ✅ Done | smoke |
+| DASH-05 | Daily recommended chapters | `/student/dashboard` | ✅ Done | smoke |
+| DASH-06 | Continue learning | `/student/dashboard` | ✅ Done | smoke |
+| DASH-07 | Upcoming exams | `/student/dashboard` | ✅ Done | smoke |
+| DASH-08 | Quick AI tutor | `/student/dashboard` | ✅ Done | smoke |
+| DASH-09 | Recent conversations | `/student/dashboard` | ✅ Done | smoke |
+| DASH-10 | Weak topic alerts | `/student/dashboard` | ✅ Done | smoke |
+| DASH-11 | Revision reminders | `/student/dashboard` | ✅ Done | smoke |
+| DASH-12 | Upcoming study sessions | `/student/dashboard` | ✅ Done | smoke |
+| DASH-13 | Subject performance | `/student/dashboard` | ✅ Done | smoke |
+| DASH-14 | Chapter completion | `/student/dashboard` | ✅ Done | smoke |
+| DASH-15 | Daily quiz | `/student/dashboard` | ✅ Done | smoke |
+| DASH-16 | Saved questions | `/student/dashboard` | ✅ Done | smoke |
+| DASH-17 | Recommended model tests | `/student/dashboard` | ✅ Done | smoke |
+| DASH-18 | Learning achievements | `/student/dashboard` | ✅ Done | smoke |
+| DASH-19 | Latest verified educational notices | `/student/dashboard` | ✅ Done | smoke |
+| DASH-20 | Subscription status | `/student/dashboard` | ✅ Done | smoke |
+| DASH-21 | Study calendar | `/student/dashboard` | ✅ Done | smoke |
+| DASH-22 | Notification center widget | `/student/dashboard` | ✅ Done | smoke |
+| DASH-23 | Recent resources | `/student/dashboard` | ✅ Done | smoke |
+| DASH-24 | Today's learning summary | `/student/dashboard` | ✅ Done | smoke |
+| DASH-25 | Customize / reorder / hide widgets (persisted) | `/student/dashboard` | ✅ Done | smoke |
 
-## §8 AI private tutor (0/61)
+## §8 AI private tutor (61/61)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -154,69 +154,69 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| TUT-01 | New conversation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-02 | Conversation history | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-03 | Conversation search | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-04 | Rename conversation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-05 | Delete conversation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-06 | Pin conversation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-07 | Archive conversation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-08 | Conversation folders | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-09 | Subject-based grouping | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-10 | Chapter-based grouping | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-11 | Message timestamps | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-12 | Markdown rendering | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-13 | Mathematical equations (KaTeX) | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-14 | Code blocks | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-15 | Educational tables | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-16 | Structured explanations | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-17 | Copy message | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-18 | Regenerate message | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-19 | Edit message | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-20 | Follow-up suggestions | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-21 | Export conversation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-22 | Bookmark answers | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-23 | Conversation → notes | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-24 | Conversation → quiz | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-25 | Conversation → flashcards | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-26 | Share conversation (private by default) | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-27 | Answer feedback (helpful/unhelpful) | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-28 | Report incorrect answer | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-29 | Context: level, class, subject, paper, chapter, topic | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-30 | Context: curriculum version, language, teaching mode | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-31 | Active context display | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-32 | Context switch changes retrieval & explanation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-33 | Mode: Simple explanation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-34 | Mode: Private tutor / Socratic | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-35 | Mode: Board exam answer | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-36 | Mode: Quick revision | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-37 | Mode: Step-by-step solver | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-38 | Mode: Deep concept | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-39 | Mode: Practice question | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-40 | Mode: Oral examination | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-41 | Mode: Formula explanation | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-42 | Mode: English speaking coach | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-43 | Source references (book, chapter, page) | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-44 | Related questions | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-45 | Verification / confidence indicators | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-46 | Difficulty adjustment | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-47 | Examples & analogies | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-48 | Quick practice suggestions | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-49 | Mock RAG retrieval layer | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-50 | Source viewer with highlighted excerpt | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-51 | Verified / partial / general / unavailable / simulated labels | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-52 | Low-confidence answer UI | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-53 | Missing knowledge base content UI | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-54 | Conflicting sources UI | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-55 | Old curriculum warning | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-56 | Request teacher review | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-57 | Answer correction history | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-58 | Academic integrity reminder | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-59 | Safe & age-appropriate interaction messages | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-60 | Scenario responses across 12+ subjects | `/student/ai-tutor` | ⬜ Todo | — |
-| TUT-61 | Simulated streaming text | `/student/ai-tutor` | ⬜ Todo | — |
+| TUT-01 | New conversation | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-02 | Conversation history | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-03 | Conversation search | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-04 | Rename conversation | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-05 | Delete conversation | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-06 | Pin conversation | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-07 | Archive conversation | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-08 | Conversation folders | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-09 | Subject-based grouping | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-10 | Chapter-based grouping | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-11 | Message timestamps | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-12 | Markdown rendering | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-13 | Mathematical equations (KaTeX) | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-14 | Code blocks | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-15 | Educational tables | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-16 | Structured explanations | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-17 | Copy message | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-18 | Regenerate message | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-19 | Edit message | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-20 | Follow-up suggestions | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-21 | Export conversation | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-22 | Bookmark answers | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-23 | Conversation → notes | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-24 | Conversation → quiz | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-25 | Conversation → flashcards | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-26 | Share conversation (private by default) | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-27 | Answer feedback (helpful/unhelpful) | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-28 | Report incorrect answer | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-29 | Context: level, class, subject, paper, chapter, topic | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-30 | Context: curriculum version, language, teaching mode | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-31 | Active context display | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-32 | Context switch changes retrieval & explanation | `/student/ai-tutor` | ✅ Done | unit |
+| TUT-33 | Mode: Simple explanation | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-34 | Mode: Private tutor / Socratic | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-35 | Mode: Board exam answer | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-36 | Mode: Quick revision | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-37 | Mode: Step-by-step solver | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-38 | Mode: Deep concept | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-39 | Mode: Practice question | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-40 | Mode: Oral examination | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-41 | Mode: Formula explanation | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-42 | Mode: English speaking coach | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-43 | Source references (book, chapter, page) | `/student/ai-tutor` | ✅ Done | e2e |
+| TUT-44 | Related questions | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-45 | Verification / confidence indicators | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-46 | Difficulty adjustment | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-47 | Examples & analogies | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-48 | Quick practice suggestions | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-49 | Mock RAG retrieval layer <br><sub>Fixed 2026-11-24: first question on a fresh profile lost citations</sub> | `/student/ai-tutor` | ✅ Done | unit |
+| TUT-50 | Source viewer with highlighted excerpt | `/student/ai-tutor` | ✅ Done | e2e |
+| TUT-51 | Verified / partial / general / unavailable / simulated labels | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-52 | Low-confidence answer UI | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-53 | Missing knowledge base content UI | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-54 | Conflicting sources UI | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-55 | Old curriculum warning | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-56 | Request teacher review | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-57 | Answer correction history | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-58 | Academic integrity reminder | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-59 | Safe & age-appropriate interaction messages | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-60 | Scenario responses across 12+ subjects | `/student/ai-tutor` | ✅ Done | smoke |
+| TUT-61 | Simulated streaming text | `/student/ai-tutor` | ✅ Done | smoke |
 
-## §9 Voice AI tutor (0/30)
+## §9 Voice AI tutor (30/30)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -225,38 +225,38 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| VOICE-01 | Start voice session | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-02 | End voice session | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-03 | Pause / resume | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-04 | Push-to-talk | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-05 | Hands-free mode | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-06 | Microphone permission flow | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-07 | Microphone selection | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-08 | Speaking indicator | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-09 | Listening indicator | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-10 | Processing indicator | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-11 | Audio waveform visualization | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-12 | Live transcript | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-13 | Student speech bubbles | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-14 | AI speech bubbles | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-15 | Text + voice sync | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-16 | Interrupt AI speaking | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-17 | Playback speed | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-18 | Voice selection | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-19 | Bangla voice | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-20 | English voice | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-21 | Mixed Bangla-English | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-22 | Oral exam mode | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-23 | Conversation → notes | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-24 | Conversation → summary | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-25 | Conversation → flashcards | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-26 | Save conversation | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-27 | Voice usage limits | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-28 | Network quality indicator | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-29 | Audio permission error | `/student/voice-tutor` | ⬜ Todo | — |
-| VOICE-30 | Voice session history | `/student/voice-tutor` | ⬜ Todo | — |
+| VOICE-01 | Start voice session <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-02 | End voice session <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-03 | Pause / resume <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-04 | Push-to-talk <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-05 | Hands-free mode <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-06 | Microphone permission flow <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-07 | Microphone selection <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-08 | Speaking indicator <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-09 | Listening indicator <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-10 | Processing indicator <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-11 | Audio waveform visualization <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-12 | Live transcript <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-13 | Student speech bubbles <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-14 | AI speech bubbles <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-15 | Text + voice sync <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-16 | Interrupt AI speaking <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-17 | Playback speed <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-18 | Voice selection <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-19 | Bangla voice <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-20 | English voice <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-21 | Mixed Bangla-English <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-22 | Oral exam mode <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-23 | Conversation → notes <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-24 | Conversation → summary <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-25 | Conversation → flashcards <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-26 | Save conversation <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-27 | Voice usage limits <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-28 | Network quality indicator <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-29 | Audio permission error <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
+| VOICE-30 | Voice session history <br><sub>Speech recognition/synthesis use device APIs where available; AI replies are scripted</sub> | `/student/voice-tutor` | ✅ Done | smoke |
 
-## §10 Image question solver (0/20)
+## §10 Image question solver (20/20)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -265,28 +265,28 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| IMG-01 | Capture photo (camera input) | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-02 | Upload image | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-03 | Image preview | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-04 | Crop | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-05 | Rotate | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-06 | Retake | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-07 | Multiple image selection | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-08 | File validation | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-09 | Simulated OCR processing | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-10 | Extracted question display | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-11 | Correct OCR text | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-12 | Subject detection | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-13 | Chapter selection | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-14 | Request solution | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-15 | Step-by-step answer | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-16 | Explanation | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-17 | Save to notes | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-18 | Add to practice list | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-19 | Report OCR error | `/student/photo-solver` | ⬜ Todo | — |
-| IMG-20 | Fixtures: Math, Physics, Chemistry, Biology, Bangla, English | `/student/photo-solver` | ⬜ Todo | — |
+| IMG-01 | Capture photo (camera input) <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-02 | Upload image <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-03 | Image preview <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-04 | Crop <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-05 | Rotate <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-06 | Retake <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-07 | Multiple image selection <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-08 | File validation <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-09 | Simulated OCR processing <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-10 | Extracted question display <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-11 | Correct OCR text <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-12 | Subject detection <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-13 | Chapter selection <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-14 | Request solution <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-15 | Step-by-step answer <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-16 | Explanation <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-17 | Save to notes <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-18 | Add to practice list <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-19 | Report OCR error <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
+| IMG-20 | Fixtures: Math, Physics, Chemistry, Biology, Bangla, English <br><sub>OCR is simulated with deterministic fixtures</sub> | `/student/photo-solver` | ✅ Done | smoke |
 
-## §11 Curriculum & subject explorer (0/22)
+## §11 Curriculum & subject explorer (22/22)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -295,30 +295,30 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| CUR-01 | Hierarchy browser (level → outcome) | `/student/curriculum` | ⬜ Todo | — |
-| CUR-02 | Subject catalog | `/student/curriculum` | ⬜ Todo | — |
-| CUR-03 | Subject overview | `/student/curriculum/[subjectId]` | ⬜ Todo | — |
-| CUR-04 | Chapter listing | `/student/curriculum/[subjectId]` | ⬜ Todo | — |
-| CUR-05 | Chapter detail | `/student/curriculum/[subjectId]/[chapterId]` | ⬜ Todo | — |
-| CUR-06 | Topic listing | `/student/curriculum` | ⬜ Todo | — |
-| CUR-07 | Learning objectives | `/student/curriculum` | ⬜ Todo | — |
-| CUR-08 | Chapter description | `/student/curriculum` | ⬜ Todo | — |
-| CUR-09 | Estimated study duration | `/student/curriculum` | ⬜ Todo | — |
-| CUR-10 | Prerequisites | `/student/curriculum` | ⬜ Todo | — |
-| CUR-11 | Difficulty | `/student/curriculum` | ⬜ Todo | — |
-| CUR-12 | Completion progress | `/student/curriculum` | ⬜ Todo | — |
-| CUR-13 | Resource counts | `/student/curriculum` | ⬜ Todo | — |
-| CUR-14 | Question counts | `/student/curriculum` | ⬜ Todo | — |
-| CUR-15 | Examination relevance | `/student/curriculum` | ⬜ Todo | — |
-| CUR-16 | AI tutor shortcuts | `/student/curriculum` | ⬜ Todo | — |
-| CUR-17 | Start learning | `/student/curriculum` | ⬜ Todo | — |
-| CUR-18 | Resume learning | `/student/curriculum` | ⬜ Todo | — |
-| CUR-19 | Mark completed | `/student/curriculum` | ⬜ Todo | — |
-| CUR-20 | Learning history | `/student/curriculum` | ⬜ Todo | — |
-| CUR-21 | Subject-specific iconography | `/student/curriculum` | ⬜ Todo | — |
-| CUR-22 | Distinct seeded content per subject | `/student/curriculum` | ⬜ Todo | — |
+| CUR-01 | Hierarchy browser (level → outcome) | `/student/curriculum` | ✅ Done | smoke |
+| CUR-02 | Subject catalog | `/student/curriculum` | ✅ Done | smoke |
+| CUR-03 | Subject overview | `/student/curriculum/[subjectId]` | ✅ Done | smoke |
+| CUR-04 | Chapter listing | `/student/curriculum/[subjectId]` | ✅ Done | smoke |
+| CUR-05 | Chapter detail | `/student/curriculum/[subjectId]/[chapterId]` | ✅ Done | smoke |
+| CUR-06 | Topic listing | `/student/curriculum` | ✅ Done | smoke |
+| CUR-07 | Learning objectives | `/student/curriculum` | ✅ Done | smoke |
+| CUR-08 | Chapter description | `/student/curriculum` | ✅ Done | smoke |
+| CUR-09 | Estimated study duration | `/student/curriculum` | ✅ Done | smoke |
+| CUR-10 | Prerequisites | `/student/curriculum` | ✅ Done | smoke |
+| CUR-11 | Difficulty | `/student/curriculum` | ✅ Done | smoke |
+| CUR-12 | Completion progress | `/student/curriculum` | ✅ Done | smoke |
+| CUR-13 | Resource counts | `/student/curriculum` | ✅ Done | smoke |
+| CUR-14 | Question counts | `/student/curriculum` | ✅ Done | smoke |
+| CUR-15 | Examination relevance | `/student/curriculum` | ✅ Done | smoke |
+| CUR-16 | AI tutor shortcuts | `/student/curriculum` | ✅ Done | smoke |
+| CUR-17 | Start learning | `/student/curriculum` | ✅ Done | smoke |
+| CUR-18 | Resume learning | `/student/curriculum` | ✅ Done | smoke |
+| CUR-19 | Mark completed | `/student/curriculum` | ✅ Done | smoke |
+| CUR-20 | Learning history | `/student/curriculum` | ✅ Done | smoke |
+| CUR-21 | Subject-specific iconography | `/student/curriculum` | ✅ Done | smoke |
+| CUR-22 | Distinct seeded content per subject | `/student/curriculum` | ✅ Done | smoke |
 
-## §12 Digital textbook library (0/27)
+## §12 Digital textbook library (27/27)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -327,35 +327,35 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| LIB-01 | Browse textbooks | `/student/library` | ⬜ Todo | — |
-| LIB-02 | Search textbooks | `/student/library` | ⬜ Todo | — |
-| LIB-03 | Filter by class | `/student/library` | ⬜ Todo | — |
-| LIB-04 | Filter by subject | `/student/library` | ⬜ Todo | — |
-| LIB-05 | Filter by curriculum | `/student/library` | ⬜ Todo | — |
-| LIB-06 | Filter by language | `/student/library` | ⬜ Todo | — |
-| LIB-07 | Filter by academic year | `/student/library` | ⬜ Todo | — |
-| LIB-08 | Book detail page | `/student/library/[bookId]` | ⬜ Todo | — |
-| LIB-09 | Book cover | `/student/library` | ⬜ Todo | — |
-| LIB-10 | PDF viewer (PDF.js) | `/student/library/[bookId]/read` | ⬜ Todo | — |
-| LIB-11 | Chapter navigation | `/student/library` | ⬜ Todo | — |
-| LIB-12 | Table of contents | `/student/library` | ⬜ Todo | — |
-| LIB-13 | Page navigation | `/student/library` | ⬜ Todo | — |
-| LIB-14 | Page zoom | `/student/library` | ⬜ Todo | — |
-| LIB-15 | Bookmarks | `/student/library` | ⬜ Todo | — |
-| LIB-16 | Reading history | `/student/library` | ⬜ Todo | — |
-| LIB-17 | Continue reading | `/student/library` | ⬜ Todo | — |
-| LIB-18 | Notes attached to pages | `/student/library` | ⬜ Todo | — |
-| LIB-19 | Text highlights | `/student/library` | ⬜ Todo | — |
-| LIB-20 | AI explanation from selected passage | `/student/library` | ⬜ Todo | — |
-| LIB-21 | Ask AI about page | `/student/library` | ⬜ Todo | — |
-| LIB-22 | Related questions | `/student/library` | ⬜ Todo | — |
-| LIB-23 | Related notes | `/student/library` | ⬜ Todo | — |
-| LIB-24 | Chapter resources | `/student/library` | ⬜ Todo | — |
-| LIB-25 | Download UI by content permission | `/student/library` | ⬜ Todo | — |
-| LIB-26 | Offline availability indicator | `/student/library` | ⬜ Todo | — |
-| LIB-27 | Textbook version warnings | `/student/library` | ⬜ Todo | — |
+| LIB-01 | Browse textbooks <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-02 | Search textbooks <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-03 | Filter by class <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-04 | Filter by subject <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-05 | Filter by curriculum <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-06 | Filter by language <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-07 | Filter by academic year <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-08 | Book detail page <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library/[bookId]` | ✅ Done | smoke |
+| LIB-09 | Book cover <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-10 | PDF viewer (PDF.js) <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library/[bookId]/read` | ✅ Done | smoke |
+| LIB-11 | Chapter navigation <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-12 | Table of contents <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-13 | Page navigation <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-14 | Page zoom <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-15 | Bookmarks <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-16 | Reading history <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-17 | Continue reading <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-18 | Notes attached to pages <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-19 | Text highlights <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-20 | AI explanation from selected passage <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-21 | Ask AI about page <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-22 | Related questions <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-23 | Related notes <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-24 | Chapter resources <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-25 | Download UI by content permission <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-26 | Offline availability indicator <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
+| LIB-27 | Textbook version warnings <br><sub>Sample PDFs via `npm run pdf:samples`</sub> | `/student/library` | ✅ Done | smoke |
 
-## §13 Chapter-based question bank (0/49)
+## §13 Chapter-based question bank (49/49)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -364,57 +364,57 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| QB-01 | Type: MCQ | `/student/questions` | ⬜ Todo | — |
-| QB-02 | Type: Short answer | `/student/questions` | ⬜ Todo | — |
-| QB-03 | Type: Descriptive | `/student/questions` | ⬜ Todo | — |
-| QB-04 | Type: Creative (CQ ক/খ/গ/ঘ) | `/student/questions` | ⬜ Todo | — |
-| QB-05 | Type: Numerical | `/student/questions` | ⬜ Todo | — |
-| QB-06 | Type: Mathematical proof | `/student/questions` | ⬜ Todo | — |
-| QB-07 | Type: True/false | `/student/questions` | ⬜ Todo | — |
-| QB-08 | Type: Fill in the blanks | `/student/questions` | ⬜ Todo | — |
-| QB-09 | Type: Matching | `/student/questions` | ⬜ Todo | — |
-| QB-10 | Type: Definition | `/student/questions` | ⬜ Todo | — |
-| QB-11 | Type: Formula-based | `/student/questions` | ⬜ Todo | — |
-| QB-12 | Type: Diagram-related | `/student/questions` | ⬜ Todo | — |
-| QB-13 | Type: Case-based | `/student/questions` | ⬜ Todo | — |
-| QB-14 | Type: Passage-based | `/student/questions` | ⬜ Todo | — |
-| QB-15 | Type: Practical/theoretical | `/student/questions` | ⬜ Todo | — |
-| QB-16 | Browse by class | `/student/questions` | ⬜ Todo | — |
-| QB-17 | Browse by subject | `/student/questions` | ⬜ Todo | — |
-| QB-18 | Browse by chapter | `/student/questions` | ⬜ Todo | — |
-| QB-19 | Browse by topic | `/student/questions` | ⬜ Todo | — |
-| QB-20 | Browse by learning outcome | `/student/questions` | ⬜ Todo | — |
-| QB-21 | Search | `/student/questions` | ⬜ Todo | — |
-| QB-22 | Difficulty filter | `/student/questions` | ⬜ Todo | — |
-| QB-23 | Question type filter | `/student/questions` | ⬜ Todo | — |
-| QB-24 | Source filter | `/student/questions` | ⬜ Todo | — |
-| QB-25 | Year filter | `/student/questions` | ⬜ Todo | — |
-| QB-26 | Board filter | `/student/questions` | ⬜ Todo | — |
-| QB-27 | Marks filter | `/student/questions` | ⬜ Todo | — |
-| QB-28 | Verified status filter | `/student/questions` | ⬜ Todo | — |
-| QB-29 | Exam relevance filter | `/student/questions` | ⬜ Todo | — |
-| QB-30 | Sort: recent | `/student/questions` | ⬜ Todo | — |
-| QB-31 | Sort: difficulty | `/student/questions` | ⬜ Todo | — |
-| QB-32 | Sort: historical frequency | `/student/questions` | ⬜ Todo | — |
-| QB-33 | Related questions | `/student/questions` | ⬜ Todo | — |
-| QB-34 | Similar questions | `/student/questions` | ⬜ Todo | — |
-| QB-35 | Answer reveal | `/student/questions` | ⬜ Todo | — |
-| QB-36 | Detailed explanation | `/student/questions` | ⬜ Todo | — |
-| QB-37 | Step-by-step solution | `/student/questions` | ⬜ Todo | — |
-| QB-38 | Mark correct / incorrect | `/student/questions` | ⬜ Todo | — |
-| QB-39 | Bookmark question | `/student/questions` | ⬜ Todo | — |
-| QB-40 | Add to personal practice set | `/student/practice` | ⬜ Todo | — |
-| QB-41 | Report incorrect question | `/student/questions` | ⬜ Todo | — |
-| QB-42 | Copy question | `/student/questions` | ⬜ Todo | — |
-| QB-43 | Print view | `/student/questions` | ⬜ Todo | — |
-| QB-44 | Export permitted content | `/student/questions` | ⬜ Todo | — |
-| QB-45 | Practice history | `/student/practice` | ⬜ Todo | — |
-| QB-46 | Reattempt incorrect questions | `/student/practice` | ⬜ Todo | — |
-| QB-47 | Topic coverage indicator | `/student/questions` | ⬜ Todo | — |
-| QB-48 | Answer UI: math, tables, images/diagrams, steps, rubric, multiple methods, citations | `/student/questions` | ⬜ Todo | — |
-| QB-49 | Large library performance (virtualized list) | `/student/questions` | ⬜ Todo | — |
+| QB-01 | Type: MCQ | `/student/questions` | ✅ Done | smoke |
+| QB-02 | Type: Short answer | `/student/questions` | ✅ Done | smoke |
+| QB-03 | Type: Descriptive | `/student/questions` | ✅ Done | smoke |
+| QB-04 | Type: Creative (CQ ক/খ/গ/ঘ) | `/student/questions` | ✅ Done | smoke |
+| QB-05 | Type: Numerical | `/student/questions` | ✅ Done | smoke |
+| QB-06 | Type: Mathematical proof | `/student/questions` | ✅ Done | smoke |
+| QB-07 | Type: True/false | `/student/questions` | ✅ Done | smoke |
+| QB-08 | Type: Fill in the blanks | `/student/questions` | ✅ Done | smoke |
+| QB-09 | Type: Matching | `/student/questions` | ✅ Done | smoke |
+| QB-10 | Type: Definition | `/student/questions` | ✅ Done | smoke |
+| QB-11 | Type: Formula-based | `/student/questions` | ✅ Done | smoke |
+| QB-12 | Type: Diagram-related | `/student/questions` | ✅ Done | smoke |
+| QB-13 | Type: Case-based | `/student/questions` | ✅ Done | smoke |
+| QB-14 | Type: Passage-based | `/student/questions` | ✅ Done | smoke |
+| QB-15 | Type: Practical/theoretical | `/student/questions` | ✅ Done | smoke |
+| QB-16 | Browse by class | `/student/questions` | ✅ Done | smoke |
+| QB-17 | Browse by subject | `/student/questions` | ✅ Done | smoke |
+| QB-18 | Browse by chapter | `/student/questions` | ✅ Done | smoke |
+| QB-19 | Browse by topic | `/student/questions` | ✅ Done | smoke |
+| QB-20 | Browse by learning outcome | `/student/questions` | ✅ Done | smoke |
+| QB-21 | Search | `/student/questions` | ✅ Done | unit |
+| QB-22 | Difficulty filter | `/student/questions` | ✅ Done | unit |
+| QB-23 | Question type filter | `/student/questions` | ✅ Done | unit |
+| QB-24 | Source filter | `/student/questions` | ✅ Done | smoke |
+| QB-25 | Year filter | `/student/questions` | ✅ Done | smoke |
+| QB-26 | Board filter | `/student/questions` | ✅ Done | smoke |
+| QB-27 | Marks filter | `/student/questions` | ✅ Done | smoke |
+| QB-28 | Verified status filter | `/student/questions` | ✅ Done | smoke |
+| QB-29 | Exam relevance filter | `/student/questions` | ✅ Done | smoke |
+| QB-30 | Sort: recent | `/student/questions` | ✅ Done | smoke |
+| QB-31 | Sort: difficulty | `/student/questions` | ✅ Done | smoke |
+| QB-32 | Sort: historical frequency | `/student/questions` | ✅ Done | smoke |
+| QB-33 | Related questions | `/student/questions` | ✅ Done | smoke |
+| QB-34 | Similar questions | `/student/questions` | ✅ Done | smoke |
+| QB-35 | Answer reveal | `/student/questions` | ✅ Done | smoke |
+| QB-36 | Detailed explanation | `/student/questions` | ✅ Done | smoke |
+| QB-37 | Step-by-step solution | `/student/questions` | ✅ Done | smoke |
+| QB-38 | Mark correct / incorrect | `/student/questions` | ✅ Done | smoke |
+| QB-39 | Bookmark question | `/student/questions` | ✅ Done | e2e |
+| QB-40 | Add to personal practice set | `/student/practice` | ✅ Done | smoke |
+| QB-41 | Report incorrect question | `/student/questions` | ✅ Done | smoke |
+| QB-42 | Copy question | `/student/questions` | ✅ Done | smoke |
+| QB-43 | Print view | `/student/questions` | ✅ Done | smoke |
+| QB-44 | Export permitted content | `/student/questions` | ✅ Done | smoke |
+| QB-45 | Practice history | `/student/practice` | ✅ Done | smoke |
+| QB-46 | Reattempt incorrect questions | `/student/practice` | ✅ Done | smoke |
+| QB-47 | Topic coverage indicator | `/student/questions` | ✅ Done | smoke |
+| QB-48 | Answer UI: math, tables, images/diagrams, steps, rubric, multiple methods, citations | `/student/questions` | ✅ Done | smoke |
+| QB-49 | Large library performance (virtualized list) | `/student/questions` | ✅ Done | smoke |
 
-## §14 Ten-year board question archive (0/27)
+## §14 Ten-year board question archive (27/27)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -423,35 +423,35 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| BRD-01 | SSC/HSC selection | `/student/board-questions` | ⬜ Todo | — |
-| BRD-02 | Board selection (9 general boards, extensible) | `/student/board-questions` | ⬜ Todo | — |
-| BRD-03 | Year selection | `/student/board-questions` | ⬜ Todo | — |
-| BRD-04 | Subject selection | `/student/board-questions` | ⬜ Todo | — |
-| BRD-05 | Paper selection | `/student/board-questions` | ⬜ Todo | — |
-| BRD-06 | Curriculum version | `/student/board-questions` | ⬜ Todo | — |
-| BRD-07 | Examination type | `/student/board-questions` | ⬜ Todo | — |
-| BRD-08 | Question paper viewer | `/student/board-questions/[paperId]` | ⬜ Todo | — |
-| BRD-09 | Solved paper viewer | `/student/board-questions` | ⬜ Todo | — |
-| BRD-10 | MCQ answer sheet | `/student/board-questions` | ⬜ Todo | — |
-| BRD-11 | Creative question solutions | `/student/board-questions` | ⬜ Todo | — |
-| BRD-12 | Topic-based mapping | `/student/board-questions` | ⬜ Todo | — |
-| BRD-13 | Chapter-based mapping | `/student/board-questions` | ⬜ Todo | — |
-| BRD-14 | Question frequency analysis | `/student/board-questions?tab=insights` | ⬜ Todo | — |
-| BRD-15 | Similar question clustering | `/student/board-questions` | ⬜ Todo | — |
-| BRD-16 | Repeated concept identification | `/student/board-questions` | ⬜ Todo | — |
-| BRD-17 | Historical trends | `/student/board-questions` | ⬜ Todo | — |
-| BRD-18 | Practice full paper | `/student/board-questions` | ⬜ Todo | — |
-| BRD-19 | Timed previous-year exam | `/student/board-questions` | ⬜ Todo | — |
-| BRD-20 | Save question paper | `/student/board-questions` | ⬜ Todo | — |
-| BRD-21 | Bookmark questions | `/student/board-questions` | ⬜ Todo | — |
-| BRD-22 | Print/download permitted documents | `/student/board-questions` | ⬜ Todo | — |
-| BRD-23 | Compare questions across years | `/student/board-questions` | ⬜ Todo | — |
-| BRD-24 | AI explanation of selected question | `/student/board-questions` | ⬜ Todo | — |
-| BRD-25 | Exam pattern summaries | `/student/board-questions` | ⬜ Todo | — |
-| BRD-26 | Authenticity metadata (source, status, scan, transcript, permission) | `/student/board-questions` | ⬜ Todo | — |
-| BRD-27 | Synthetic papers never labeled as real | `/student/board-questions` | ⬜ Todo | — |
+| BRD-01 | SSC/HSC selection <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-02 | Board selection (9 general boards, extensible) <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-03 | Year selection <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-04 | Subject selection <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-05 | Paper selection <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-06 | Curriculum version <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-07 | Examination type <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-08 | Question paper viewer <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions/[paperId]` | ✅ Done | smoke |
+| BRD-09 | Solved paper viewer <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-10 | MCQ answer sheet <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-11 | Creative question solutions <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-12 | Topic-based mapping <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-13 | Chapter-based mapping <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-14 | Question frequency analysis <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions?tab=insights` | ✅ Done | smoke |
+| BRD-15 | Similar question clustering <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-16 | Repeated concept identification <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-17 | Historical trends <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-18 | Practice full paper <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-19 | Timed previous-year exam <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-20 | Save question paper <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-21 | Bookmark questions <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-22 | Print/download permitted documents <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-23 | Compare questions across years <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-24 | AI explanation of selected question <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-25 | Exam pattern summaries <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-26 | Authenticity metadata (source, status, scan, transcript, permission) <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
+| BRD-27 | Synthetic papers never labeled as real <br><sub>All papers are labelled synthetic samples; HSC 2020 omitted</sub> | `/student/board-questions` | ✅ Done | smoke |
 
-## §15 School & college question archive (0/19)
+## §15 School & college question archive (19/19)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -460,27 +460,27 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| INQ-01 | Institution search | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-02 | Institution directory | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-03 | District filter | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-04 | Institution type filter | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-05 | Academic year filter | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-06 | Class filter | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-07 | Subject filter | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-08 | Examination category filter (annual…custom) | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-09 | Question paper details | `/student/institution-questions/[paperId]` | ⬜ Todo | — |
-| INQ-10 | Question scan viewer | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-11 | Verified solutions | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-12 | Institution-specific papers | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-13 | Public/private visibility | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-14 | Question bookmarks | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-15 | Related practice sets | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-16 | Teacher-uploaded papers | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-17 | Institution question collections | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-18 | Duplicate detection labels | `/student/institution-questions` | ⬜ Todo | — |
-| INQ-19 | Content report | `/student/institution-questions` | ⬜ Todo | — |
+| INQ-01 | Institution search | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-02 | Institution directory | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-03 | District filter | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-04 | Institution type filter | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-05 | Academic year filter | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-06 | Class filter | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-07 | Subject filter | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-08 | Examination category filter (annual…custom) | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-09 | Question paper details | `/student/institution-questions/[paperId]` | ✅ Done | smoke |
+| INQ-10 | Question scan viewer | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-11 | Verified solutions | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-12 | Institution-specific papers | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-13 | Public/private visibility | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-14 | Question bookmarks | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-15 | Related practice sets | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-16 | Teacher-uploaded papers | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-17 | Institution question collections | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-18 | Duplicate detection labels | `/student/institution-questions` | ✅ Done | smoke |
+| INQ-19 | Content report | `/student/institution-questions` | ✅ Done | smoke |
 
-## §16 Online examination system (0/45)
+## §16 Online examination system (45/45)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -489,53 +489,53 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| EXM-01 | Chapter exam | `/student/exams` | ⬜ Todo | — |
-| EXM-02 | Topic exam | `/student/exams` | ⬜ Todo | — |
-| EXM-03 | Subject exam | `/student/exams` | ⬜ Todo | — |
-| EXM-04 | Full syllabus exam | `/student/exams` | ⬜ Todo | — |
-| EXM-05 | Model test | `/student/exams` | ⬜ Todo | — |
-| EXM-06 | Previous-year board exam | `/student/exams` | ⬜ Todo | — |
-| EXM-07 | Daily challenge | `/student/exams` | ⬜ Todo | — |
-| EXM-08 | Adaptive exam | `/student/exams` | ⬜ Todo | — |
-| EXM-09 | Custom exam | `/student/exams` | ⬜ Todo | — |
-| EXM-10 | Institution-created exam | `/student/exams` | ⬜ Todo | — |
-| EXM-11 | Teacher-assigned exam | `/student/exams` | ⬜ Todo | — |
-| EXM-12 | Mixed practice | `/student/exams` | ⬜ Todo | — |
-| EXM-13 | Oral practice assessment | `/student/exams` | ⬜ Todo | — |
-| EXM-14 | Setup: subject, chapter, types, count, difficulty | `/student/exams` | ⬜ Todo | — |
-| EXM-15 | Setup: time limit, total marks, negative marking | `/student/exams` | ⬜ Todo | — |
-| EXM-16 | Setup: practice/exam mode, randomization, review policy | `/student/exams` | ⬜ Todo | — |
-| EXM-17 | Full-screen focus mode | `/student/exams/take/[attemptId]` | ⬜ Todo | — |
-| EXM-18 | Timer | `/student/exams` | ⬜ Todo | — |
-| EXM-19 | Question navigation & palette | `/student/exams` | ⬜ Todo | — |
-| EXM-20 | Mark for review | `/student/exams` | ⬜ Todo | — |
-| EXM-21 | Previous / next | `/student/exams` | ⬜ Todo | — |
-| EXM-22 | Answer selection | `/student/exams` | ⬜ Todo | — |
-| EXM-23 | Written answer editor | `/student/exams` | ⬜ Todo | — |
-| EXM-24 | Handwritten answer upload | `/student/exams` | ⬜ Todo | — |
-| EXM-25 | Autosave | `/student/exams` | ⬜ Todo | — |
-| EXM-26 | Progress & remaining questions | `/student/exams` | ⬜ Todo | — |
-| EXM-27 | Submit confirmation | `/student/exams` | ⬜ Todo | — |
-| EXM-28 | Time-expired behavior | `/student/exams` | ⬜ Todo | — |
-| EXM-29 | Session recovery simulation | `/student/exams` | ⬜ Todo | — |
-| EXM-30 | Exam instructions | `/student/exams` | ⬜ Todo | — |
-| EXM-31 | Keyboard accessibility | `/student/exams` | ⬜ Todo | — |
-| EXM-32 | Result: score, correct, incorrect, unanswered, time, accuracy | `/student/exams/results/[attemptId]` | ⬜ Todo | — |
-| EXM-33 | Question-wise analysis | `/student/exams` | ⬜ Todo | — |
-| EXM-34 | Topic-wise analysis | `/student/exams` | ⬜ Todo | — |
-| EXM-35 | Difficulty analysis | `/student/exams` | ⬜ Todo | — |
-| EXM-36 | Answer explanations | `/student/exams` | ⬜ Todo | — |
-| EXM-37 | Weak areas | `/student/exams` | ⬜ Todo | — |
-| EXM-38 | Recommended lessons | `/student/exams` | ⬜ Todo | — |
-| EXM-39 | Suggested revision | `/student/exams` | ⬜ Todo | — |
-| EXM-40 | Retake | `/student/exams` | ⬜ Todo | — |
-| EXM-41 | Result history | `/student/results` | ⬜ Todo | — |
-| EXM-42 | Printable result | `/student/exams` | ⬜ Todo | — |
-| EXM-43 | Teacher feedback | `/student/exams` | ⬜ Todo | — |
-| EXM-44 | Local objective scoring | `/student/exams` | ⬜ Todo | — |
-| EXM-45 | Descriptive answers marked simulated/non-authoritative | `/student/exams` | ⬜ Todo | — |
+| EXM-01 | Chapter exam | `/student/exams` | ✅ Done | smoke |
+| EXM-02 | Topic exam | `/student/exams` | ✅ Done | smoke |
+| EXM-03 | Subject exam | `/student/exams` | ✅ Done | smoke |
+| EXM-04 | Full syllabus exam | `/student/exams` | ✅ Done | smoke |
+| EXM-05 | Model test | `/student/exams` | ✅ Done | e2e |
+| EXM-06 | Previous-year board exam | `/student/exams` | ✅ Done | smoke |
+| EXM-07 | Daily challenge | `/student/exams` | ✅ Done | smoke |
+| EXM-08 | Adaptive exam | `/student/exams` | ✅ Done | smoke |
+| EXM-09 | Custom exam | `/student/exams` | ✅ Done | smoke |
+| EXM-10 | Institution-created exam | `/student/exams` | ✅ Done | smoke |
+| EXM-11 | Teacher-assigned exam | `/student/exams` | ✅ Done | smoke |
+| EXM-12 | Mixed practice | `/student/exams` | ✅ Done | smoke |
+| EXM-13 | Oral practice assessment | `/student/exams` | ✅ Done | smoke |
+| EXM-14 | Setup: subject, chapter, types, count, difficulty | `/student/exams` | ✅ Done | smoke |
+| EXM-15 | Setup: time limit, total marks, negative marking | `/student/exams` | ✅ Done | smoke |
+| EXM-16 | Setup: practice/exam mode, randomization, review policy | `/student/exams` | ✅ Done | smoke |
+| EXM-17 | Full-screen focus mode | `/student/exams/take/[attemptId]` | ✅ Done | smoke |
+| EXM-18 | Timer | `/student/exams` | ✅ Done | smoke |
+| EXM-19 | Question navigation & palette | `/student/exams` | ✅ Done | smoke |
+| EXM-20 | Mark for review | `/student/exams` | ✅ Done | smoke |
+| EXM-21 | Previous / next | `/student/exams` | ✅ Done | smoke |
+| EXM-22 | Answer selection | `/student/exams` | ✅ Done | smoke |
+| EXM-23 | Written answer editor | `/student/exams` | ✅ Done | smoke |
+| EXM-24 | Handwritten answer upload | `/student/exams` | ✅ Done | smoke |
+| EXM-25 | Autosave | `/student/exams` | ✅ Done | smoke |
+| EXM-26 | Progress & remaining questions | `/student/exams` | ✅ Done | smoke |
+| EXM-27 | Submit confirmation | `/student/exams` | ✅ Done | e2e |
+| EXM-28 | Time-expired behavior | `/student/exams` | ✅ Done | smoke |
+| EXM-29 | Session recovery simulation | `/student/exams` | ✅ Done | smoke |
+| EXM-30 | Exam instructions | `/student/exams` | ✅ Done | smoke |
+| EXM-31 | Keyboard accessibility | `/student/exams` | ✅ Done | smoke |
+| EXM-32 | Result: score, correct, incorrect, unanswered, time, accuracy | `/student/exams/results/[attemptId]` | ✅ Done | unit+e2e |
+| EXM-33 | Question-wise analysis | `/student/exams` | ✅ Done | smoke |
+| EXM-34 | Topic-wise analysis | `/student/exams` | ✅ Done | smoke |
+| EXM-35 | Difficulty analysis | `/student/exams` | ✅ Done | smoke |
+| EXM-36 | Answer explanations | `/student/exams` | ✅ Done | smoke |
+| EXM-37 | Weak areas | `/student/exams` | ✅ Done | smoke |
+| EXM-38 | Recommended lessons | `/student/exams` | ✅ Done | smoke |
+| EXM-39 | Suggested revision | `/student/exams` | ✅ Done | smoke |
+| EXM-40 | Retake | `/student/exams` | ✅ Done | smoke |
+| EXM-41 | Result history | `/student/results` | ✅ Done | smoke |
+| EXM-42 | Printable result | `/student/exams` | ✅ Done | smoke |
+| EXM-43 | Teacher feedback | `/student/exams` | ✅ Done | smoke |
+| EXM-44 | Local objective scoring | `/student/exams` | ✅ Done | unit |
+| EXM-45 | Descriptive answers marked simulated/non-authoritative | `/student/exams` | ✅ Done | unit |
 
-## §17 AI handwriting & answer sheet evaluator (0/24)
+## §17 AI handwriting & answer sheet evaluator (24/24)
 
 - **Roles:** Student (Teacher reviews)
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -544,32 +544,32 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| HWE-01 | Upload handwritten answer | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-02 | Capture answer sheet | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-03 | Multiple pages | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-04 | Page reordering | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-05 | Image preview | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-06 | Document crop | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-07 | Simulated OCR | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-08 | Extracted text correction | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-09 | Question mapping | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-10 | Answer comparison | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-11 | Rubric-based score | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-12 | Estimated marks | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-13 | Concept understanding | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-14 | Calculation accuracy | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-15 | Presentation quality | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-16 | Missing points | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-17 | Improvement suggestions | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-18 | Teacher-review request | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-19 | Evaluation history | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-20 | Before/after comparison | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-21 | Reattempt | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-22 | Export feedback | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-23 | Original handwriting beside extracted text | `/student/answer-evaluation` | ⬜ Todo | — |
-| HWE-24 | AI estimate / teacher-reviewed / official labels | `/student/answer-evaluation` | ⬜ Todo | — |
+| HWE-01 | Upload handwritten answer <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-02 | Capture answer sheet <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-03 | Multiple pages <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-04 | Page reordering <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-05 | Image preview <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-06 | Document crop <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-07 | Simulated OCR <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-08 | Extracted text correction <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-09 | Question mapping <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-10 | Answer comparison <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-11 | Rubric-based score <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-12 | Estimated marks <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-13 | Concept understanding <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-14 | Calculation accuracy <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-15 | Presentation quality <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-16 | Missing points <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-17 | Improvement suggestions <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-18 | Teacher-review request <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-19 | Evaluation history <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-20 | Before/after comparison <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-21 | Reattempt <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-22 | Export feedback <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-23 | Original handwriting beside extracted text <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
+| HWE-24 | AI estimate / teacher-reviewed / official labels <br><sub>AI estimate / teacher-reviewed / official kept distinct</sub> | `/student/answer-evaluation` | ✅ Done | smoke |
 
-## §18 Personalized study planner (0/28)
+## §18 Personalized study planner (28/28)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -578,36 +578,36 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| PLAN-01 | Daily plan | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-02 | Weekly plan | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-03 | Monthly plan | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-04 | Exam countdown | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-05 | Subject priority | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-06 | Chapter priority | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-07 | Target GPA | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-08 | Available hours | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-09 | Preferred study time | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-10 | Calendar view | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-11 | Scheduled tasks | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-12 | Completed tasks | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-13 | Missed tasks | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-14 | Task rescheduling (drag/move) | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-15 | Daily reminders | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-16 | Revision scheduling | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-17 | Goal tracking | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-18 | Plan generation simulation | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-19 | Manual editing | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-20 | Exam preparation plans | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-21 | Study recommendations | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-22 | Study habit insights | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-23 | Progress reports | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-24 | Timeline view | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-25 | Task list view | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-26 | Weekly board | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-27 | Study session detail | `/student/study-planner` | ⬜ Todo | — |
-| PLAN-28 | Study completion modal | `/student/study-planner` | ⬜ Todo | — |
+| PLAN-01 | Daily plan | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-02 | Weekly plan | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-03 | Monthly plan | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-04 | Exam countdown | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-05 | Subject priority | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-06 | Chapter priority | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-07 | Target GPA | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-08 | Available hours | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-09 | Preferred study time | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-10 | Calendar view | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-11 | Scheduled tasks | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-12 | Completed tasks | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-13 | Missed tasks | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-14 | Task rescheduling (drag/move) | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-15 | Daily reminders | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-16 | Revision scheduling | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-17 | Goal tracking | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-18 | Plan generation simulation | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-19 | Manual editing | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-20 | Exam preparation plans | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-21 | Study recommendations | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-22 | Study habit insights | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-23 | Progress reports | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-24 | Timeline view | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-25 | Task list view | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-26 | Weekly board | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-27 | Study session detail | `/student/study-planner` | ✅ Done | smoke |
+| PLAN-28 | Study completion modal | `/student/study-planner` | ✅ Done | smoke |
 
-## §19 Adaptive learning & weakness detection (0/24)
+## §19 Adaptive learning & weakness detection (24/24)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -616,32 +616,32 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| ADP-01 | Topic mastery scores | `/student/analytics` | ⬜ Todo | — |
-| ADP-02 | Subject mastery scores | `/student/analytics` | ⬜ Todo | — |
-| ADP-03 | Accuracy trends | `/student/analytics` | ⬜ Todo | — |
-| ADP-04 | Question difficulty analysis | `/student/analytics` | ⬜ Todo | — |
-| ADP-05 | Common mistake detection | `/student/analytics` | ⬜ Todo | — |
-| ADP-06 | Knowledge gap mapping | `/student/analytics` | ⬜ Todo | — |
-| ADP-07 | Prerequisite tracking | `/student/analytics` | ⬜ Todo | — |
-| ADP-08 | Weak chapter identification | `/student/analytics` | ⬜ Todo | — |
-| ADP-09 | Strong chapter identification | `/student/analytics` | ⬜ Todo | — |
-| ADP-10 | Personalized practice recommendation | `/student/analytics` | ⬜ Todo | — |
-| ADP-11 | Improvement trends | `/student/analytics` | ⬜ Todo | — |
-| ADP-12 | Skill progression | `/student/analytics` | ⬜ Todo | — |
-| ADP-13 | Weakness-to-mastery path | `/student/analytics` | ⬜ Todo | — |
-| ADP-14 | Recommended lesson sequencing | `/student/analytics` | ⬜ Todo | — |
-| ADP-15 | Revision recommendations | `/student/analytics` | ⬜ Todo | — |
-| ADP-16 | Personalized study adjustment | `/student/analytics` | ⬜ Todo | — |
-| ADP-17 | Mastery bars | `/student/analytics` | ⬜ Todo | — |
-| ADP-18 | Subject performance charts | `/student/analytics` | ⬜ Todo | — |
-| ADP-19 | Topic heatmap | `/student/analytics` | ⬜ Todo | — |
-| ADP-20 | Weekly trends | `/student/analytics` | ⬜ Todo | — |
-| ADP-21 | Consistency graph | `/student/analytics` | ⬜ Todo | — |
-| ADP-22 | Strength/weakness comparison | `/student/analytics` | ⬜ Todo | — |
-| ADP-23 | Learning roadmap | `/student/analytics` | ⬜ Todo | — |
-| ADP-24 | Responds to quiz/exam results | `/student/analytics` | ⬜ Todo | — |
+| ADP-01 | Topic mastery scores | `/student/analytics` | ✅ Done | smoke |
+| ADP-02 | Subject mastery scores | `/student/analytics` | ✅ Done | smoke |
+| ADP-03 | Accuracy trends | `/student/analytics` | ✅ Done | smoke |
+| ADP-04 | Question difficulty analysis | `/student/analytics` | ✅ Done | smoke |
+| ADP-05 | Common mistake detection | `/student/analytics` | ✅ Done | smoke |
+| ADP-06 | Knowledge gap mapping | `/student/analytics` | ✅ Done | smoke |
+| ADP-07 | Prerequisite tracking | `/student/analytics` | ✅ Done | smoke |
+| ADP-08 | Weak chapter identification | `/student/analytics` | ✅ Done | smoke |
+| ADP-09 | Strong chapter identification | `/student/analytics` | ✅ Done | smoke |
+| ADP-10 | Personalized practice recommendation | `/student/analytics` | ✅ Done | smoke |
+| ADP-11 | Improvement trends | `/student/analytics` | ✅ Done | smoke |
+| ADP-12 | Skill progression | `/student/analytics` | ✅ Done | smoke |
+| ADP-13 | Weakness-to-mastery path | `/student/analytics` | ✅ Done | smoke |
+| ADP-14 | Recommended lesson sequencing | `/student/analytics` | ✅ Done | smoke |
+| ADP-15 | Revision recommendations | `/student/analytics` | ✅ Done | smoke |
+| ADP-16 | Personalized study adjustment | `/student/analytics` | ✅ Done | smoke |
+| ADP-17 | Mastery bars | `/student/analytics` | ✅ Done | smoke |
+| ADP-18 | Subject performance charts | `/student/analytics` | ✅ Done | smoke |
+| ADP-19 | Topic heatmap | `/student/analytics` | ✅ Done | smoke |
+| ADP-20 | Weekly trends | `/student/analytics` | ✅ Done | smoke |
+| ADP-21 | Consistency graph | `/student/analytics` | ✅ Done | smoke |
+| ADP-22 | Strength/weakness comparison | `/student/analytics` | ✅ Done | smoke |
+| ADP-23 | Learning roadmap | `/student/analytics` | ✅ Done | smoke |
+| ADP-24 | Responds to quiz/exam results | `/student/analytics` | ✅ Done | unit |
 
-## §20 Flashcards & spaced repetition (0/22)
+## §20 Flashcards & spaced repetition (22/22)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -650,30 +650,30 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| FC-01 | AI-generated flashcards (simulated) | `/student/flashcards` | ⬜ Todo | — |
-| FC-02 | Manual creation | `/student/flashcards` | ⬜ Todo | — |
-| FC-03 | From chapter | `/student/flashcards` | ⬜ Todo | — |
-| FC-04 | From notes | `/student/flashcards` | ⬜ Todo | — |
-| FC-05 | From conversation | `/student/flashcards` | ⬜ Todo | — |
-| FC-06 | From incorrect questions | `/student/flashcards` | ⬜ Todo | — |
-| FC-07 | Collections (decks) | `/student/flashcards` | ⬜ Todo | — |
-| FC-08 | Flip animation | `/student/flashcards` | ⬜ Todo | — |
-| FC-09 | Next / previous | `/student/flashcards` | ⬜ Todo | — |
-| FC-10 | Known / unknown | `/student/flashcards` | ⬜ Todo | — |
-| FC-11 | Easy / medium / hard rating | `/student/flashcards` | ⬜ Todo | — |
-| FC-12 | Daily revision queue | `/student/flashcards` | ⬜ Todo | — |
-| FC-13 | Spaced repetition scheduling | `/student/flashcards` | ⬜ Todo | — |
-| FC-14 | Due cards | `/student/flashcards` | ⬜ Todo | — |
-| FC-15 | Completed cards | `/student/flashcards` | ⬜ Todo | — |
-| FC-16 | Statistics | `/student/flashcards` | ⬜ Todo | — |
-| FC-17 | Search | `/student/flashcards` | ⬜ Todo | — |
-| FC-18 | Filter | `/student/flashcards` | ⬜ Todo | — |
-| FC-19 | Bookmark | `/student/flashcards` | ⬜ Todo | — |
-| FC-20 | Edit / delete | `/student/flashcards` | ⬜ Todo | — |
-| FC-21 | Study mode | `/student/flashcards` | ⬜ Todo | — |
-| FC-22 | Quick review mode | `/student/flashcards` | ⬜ Todo | — |
+| FC-01 | AI-generated flashcards (simulated) | `/student/flashcards` | ✅ Done | smoke |
+| FC-02 | Manual creation | `/student/flashcards` | ✅ Done | smoke |
+| FC-03 | From chapter | `/student/flashcards` | ✅ Done | smoke |
+| FC-04 | From notes | `/student/flashcards` | ✅ Done | smoke |
+| FC-05 | From conversation | `/student/flashcards` | ✅ Done | smoke |
+| FC-06 | From incorrect questions | `/student/flashcards` | ✅ Done | smoke |
+| FC-07 | Collections (decks) | `/student/flashcards` | ✅ Done | smoke |
+| FC-08 | Flip animation | `/student/flashcards` | ✅ Done | smoke |
+| FC-09 | Next / previous | `/student/flashcards` | ✅ Done | smoke |
+| FC-10 | Known / unknown | `/student/flashcards` | ✅ Done | smoke |
+| FC-11 | Easy / medium / hard rating | `/student/flashcards` | ✅ Done | smoke |
+| FC-12 | Daily revision queue | `/student/flashcards` | ✅ Done | smoke |
+| FC-13 | Spaced repetition scheduling <br><sub>Fixed 2026-11-24: interval capped at 365 days (date overflow)</sub> | `/student/flashcards` | ✅ Done | unit |
+| FC-14 | Due cards | `/student/flashcards` | ✅ Done | smoke |
+| FC-15 | Completed cards | `/student/flashcards` | ✅ Done | smoke |
+| FC-16 | Statistics | `/student/flashcards` | ✅ Done | smoke |
+| FC-17 | Search | `/student/flashcards` | ✅ Done | smoke |
+| FC-18 | Filter | `/student/flashcards` | ✅ Done | smoke |
+| FC-19 | Bookmark | `/student/flashcards` | ✅ Done | smoke |
+| FC-20 | Edit / delete | `/student/flashcards` | ✅ Done | smoke |
+| FC-21 | Study mode | `/student/flashcards` | ✅ Done | smoke |
+| FC-22 | Quick review mode | `/student/flashcards` | ✅ Done | smoke |
 
-## §21 AI notes generator (0/24)
+## §21 AI notes generator (24/24)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -682,32 +682,32 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| NOTE-01 | Notes dashboard | `/student/notes` | ⬜ Todo | — |
-| NOTE-02 | Generate from chapter | `/student/notes` | ⬜ Todo | — |
-| NOTE-03 | Generate from topic | `/student/notes` | ⬜ Todo | — |
-| NOTE-04 | Generate from question | `/student/notes` | ⬜ Todo | — |
-| NOTE-05 | Generate from AI conversation | `/student/notes` | ⬜ Todo | — |
-| NOTE-06 | Generate from uploaded content (simulated) | `/student/notes` | ⬜ Todo | — |
-| NOTE-07 | Short notes | `/student/notes` | ⬜ Todo | — |
-| NOTE-08 | Detailed notes | `/student/notes` | ⬜ Todo | — |
-| NOTE-09 | Revision notes | `/student/notes` | ⬜ Todo | — |
-| NOTE-10 | Formula sheets | `/student/notes` | ⬜ Todo | — |
-| NOTE-11 | Definition sheets | `/student/notes` | ⬜ Todo | — |
-| NOTE-12 | Key takeaways | `/student/notes` | ⬜ Todo | — |
-| NOTE-13 | Important question notes | `/student/notes` | ⬜ Todo | — |
-| NOTE-14 | Rich-text editing (Tiptap) | `/student/notes/[noteId]` | ⬜ Todo | — |
-| NOTE-15 | Folders | `/student/notes` | ⬜ Todo | — |
-| NOTE-16 | Search | `/student/notes` | ⬜ Todo | — |
-| NOTE-17 | Tags | `/student/notes` | ⬜ Todo | — |
-| NOTE-18 | Favorites | `/student/notes` | ⬜ Todo | — |
-| NOTE-19 | Note linking | `/student/notes` | ⬜ Todo | — |
-| NOTE-20 | Export PDF (print) | `/student/notes` | ⬜ Todo | — |
-| NOTE-21 | Printable layout | `/student/notes` | ⬜ Todo | — |
-| NOTE-22 | Preview | `/student/notes` | ⬜ Todo | — |
-| NOTE-23 | Version history | `/student/notes` | ⬜ Todo | — |
-| NOTE-24 | Auto-save | `/student/notes` | ⬜ Todo | — |
+| NOTE-01 | Notes dashboard | `/student/notes` | ✅ Done | smoke |
+| NOTE-02 | Generate from chapter | `/student/notes` | ✅ Done | smoke |
+| NOTE-03 | Generate from topic | `/student/notes` | ✅ Done | smoke |
+| NOTE-04 | Generate from question | `/student/notes` | ✅ Done | smoke |
+| NOTE-05 | Generate from AI conversation | `/student/notes` | ✅ Done | smoke |
+| NOTE-06 | Generate from uploaded content (simulated) | `/student/notes` | ✅ Done | smoke |
+| NOTE-07 | Short notes | `/student/notes` | ✅ Done | smoke |
+| NOTE-08 | Detailed notes | `/student/notes` | ✅ Done | smoke |
+| NOTE-09 | Revision notes | `/student/notes` | ✅ Done | smoke |
+| NOTE-10 | Formula sheets | `/student/notes` | ✅ Done | smoke |
+| NOTE-11 | Definition sheets | `/student/notes` | ✅ Done | smoke |
+| NOTE-12 | Key takeaways | `/student/notes` | ✅ Done | smoke |
+| NOTE-13 | Important question notes | `/student/notes` | ✅ Done | smoke |
+| NOTE-14 | Rich-text editing (Tiptap) | `/student/notes/[noteId]` | ✅ Done | smoke |
+| NOTE-15 | Folders | `/student/notes` | ✅ Done | smoke |
+| NOTE-16 | Search | `/student/notes` | ✅ Done | smoke |
+| NOTE-17 | Tags | `/student/notes` | ✅ Done | smoke |
+| NOTE-18 | Favorites | `/student/notes` | ✅ Done | smoke |
+| NOTE-19 | Note linking | `/student/notes` | ✅ Done | smoke |
+| NOTE-20 | Export PDF (print) | `/student/notes` | ✅ Done | smoke |
+| NOTE-21 | Printable layout | `/student/notes` | ✅ Done | smoke |
+| NOTE-22 | Preview | `/student/notes` | ✅ Done | smoke |
+| NOTE-23 | Version history | `/student/notes` | ✅ Done | smoke |
+| NOTE-24 | Auto-save | `/student/notes` | ✅ Done | smoke |
 
-## §22 English learning coach (0/18)
+## §22 English learning coach (18/18)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -716,26 +716,26 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| ENG-01 | Grammar practice | `/student/english-coach` | ⬜ Todo | — |
-| ENG-02 | Vocabulary practice | `/student/english-coach` | ⬜ Todo | — |
-| ENG-03 | Sentence correction | `/student/english-coach` | ⬜ Todo | — |
-| ENG-04 | Paragraph writing | `/student/english-coach` | ⬜ Todo | — |
-| ENG-05 | Essay writing | `/student/english-coach` | ⬜ Todo | — |
-| ENG-06 | Composition writing | `/student/english-coach` | ⬜ Todo | — |
-| ENG-07 | Email writing | `/student/english-coach` | ⬜ Todo | — |
-| ENG-08 | Reading comprehension | `/student/english-coach` | ⬜ Todo | — |
-| ENG-09 | Listening practice | `/student/english-coach` | ⬜ Todo | — |
-| ENG-10 | Speaking practice | `/student/english-coach` | ⬜ Todo | — |
-| ENG-11 | Pronunciation practice (simulated) | `/student/english-coach` | ⬜ Todo | — |
-| ENG-12 | Mock speaking exam | `/student/english-coach` | ⬜ Todo | — |
-| ENG-13 | Vocabulary flashcards | `/student/english-coach` | ⬜ Todo | — |
-| ENG-14 | Grammar quizzes | `/student/english-coach` | ⬜ Todo | — |
-| ENG-15 | Writing feedback | `/student/english-coach` | ⬜ Todo | — |
-| ENG-16 | Error explanations | `/student/english-coach` | ⬜ Todo | — |
-| ENG-17 | Progress tracking | `/student/english-coach` | ⬜ Todo | — |
-| ENG-18 | Personalized improvement plan | `/student/english-coach` | ⬜ Todo | — |
+| ENG-01 | Grammar practice <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-02 | Vocabulary practice <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-03 | Sentence correction <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-04 | Paragraph writing <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-05 | Essay writing <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-06 | Composition writing <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-07 | Email writing <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-08 | Reading comprehension <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-09 | Listening practice <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-10 | Speaking practice <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-11 | Pronunciation practice (simulated) <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-12 | Mock speaking exam <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-13 | Vocabulary flashcards <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-14 | Grammar quizzes <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-15 | Writing feedback <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-16 | Error explanations <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-17 | Progress tracking <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
+| ENG-18 | Personalized improvement plan <br><sub>Pronunciation scoring simulated and labelled</sub> | `/student/english-coach` | ✅ Done | smoke |
 
-## §23 Interactive science & math lab (0/23)
+## §23 Interactive science & math lab (23/23)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -744,31 +744,31 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| LAB-01 | Physics: motion | `/student/labs` | ⬜ Todo | — |
-| LAB-02 | Physics: force & acceleration | `/student/labs` | ⬜ Todo | — |
-| LAB-03 | Physics: Newton's laws | `/student/labs` | ⬜ Todo | — |
-| LAB-04 | Physics: energy | `/student/labs` | ⬜ Todo | — |
-| LAB-05 | Physics: simple circuits | `/student/labs` | ⬜ Todo | — |
-| LAB-06 | Physics: waves | `/student/labs` | ⬜ Todo | — |
-| LAB-07 | Chemistry: atom structure | `/student/labs` | ⬜ Todo | — |
-| LAB-08 | Chemistry: periodic table | `/student/labs` | ⬜ Todo | — |
-| LAB-09 | Chemistry: chemical bonds | `/student/labs` | ⬜ Todo | — |
-| LAB-10 | Chemistry: molecular structures | `/student/labs` | ⬜ Todo | — |
-| LAB-11 | Chemistry: reactions | `/student/labs` | ⬜ Todo | — |
-| LAB-12 | Biology: cell diagram | `/student/labs` | ⬜ Todo | — |
-| LAB-13 | Biology: human body systems | `/student/labs` | ⬜ Todo | — |
-| LAB-14 | Biology: plant structure | `/student/labs` | ⬜ Todo | — |
-| LAB-15 | Biology: process visualizations | `/student/labs` | ⬜ Todo | — |
-| LAB-16 | Math: function graphs | `/student/labs` | ⬜ Todo | — |
-| LAB-17 | Math: equation visualizer | `/student/labs` | ⬜ Todo | — |
-| LAB-18 | Math: geometry | `/student/labs` | ⬜ Todo | — |
-| LAB-19 | Math: trigonometry | `/student/labs` | ⬜ Todo | — |
-| LAB-20 | Math: formula explorer | `/student/labs` | ⬜ Todo | — |
-| LAB-21 | Math: scientific calculator | `/student/labs` | ⬜ Todo | — |
-| LAB-22 | Planned-lab unavailable state | `/student/labs` | ⬜ Todo | — |
-| LAB-23 | Diagram alt descriptions | `/student/labs` | ⬜ Todo | — |
+| LAB-01 | Physics: motion | `/student/labs` | ✅ Done | smoke |
+| LAB-02 | Physics: force & acceleration | `/student/labs` | ✅ Done | smoke |
+| LAB-03 | Physics: Newton's laws | `/student/labs` | ✅ Done | smoke |
+| LAB-04 | Physics: energy | `/student/labs` | ✅ Done | smoke |
+| LAB-05 | Physics: simple circuits | `/student/labs` | ✅ Done | smoke |
+| LAB-06 | Physics: waves | `/student/labs` | ✅ Done | smoke |
+| LAB-07 | Chemistry: atom structure | `/student/labs` | ✅ Done | smoke |
+| LAB-08 | Chemistry: periodic table | `/student/labs` | ✅ Done | smoke |
+| LAB-09 | Chemistry: chemical bonds | `/student/labs` | ✅ Done | smoke |
+| LAB-10 | Chemistry: molecular structures | `/student/labs` | ✅ Done | smoke |
+| LAB-11 | Chemistry: reactions | `/student/labs` | ✅ Done | smoke |
+| LAB-12 | Biology: cell diagram | `/student/labs` | ✅ Done | smoke |
+| LAB-13 | Biology: human body systems | `/student/labs` | ✅ Done | smoke |
+| LAB-14 | Biology: plant structure | `/student/labs` | ✅ Done | smoke |
+| LAB-15 | Biology: process visualizations | `/student/labs` | ✅ Done | smoke |
+| LAB-16 | Math: function graphs | `/student/labs` | ✅ Done | smoke |
+| LAB-17 | Math: equation visualizer | `/student/labs` | ✅ Done | smoke |
+| LAB-18 | Math: geometry | `/student/labs` | ✅ Done | smoke |
+| LAB-19 | Math: trigonometry | `/student/labs` | ✅ Done | smoke |
+| LAB-20 | Math: formula explorer | `/student/labs` | ✅ Done | smoke |
+| LAB-21 | Math: scientific calculator | `/student/labs` | ✅ Done | smoke |
+| LAB-22 | Planned-lab unavailable state | `/student/labs` | ✅ Done | smoke |
+| LAB-23 | Diagram alt descriptions | `/student/labs` | ✅ Done | smoke |
 
-## §24 AI audio revision (0/17)
+## §24 AI audio revision (17/17)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -777,25 +777,25 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| AUD-01 | Audio lesson library | `/student/audio` | ⬜ Todo | — |
-| AUD-02 | Chapter-based lessons | `/student/audio` | ⬜ Todo | — |
-| AUD-03 | Revision podcasts | `/student/audio` | ⬜ Todo | — |
-| AUD-04 | Play / pause | `/student/audio` | ⬜ Todo | — |
-| AUD-05 | Playback speed | `/student/audio` | ⬜ Todo | — |
-| AUD-06 | Seek bar | `/student/audio` | ⬜ Todo | — |
-| AUD-07 | Transcript | `/student/audio` | ⬜ Todo | — |
-| AUD-08 | Chapter markers | `/student/audio` | ⬜ Todo | — |
-| AUD-09 | Playlist | `/student/audio` | ⬜ Todo | — |
-| AUD-10 | Favorites | `/student/audio` | ⬜ Todo | — |
-| AUD-11 | Listening progress | `/student/audio` | ⬜ Todo | — |
-| AUD-12 | Continue listening | `/student/audio` | ⬜ Todo | — |
-| AUD-13 | Download status | `/student/audio` | ⬜ Todo | — |
-| AUD-14 | Audio history | `/student/audio` | ⬜ Todo | — |
-| AUD-15 | Generate audio lesson (simulated) | `/student/audio` | ⬜ Todo | — |
-| AUD-16 | Audio summary view | `/student/audio` | ⬜ Todo | — |
-| AUD-17 | Voice options | `/student/audio` | ⬜ Todo | — |
+| AUD-01 | Audio lesson library <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-02 | Chapter-based lessons <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-03 | Revision podcasts <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-04 | Play / pause <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-05 | Playback speed <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-06 | Seek bar <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-07 | Transcript <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-08 | Chapter markers <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-09 | Playlist <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-10 | Favorites <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-11 | Listening progress <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-12 | Continue listening <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-13 | Download status <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-14 | Audio history <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-15 | Generate audio lesson (simulated) <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-16 | Audio summary view <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
+| AUD-17 | Voice options <br><sub>Uses device text-to-speech where supported</sub> | `/student/audio` | ✅ Done | smoke |
 
-## §25 Gamification & motivation (0/18)
+## §25 Gamification & motivation (18/18)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -804,26 +804,26 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| GAM-01 | Daily streak | `/student/achievements` | ⬜ Todo | — |
-| GAM-02 | Study points | `/student/achievements` | ⬜ Todo | — |
-| GAM-03 | XP | `/student/achievements` | ⬜ Todo | — |
-| GAM-04 | Levels | `/student/achievements` | ⬜ Todo | — |
-| GAM-05 | Achievement badges | `/student/achievements` | ⬜ Todo | — |
-| GAM-06 | Learning challenges | `/student/achievements` | ⬜ Todo | — |
-| GAM-07 | Weekly missions | `/student/achievements` | ⬜ Todo | — |
-| GAM-08 | Monthly milestones | `/student/achievements` | ⬜ Todo | — |
-| GAM-09 | Chapter completion rewards | `/student/achievements` | ⬜ Todo | — |
-| GAM-10 | Daily goal completion | `/student/achievements` | ⬜ Todo | — |
-| GAM-11 | Consistency visualization | `/student/achievements` | ⬜ Todo | — |
-| GAM-12 | Optional leaderboards | `/student/achievements` | ⬜ Todo | — |
-| GAM-13 | Friend challenges | `/student/achievements` | ⬜ Todo | — |
-| GAM-14 | Milestone celebrations | `/student/achievements` | ⬜ Todo | — |
-| GAM-15 | Achievement history | `/student/achievements` | ⬜ Todo | — |
-| GAM-16 | Motivational feedback | `/student/achievements` | ⬜ Todo | — |
-| GAM-17 | Reward notifications | `/student/achievements` | ⬜ Todo | — |
-| GAM-18 | Hide competitive features | `/student/achievements` | ⬜ Todo | — |
+| GAM-01 | Daily streak | `/student/achievements` | ✅ Done | unit |
+| GAM-02 | Study points | `/student/achievements` | ✅ Done | unit |
+| GAM-03 | XP | `/student/achievements` | ✅ Done | unit |
+| GAM-04 | Levels | `/student/achievements` | ✅ Done | unit |
+| GAM-05 | Achievement badges | `/student/achievements` | ✅ Done | unit |
+| GAM-06 | Learning challenges | `/student/achievements` | ✅ Done | unit |
+| GAM-07 | Weekly missions | `/student/achievements` | ✅ Done | unit |
+| GAM-08 | Monthly milestones | `/student/achievements` | ✅ Done | unit |
+| GAM-09 | Chapter completion rewards | `/student/achievements` | ✅ Done | unit |
+| GAM-10 | Daily goal completion | `/student/achievements` | ✅ Done | unit |
+| GAM-11 | Consistency visualization | `/student/achievements` | ✅ Done | unit |
+| GAM-12 | Optional leaderboards | `/student/achievements` | ✅ Done | unit |
+| GAM-13 | Friend challenges | `/student/achievements` | ✅ Done | unit |
+| GAM-14 | Milestone celebrations | `/student/achievements` | ✅ Done | unit |
+| GAM-15 | Achievement history | `/student/achievements` | ✅ Done | unit |
+| GAM-16 | Motivational feedback | `/student/achievements` | ✅ Done | unit |
+| GAM-17 | Reward notifications | `/student/achievements` | ✅ Done | unit |
+| GAM-18 | Hide competitive features | `/student/achievements` | ✅ Done | unit |
 
-## §26 Offline learning (0/17)
+## §26 Offline learning (17/17)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -832,25 +832,25 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| OFF-01 | Offline content library | `/student/offline` | ⬜ Todo | — |
-| OFF-02 | Download management | `/student/offline` | ⬜ Todo | — |
-| OFF-03 | Available offline resources | `/student/offline` | ⬜ Todo | — |
-| OFF-04 | Offline flashcards | `/student/offline` | ⬜ Todo | — |
-| OFF-05 | Downloaded notes | `/student/offline` | ⬜ Todo | — |
-| OFF-06 | Offline quizzes | `/student/offline` | ⬜ Todo | — |
-| OFF-07 | Storage usage | `/student/offline` | ⬜ Todo | — |
-| OFF-08 | Download status | `/student/offline` | ⬜ Todo | — |
-| OFF-09 | Content version | `/student/offline` | ⬜ Todo | — |
-| OFF-10 | Sync status | `/student/offline` | ⬜ Todo | — |
-| OFF-11 | Conflict resolution UI | `/student/offline` | ⬜ Todo | — |
-| OFF-12 | Connection indicator | `/student/offline` | ⬜ Todo | — |
-| OFF-13 | Retry synchronization | `/student/offline` | ⬜ Todo | — |
-| OFF-14 | Remove downloads | `/student/offline` | ⬜ Todo | — |
-| OFF-15 | Offline availability badges | `/student/offline` | ⬜ Todo | — |
-| OFF-16 | PWA manifest + service worker caching | `/student/offline` | ⬜ Todo | — |
-| OFF-17 | AI offline unavailable state | `/student/offline` | ⬜ Todo | — |
+| OFF-01 | Offline content library | `/student/offline` | ✅ Done | smoke |
+| OFF-02 | Download management | `/student/offline` | ✅ Done | smoke |
+| OFF-03 | Available offline resources | `/student/offline` | ✅ Done | smoke |
+| OFF-04 | Offline flashcards | `/student/offline` | ✅ Done | smoke |
+| OFF-05 | Downloaded notes | `/student/offline` | ✅ Done | smoke |
+| OFF-06 | Offline quizzes | `/student/offline` | ✅ Done | smoke |
+| OFF-07 | Storage usage | `/student/offline` | ✅ Done | smoke |
+| OFF-08 | Download status | `/student/offline` | ✅ Done | smoke |
+| OFF-09 | Content version | `/student/offline` | ✅ Done | smoke |
+| OFF-10 | Sync status | `/student/offline` | ✅ Done | smoke |
+| OFF-11 | Conflict resolution UI | `/student/offline` | ✅ Done | smoke |
+| OFF-12 | Connection indicator | `/student/offline` | ✅ Done | smoke |
+| OFF-13 | Retry synchronization | `/student/offline` | ✅ Done | smoke |
+| OFF-14 | Remove downloads | `/student/offline` | ✅ Done | smoke |
+| OFF-15 | Offline availability badges | `/student/offline` | ✅ Done | smoke |
+| OFF-16 | PWA manifest + service worker caching <br><sub>Service worker registers only in production builds</sub> | `/student/offline` | ✅ Done | smoke |
+| OFF-17 | AI offline unavailable state | `/student/offline` | ✅ Done | e2e |
 
-## §27 Parent / guardian dashboard (0/21)
+## §27 Parent / guardian dashboard (21/21)
 
 - **Roles:** Parent
 - **Flutter:** Parent mobile access defined in role matrix
@@ -859,29 +859,29 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| PAR-01 | Guardian onboarding | `/parent/onboarding` | ⬜ Todo | — |
-| PAR-02 | Student linking flow | `/parent/children` | ⬜ Todo | — |
-| PAR-03 | Child overview | `/parent/dashboard` | ⬜ Todo | — |
-| PAR-04 | Learning progress | `/parent/progress` | ⬜ Todo | — |
-| PAR-05 | Study time summary | `/parent/dashboard` | ⬜ Todo | — |
-| PAR-06 | Completed tasks | `/parent/dashboard` | ⬜ Todo | — |
-| PAR-07 | Missed tasks | `/parent/dashboard` | ⬜ Todo | — |
-| PAR-08 | Test scores | `/parent/results` | ⬜ Todo | — |
-| PAR-09 | Subject performance | `/parent/dashboard` | ⬜ Todo | — |
-| PAR-10 | Weak areas | `/parent/dashboard` | ⬜ Todo | — |
-| PAR-11 | Study calendar | `/parent/calendar` | ⬜ Todo | — |
-| PAR-12 | Teacher feedback | `/parent/feedback` | ⬜ Todo | — |
-| PAR-13 | Learning goals | `/parent/goals` | ⬜ Todo | — |
-| PAR-14 | Notification preferences | `/parent/settings` | ⬜ Todo | — |
-| PAR-15 | Guardian reports | `/parent/reports` | ⬜ Todo | — |
-| PAR-16 | Consent management | `/parent/privacy` | ⬜ Todo | — |
-| PAR-17 | Subscription management | `/parent/subscription` | ⬜ Todo | — |
-| PAR-18 | Privacy controls | `/parent/privacy` | ⬜ Todo | — |
-| PAR-19 | Multiple linked students | `/parent/dashboard` | ⬜ Todo | — |
-| PAR-20 | Report download | `/parent/reports` | ⬜ Todo | — |
-| PAR-21 | AI conversations private by default | `/parent/dashboard` | ⬜ Todo | — |
+| PAR-01 | Guardian onboarding | `/parent/onboarding` | ✅ Done | smoke |
+| PAR-02 | Student linking flow | `/parent/children` | ✅ Done | smoke |
+| PAR-03 | Child overview | `/parent/dashboard` | ✅ Done | smoke |
+| PAR-04 | Learning progress | `/parent/progress` | ✅ Done | smoke |
+| PAR-05 | Study time summary | `/parent/dashboard` | ✅ Done | smoke |
+| PAR-06 | Completed tasks | `/parent/dashboard` | ✅ Done | smoke |
+| PAR-07 | Missed tasks | `/parent/dashboard` | ✅ Done | smoke |
+| PAR-08 | Test scores | `/parent/results` | ✅ Done | smoke |
+| PAR-09 | Subject performance | `/parent/dashboard` | ✅ Done | smoke |
+| PAR-10 | Weak areas | `/parent/dashboard` | ✅ Done | smoke |
+| PAR-11 | Study calendar | `/parent/calendar` | ✅ Done | smoke |
+| PAR-12 | Teacher feedback | `/parent/feedback` | ✅ Done | smoke |
+| PAR-13 | Learning goals | `/parent/goals` | ✅ Done | smoke |
+| PAR-14 | Notification preferences | `/parent/settings` | ✅ Done | smoke |
+| PAR-15 | Guardian reports | `/parent/reports` | ✅ Done | smoke |
+| PAR-16 | Consent management | `/parent/privacy` | ✅ Done | smoke |
+| PAR-17 | Subscription management | `/parent/subscription` | ✅ Done | smoke |
+| PAR-18 | Privacy controls | `/parent/privacy` | ✅ Done | smoke |
+| PAR-19 | Multiple linked students | `/parent/dashboard` | ✅ Done | smoke |
+| PAR-20 | Report download | `/parent/reports` | ✅ Done | smoke |
+| PAR-21 | AI conversations private by default | `/parent/dashboard` | ✅ Done | e2e |
 
-## §28 Teacher & content reviewer portal (0/23)
+## §28 Teacher & content reviewer portal (23/23)
 
 - **Roles:** Teacher, Content Reviewer
 - **Flutter:** Teacher mobile access defined in role matrix
@@ -890,31 +890,31 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| TCH-01 | Teacher dashboard | `/teacher/dashboard` | ⬜ Todo | — |
-| TCH-02 | Assigned subjects | `/teacher/subjects` | ⬜ Todo | — |
-| TCH-03 | Content review queue | `/teacher/review` | ⬜ Todo | — |
-| TCH-04 | Question review | `/teacher/review/[itemId]` | ⬜ Todo | — |
-| TCH-05 | Answer verification | `/teacher/dashboard` | ⬜ Todo | — |
-| TCH-06 | Rubric management | `/teacher/rubrics` | ⬜ Todo | — |
-| TCH-07 | Suggested corrections | `/teacher/dashboard` | ⬜ Todo | — |
-| TCH-08 | Approve / reject content | `/teacher/dashboard` | ⬜ Todo | — |
-| TCH-09 | Review comments | `/teacher/dashboard` | ⬜ Todo | — |
-| TCH-10 | Question creation | `/teacher/questions` | ⬜ Todo | — |
-| TCH-11 | Question editing | `/teacher/dashboard` | ⬜ Todo | — |
-| TCH-12 | Create quizzes | `/teacher/exams` | ⬜ Todo | — |
-| TCH-13 | Create examinations | `/teacher/exams` | ⬜ Todo | — |
-| TCH-14 | Assign tasks | `/teacher/assignments` | ⬜ Todo | — |
-| TCH-15 | Review student submissions | `/teacher/submissions` | ⬜ Todo | — |
-| TCH-16 | Review handwriting evaluations | `/teacher/evaluations` | ⬜ Todo | — |
-| TCH-17 | Teacher feedback | `/teacher/dashboard` | ⬜ Todo | — |
-| TCH-18 | Student performance overview | `/teacher/students` | ⬜ Todo | — |
-| TCH-19 | Review history | `/teacher/history` | ⬜ Todo | — |
-| TCH-20 | Notifications | `/teacher/notifications` | ⬜ Todo | — |
-| TCH-21 | Reviewer analytics | `/teacher/analytics` | ⬜ Todo | — |
-| TCH-22 | Status flow Draft→Submitted→In Review→Changes Requested→Approved→Published→Archived | `/teacher/dashboard` | ⬜ Todo | — |
-| TCH-23 | Role permissions simulated (reviewer vs teacher) | `/teacher/dashboard` | ⬜ Todo | — |
+| TCH-01 | Teacher dashboard | `/teacher/dashboard` | ✅ Done | smoke |
+| TCH-02 | Assigned subjects | `/teacher/subjects` | ✅ Done | smoke |
+| TCH-03 | Content review queue | `/teacher/review` | ✅ Done | smoke |
+| TCH-04 | Question review | `/teacher/review/[itemId]` | ✅ Done | smoke |
+| TCH-05 | Answer verification | `/teacher/dashboard` | ✅ Done | smoke |
+| TCH-06 | Rubric management | `/teacher/rubrics` | ✅ Done | smoke |
+| TCH-07 | Suggested corrections | `/teacher/dashboard` | ✅ Done | smoke |
+| TCH-08 | Approve / reject content | `/teacher/dashboard` | ✅ Done | e2e |
+| TCH-09 | Review comments | `/teacher/dashboard` | ✅ Done | smoke |
+| TCH-10 | Question creation | `/teacher/questions` | ✅ Done | smoke |
+| TCH-11 | Question editing | `/teacher/dashboard` | ✅ Done | smoke |
+| TCH-12 | Create quizzes | `/teacher/exams` | ✅ Done | smoke |
+| TCH-13 | Create examinations | `/teacher/exams` | ✅ Done | smoke |
+| TCH-14 | Assign tasks | `/teacher/assignments` | ✅ Done | smoke |
+| TCH-15 | Review student submissions | `/teacher/submissions` | ✅ Done | smoke |
+| TCH-16 | Review handwriting evaluations | `/teacher/evaluations` | ✅ Done | smoke |
+| TCH-17 | Teacher feedback | `/teacher/dashboard` | ✅ Done | smoke |
+| TCH-18 | Student performance overview | `/teacher/students` | ✅ Done | smoke |
+| TCH-19 | Review history | `/teacher/history` | ✅ Done | smoke |
+| TCH-20 | Notifications | `/teacher/notifications` | ✅ Done | smoke |
+| TCH-21 | Reviewer analytics | `/teacher/analytics` | ✅ Done | smoke |
+| TCH-22 | Status flow Draft→Submitted→In Review→Changes Requested→Approved→Published→Archived | `/teacher/dashboard` | ✅ Done | e2e |
+| TCH-23 | Role permissions simulated (reviewer vs teacher) | `/teacher/dashboard` | ✅ Done | smoke |
 
-## §29 School & college portal (0/26)
+## §29 School & college portal (26/26)
 
 - **Roles:** School Admin, College Admin
 - **Flutter:** Institution mobile access defined in role matrix
@@ -923,34 +923,34 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| INST-01 | Institution onboarding | `/institution/onboarding` | ⬜ Todo | — |
-| INST-02 | Institution profile | `/institution/profile` | ⬜ Todo | — |
-| INST-03 | Academic session setup | `/institution/sessions` | ⬜ Todo | — |
-| INST-04 | Class setup | `/institution/classes` | ⬜ Todo | — |
-| INST-05 | Subject setup | `/institution/subjects` | ⬜ Todo | — |
-| INST-06 | Teacher management | `/institution/teachers` | ⬜ Todo | — |
-| INST-07 | Student management | `/institution/students` | ⬜ Todo | — |
-| INST-08 | Class grouping | `/institution/classes` | ⬜ Todo | — |
-| INST-09 | Question paper upload | `/institution/question-papers` | ⬜ Todo | — |
-| INST-10 | Private question bank | `/institution/question-bank` | ⬜ Todo | — |
-| INST-11 | Institution exam creation | `/institution/exams` | ⬜ Todo | — |
-| INST-12 | Assignment creation | `/institution/assignments` | ⬜ Todo | — |
-| INST-13 | Assignment distribution | `/institution/dashboard` | ⬜ Todo | — |
-| INST-14 | Student submissions | `/institution/dashboard` | ⬜ Todo | — |
-| INST-15 | Exam scheduling | `/institution/exams` | ⬜ Todo | — |
-| INST-16 | Performance analytics | `/institution/analytics` | ⬜ Todo | — |
-| INST-17 | Subject-level reports | `/institution/dashboard` | ⬜ Todo | — |
-| INST-18 | Teacher dashboard (institution view) | `/institution/teachers/[teacherId]` | ⬜ Todo | — |
-| INST-19 | Student dashboard (institution view) | `/institution/students/[studentId]` | ⬜ Todo | — |
-| INST-20 | Institution subscription | `/institution/billing` | ⬜ Todo | — |
-| INST-21 | Institution billing UI | `/institution/billing` | ⬜ Todo | — |
-| INST-22 | Resource management | `/institution/resources` | ⬜ Todo | — |
-| INST-23 | Announcements | `/institution/announcements` | ⬜ Todo | — |
-| INST-24 | Notification management | `/institution/notifications` | ⬜ Todo | — |
-| INST-25 | Institution privacy settings | `/institution/settings` | ⬜ Todo | — |
-| INST-26 | Institution-scoped navigation | `/institution/dashboard` | ⬜ Todo | — |
+| INST-01 | Institution onboarding | `/institution/onboarding` | ✅ Done | smoke |
+| INST-02 | Institution profile | `/institution/profile` | ✅ Done | smoke |
+| INST-03 | Academic session setup | `/institution/sessions` | ✅ Done | smoke |
+| INST-04 | Class setup | `/institution/classes` | ✅ Done | smoke |
+| INST-05 | Subject setup | `/institution/subjects` | ✅ Done | smoke |
+| INST-06 | Teacher management | `/institution/teachers` | ✅ Done | smoke |
+| INST-07 | Student management | `/institution/students` | ✅ Done | smoke |
+| INST-08 | Class grouping | `/institution/classes` | ✅ Done | smoke |
+| INST-09 | Question paper upload | `/institution/question-papers` | ✅ Done | smoke |
+| INST-10 | Private question bank | `/institution/question-bank` | ✅ Done | smoke |
+| INST-11 | Institution exam creation | `/institution/exams` | ✅ Done | e2e |
+| INST-12 | Assignment creation | `/institution/assignments` | ✅ Done | smoke |
+| INST-13 | Assignment distribution | `/institution/dashboard` | ✅ Done | smoke |
+| INST-14 | Student submissions | `/institution/dashboard` | ✅ Done | smoke |
+| INST-15 | Exam scheduling | `/institution/exams` | ✅ Done | smoke |
+| INST-16 | Performance analytics | `/institution/analytics` | ✅ Done | smoke |
+| INST-17 | Subject-level reports | `/institution/dashboard` | ✅ Done | smoke |
+| INST-18 | Teacher dashboard (institution view) | `/institution/teachers/[teacherId]` | ✅ Done | smoke |
+| INST-19 | Student dashboard (institution view) | `/institution/students/[studentId]` | ✅ Done | smoke |
+| INST-20 | Institution subscription | `/institution/billing` | ✅ Done | smoke |
+| INST-21 | Institution billing UI | `/institution/billing` | ✅ Done | smoke |
+| INST-22 | Resource management | `/institution/resources` | ✅ Done | smoke |
+| INST-23 | Announcements | `/institution/announcements` | ✅ Done | smoke |
+| INST-24 | Notification management | `/institution/notifications` | ✅ Done | smoke |
+| INST-25 | Institution privacy settings | `/institution/settings` | ✅ Done | smoke |
+| INST-26 | Institution-scoped navigation | `/institution/dashboard` | ✅ Done | smoke |
 
-## §30 Admin global overview (0/19)
+## §30 Admin global overview (19/19)
 
 - **Roles:** Platform Admin, Super Admin (subsets for others)
 - **Flutter:** — (web management)
@@ -959,27 +959,27 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| ADM-01 | Total users | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-02 | Active students | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-03 | New registrations | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-04 | Paid users | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-05 | Subscription revenue | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-06 | AI requests | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-07 | Voice sessions | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-08 | Total questions | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-09 | Total books | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-10 | Published chapters | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-11 | Pending reviews | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-12 | Content coverage | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-13 | Failed ingestion jobs | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-14 | Reported AI answers | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-15 | System alerts | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-16 | Institution growth | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-17 | Top subjects | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-18 | Recent activities | `/admin/dashboard` | ⬜ Todo | — |
-| ADM-19 | Charts, filters, date selectors, drill-down | `/admin/dashboard` | ⬜ Todo | — |
+| ADM-01 | Total users | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-02 | Active students | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-03 | New registrations | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-04 | Paid users | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-05 | Subscription revenue | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-06 | AI requests | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-07 | Voice sessions | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-08 | Total questions | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-09 | Total books | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-10 | Published chapters | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-11 | Pending reviews | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-12 | Content coverage | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-13 | Failed ingestion jobs | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-14 | Reported AI answers | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-15 | System alerts | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-16 | Institution growth | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-17 | Top subjects | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-18 | Recent activities | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-19 | Charts, filters, date selectors, drill-down | `/admin/dashboard` | ✅ Done | smoke |
 
-## §31 Admin curriculum management (0/20)
+## §31 Admin curriculum management (20/20)
 
 - **Roles:** Content Manager, Platform/Super Admin
 - **Flutter:** — (web management)
@@ -988,28 +988,28 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| ACUR-01 | Education levels CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-02 | Academic years CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-03 | Exam years CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-04 | Curriculum versions CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-05 | Boards CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-06 | Groups CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-07 | Classes CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-08 | Subjects CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-09 | Papers CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-10 | Chapters CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-11 | Topics CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-12 | Learning outcomes CRUD | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-13 | Prerequisites | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-14 | Syllabus relationships | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-15 | Curriculum updates | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-16 | Version archiving | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-17 | Curriculum migration mapping | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-18 | Destructive action confirmation | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-19 | Bulk operations | `/admin/curriculum` | ⬜ Todo | — |
-| ACUR-20 | Search | `/admin/curriculum` | ⬜ Todo | — |
+| ACUR-01 | Education levels CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-02 | Academic years CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-03 | Exam years CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-04 | Curriculum versions CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-05 | Boards CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-06 | Groups CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-07 | Classes CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-08 | Subjects CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-09 | Papers CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-10 | Chapters CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-11 | Topics CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-12 | Learning outcomes CRUD | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-13 | Prerequisites | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-14 | Syllabus relationships | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-15 | Curriculum updates | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-16 | Version archiving | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-17 | Curriculum migration mapping | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-18 | Destructive action confirmation | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-19 | Bulk operations | `/admin/curriculum` | ✅ Done | smoke |
+| ACUR-20 | Search | `/admin/curriculum` | ✅ Done | smoke |
 
-## §32 Admin book & document management (0/29)
+## §32 Admin book & document management (29/29)
 
 - **Roles:** Content Manager, Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1018,37 +1018,37 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| ABK-01 | Book list | `/admin/books` | ⬜ Todo | — |
-| ABK-02 | Add book | `/admin/books` | ⬜ Todo | — |
-| ABK-03 | Edit book | `/admin/books` | ⬜ Todo | — |
-| ABK-04 | Upload PDF | `/admin/books` | ⬜ Todo | — |
-| ABK-05 | Multi-file upload | `/admin/books` | ⬜ Todo | — |
-| ABK-06 | Preview | `/admin/books` | ⬜ Todo | — |
-| ABK-07 | Replace version | `/admin/books` | ⬜ Todo | — |
-| ABK-08 | Archive book | `/admin/books` | ⬜ Todo | — |
-| ABK-09 | Manage chapters | `/admin/books/[bookId]` | ⬜ Todo | — |
-| ABK-10 | Manage pages | `/admin/books` | ⬜ Todo | — |
-| ABK-11 | Manage metadata | `/admin/books` | ⬜ Todo | — |
-| ABK-12 | Language selection | `/admin/books` | ⬜ Todo | — |
-| ABK-13 | Publication year | `/admin/books` | ⬜ Todo | — |
-| ABK-14 | Curriculum version mapping | `/admin/books` | ⬜ Todo | — |
-| ABK-15 | Copyright / license metadata | `/admin/books` | ⬜ Todo | — |
-| ABK-16 | Upload activity | `/admin/books` | ⬜ Todo | — |
-| ABK-17 | Ingestion status | `/admin/books` | ⬜ Todo | — |
-| ABK-18 | Processing logs | `/admin/books` | ⬜ Todo | — |
-| ABK-19 | OCR preview | `/admin/books` | ⬜ Todo | — |
-| ABK-20 | Extracted text preview | `/admin/books` | ⬜ Todo | — |
-| ABK-21 | Page mapping | `/admin/books` | ⬜ Todo | — |
-| ABK-22 | Chunk preview | `/admin/books` | ⬜ Todo | — |
-| ABK-23 | Indexing status | `/admin/books` | ⬜ Todo | — |
-| ABK-24 | Retry failed processing | `/admin/books` | ⬜ Todo | — |
-| ABK-25 | Reindex | `/admin/books` | ⬜ Todo | — |
-| ABK-26 | Publish / unpublish | `/admin/books` | ⬜ Todo | — |
-| ABK-27 | Reviewer assignment | `/admin/books` | ⬜ Todo | — |
-| ABK-28 | Book audit history | `/admin/books` | ⬜ Todo | — |
-| ABK-29 | Pipeline Upload→Validate→Extract→OCR→Map→Chunk→Embed→Index→QC→Review→Publish | `/admin/books` | ⬜ Todo | — |
+| ABK-01 | Book list | `/admin/books` | ✅ Done | smoke |
+| ABK-02 | Add book | `/admin/books` | ✅ Done | smoke |
+| ABK-03 | Edit book | `/admin/books` | ✅ Done | smoke |
+| ABK-04 | Upload PDF | `/admin/books` | ✅ Done | e2e |
+| ABK-05 | Multi-file upload | `/admin/books` | ✅ Done | smoke |
+| ABK-06 | Preview | `/admin/books` | ✅ Done | smoke |
+| ABK-07 | Replace version | `/admin/books` | ✅ Done | smoke |
+| ABK-08 | Archive book | `/admin/books` | ✅ Done | smoke |
+| ABK-09 | Manage chapters | `/admin/books/[bookId]` | ✅ Done | smoke |
+| ABK-10 | Manage pages | `/admin/books` | ✅ Done | smoke |
+| ABK-11 | Manage metadata | `/admin/books` | ✅ Done | smoke |
+| ABK-12 | Language selection | `/admin/books` | ✅ Done | smoke |
+| ABK-13 | Publication year | `/admin/books` | ✅ Done | smoke |
+| ABK-14 | Curriculum version mapping | `/admin/books` | ✅ Done | smoke |
+| ABK-15 | Copyright / license metadata | `/admin/books` | ✅ Done | smoke |
+| ABK-16 | Upload activity | `/admin/books` | ✅ Done | smoke |
+| ABK-17 | Ingestion status | `/admin/books` | ✅ Done | smoke |
+| ABK-18 | Processing logs | `/admin/books` | ✅ Done | smoke |
+| ABK-19 | OCR preview | `/admin/books` | ✅ Done | smoke |
+| ABK-20 | Extracted text preview | `/admin/books` | ✅ Done | smoke |
+| ABK-21 | Page mapping | `/admin/books` | ✅ Done | smoke |
+| ABK-22 | Chunk preview | `/admin/books` | ✅ Done | smoke |
+| ABK-23 | Indexing status | `/admin/books` | ✅ Done | smoke |
+| ABK-24 | Retry failed processing | `/admin/books` | ✅ Done | smoke |
+| ABK-25 | Reindex | `/admin/books` | ✅ Done | smoke |
+| ABK-26 | Publish / unpublish | `/admin/books` | ✅ Done | smoke |
+| ABK-27 | Reviewer assignment | `/admin/books` | ✅ Done | smoke |
+| ABK-28 | Book audit history | `/admin/books` | ✅ Done | smoke |
+| ABK-29 | Pipeline Upload→Validate→Extract→OCR→Map→Chunk→Embed→Index→QC→Review→Publish | `/admin/books` | ✅ Done | e2e |
 
-## §33 Admin question management (0/32)
+## §33 Admin question management (32/32)
 
 - **Roles:** Content Manager, Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1057,40 +1057,40 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| AQ-01 | Question database | `/admin/questions` | ⬜ Todo | — |
-| AQ-02 | Add question | `/admin/questions` | ⬜ Todo | — |
-| AQ-03 | Edit question | `/admin/questions` | ⬜ Todo | — |
-| AQ-04 | Delete / archive | `/admin/questions` | ⬜ Todo | — |
-| AQ-05 | Rich-text question editor | `/admin/questions` | ⬜ Todo | — |
-| AQ-06 | Math equation editor (LaTeX + preview) | `/admin/questions` | ⬜ Todo | — |
-| AQ-07 | Answer editor | `/admin/questions` | ⬜ Todo | — |
-| AQ-08 | Explanation editor | `/admin/questions` | ⬜ Todo | — |
-| AQ-09 | CQ multipart editor | `/admin/questions` | ⬜ Todo | — |
-| AQ-10 | Difficulty selector | `/admin/questions` | ⬜ Todo | — |
-| AQ-11 | Marks | `/admin/questions` | ⬜ Todo | — |
-| AQ-12 | Source citation | `/admin/questions` | ⬜ Todo | — |
-| AQ-13 | Chapter mapping | `/admin/questions` | ⬜ Todo | — |
-| AQ-14 | Topic mapping | `/admin/questions` | ⬜ Todo | — |
-| AQ-15 | Board mapping | `/admin/questions` | ⬜ Todo | — |
-| AQ-16 | Year mapping | `/admin/questions` | ⬜ Todo | — |
-| AQ-17 | Tags | `/admin/questions` | ⬜ Todo | — |
-| AQ-18 | Verification status | `/admin/questions` | ⬜ Todo | — |
-| AQ-19 | Bulk upload | `/admin/questions` | ⬜ Todo | — |
-| AQ-20 | CSV import | `/admin/questions` | ⬜ Todo | — |
-| AQ-21 | Excel import (simulated parse) | `/admin/questions` | ⬜ Todo | — |
-| AQ-22 | Word import (simulated) | `/admin/questions` | ⬜ Todo | — |
-| AQ-23 | PDF import (simulated) | `/admin/questions` | ⬜ Todo | — |
-| AQ-24 | Image import (simulated) | `/admin/questions` | ⬜ Todo | — |
-| AQ-25 | Simulated question extraction | `/admin/questions` | ⬜ Todo | — |
-| AQ-26 | Extraction preview | `/admin/questions` | ⬜ Todo | — |
-| AQ-27 | Duplicate detection | `/admin/questions` | ⬜ Todo | — |
-| AQ-28 | Similarity warning | `/admin/questions` | ⬜ Todo | — |
-| AQ-29 | Reviewer assignment | `/admin/questions` | ⬜ Todo | — |
-| AQ-30 | Content approval | `/admin/questions` | ⬜ Todo | — |
-| AQ-31 | Bulk publish | `/admin/questions` | ⬜ Todo | — |
-| AQ-32 | Version history | `/admin/questions` | ⬜ Todo | — |
+| AQ-01 | Question database | `/admin/questions` | ✅ Done | smoke |
+| AQ-02 | Add question | `/admin/questions` | ✅ Done | smoke |
+| AQ-03 | Edit question | `/admin/questions` | ✅ Done | smoke |
+| AQ-04 | Delete / archive | `/admin/questions` | ✅ Done | smoke |
+| AQ-05 | Rich-text question editor | `/admin/questions` | ✅ Done | smoke |
+| AQ-06 | Math equation editor (LaTeX + preview) | `/admin/questions` | ✅ Done | smoke |
+| AQ-07 | Answer editor | `/admin/questions` | ✅ Done | smoke |
+| AQ-08 | Explanation editor | `/admin/questions` | ✅ Done | smoke |
+| AQ-09 | CQ multipart editor | `/admin/questions` | ✅ Done | smoke |
+| AQ-10 | Difficulty selector | `/admin/questions` | ✅ Done | smoke |
+| AQ-11 | Marks | `/admin/questions` | ✅ Done | smoke |
+| AQ-12 | Source citation | `/admin/questions` | ✅ Done | smoke |
+| AQ-13 | Chapter mapping | `/admin/questions` | ✅ Done | smoke |
+| AQ-14 | Topic mapping | `/admin/questions` | ✅ Done | smoke |
+| AQ-15 | Board mapping | `/admin/questions` | ✅ Done | smoke |
+| AQ-16 | Year mapping | `/admin/questions` | ✅ Done | smoke |
+| AQ-17 | Tags | `/admin/questions` | ✅ Done | smoke |
+| AQ-18 | Verification status | `/admin/questions` | ✅ Done | smoke |
+| AQ-19 | Bulk upload | `/admin/questions` | ✅ Done | smoke |
+| AQ-20 | CSV import <br><sub>CSV is genuinely parsed; Excel/Word/PDF/image extraction simulated</sub> | `/admin/questions` | ✅ Done | e2e |
+| AQ-21 | Excel import (simulated parse) | `/admin/questions` | ✅ Done | smoke |
+| AQ-22 | Word import (simulated) | `/admin/questions` | ✅ Done | smoke |
+| AQ-23 | PDF import (simulated) | `/admin/questions` | ✅ Done | smoke |
+| AQ-24 | Image import (simulated) | `/admin/questions` | ✅ Done | smoke |
+| AQ-25 | Simulated question extraction | `/admin/questions` | ✅ Done | smoke |
+| AQ-26 | Extraction preview | `/admin/questions` | ✅ Done | smoke |
+| AQ-27 | Duplicate detection | `/admin/questions` | ✅ Done | unit+e2e |
+| AQ-28 | Similarity warning | `/admin/questions` | ✅ Done | smoke |
+| AQ-29 | Reviewer assignment | `/admin/questions` | ✅ Done | smoke |
+| AQ-30 | Content approval | `/admin/questions` | ✅ Done | smoke |
+| AQ-31 | Bulk publish | `/admin/questions` | ✅ Done | smoke |
+| AQ-32 | Version history | `/admin/questions` | ✅ Done | smoke |
 
-## §34 Admin board question management (0/17)
+## §34 Admin board question management (17/17)
 
 - **Roles:** Content Manager, Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1099,25 +1099,25 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| ABQ-01 | Board question archives | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-02 | Year selection | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-03 | Board selection | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-04 | Exam selection | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-05 | Question paper upload | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-06 | Paper metadata | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-07 | Paper preview | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-08 | OCR extraction preview | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-09 | Question splitting | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-10 | Chapter mapping | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-11 | Question verification | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-12 | Source authentication status | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-13 | Solved paper management | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-14 | Duplicate matching | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-15 | Related question grouping | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-16 | Historical frequency dashboard | `/admin/board-questions` | ⬜ Todo | — |
-| ABQ-17 | Curriculum relevance warnings | `/admin/board-questions` | ⬜ Todo | — |
+| ABQ-01 | Board question archives | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-02 | Year selection | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-03 | Board selection | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-04 | Exam selection | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-05 | Question paper upload | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-06 | Paper metadata | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-07 | Paper preview | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-08 | OCR extraction preview | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-09 | Question splitting | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-10 | Chapter mapping | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-11 | Question verification | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-12 | Source authentication status | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-13 | Solved paper management | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-14 | Duplicate matching | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-15 | Related question grouping | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-16 | Historical frequency dashboard | `/admin/board-questions` | ✅ Done | smoke |
+| ABQ-17 | Curriculum relevance warnings | `/admin/board-questions` | ✅ Done | smoke |
 
-## §35 Admin school/college question management (0/13)
+## §35 Admin school/college question management (13/13)
 
 - **Roles:** Content Manager, Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1126,21 +1126,21 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| AIQ-01 | Institution directory | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-02 | Institution question submissions | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-03 | Submission review | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-04 | Original scan | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-05 | Extracted question preview | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-06 | Metadata validation | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-07 | Source verification | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-08 | Public/private visibility | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-09 | Permission/license status | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-10 | Approve / reject | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-11 | Duplicate detection | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-12 | Submission history | `/admin/institution-questions` | ⬜ Todo | — |
-| AIQ-13 | Institution moderation | `/admin/institution-questions` | ⬜ Todo | — |
+| AIQ-01 | Institution directory | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-02 | Institution question submissions | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-03 | Submission review | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-04 | Original scan | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-05 | Extracted question preview | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-06 | Metadata validation | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-07 | Source verification | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-08 | Public/private visibility | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-09 | Permission/license status | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-10 | Approve / reject | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-11 | Duplicate detection | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-12 | Submission history | `/admin/institution-questions` | ✅ Done | smoke |
+| AIQ-13 | Institution moderation | `/admin/institution-questions` | ✅ Done | smoke |
 
-## §36 Admin AI knowledge base (0/33)
+## §36 Admin AI knowledge base (33/33)
 
 - **Roles:** Platform/Super Admin (Content Manager read)
 - **Flutter:** — (web management)
@@ -1149,41 +1149,41 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| AKB-01 | Overview | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-02 | Document collections | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-03 | Subject collections | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-04 | Curriculum collections | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-05 | Source document list | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-06 | Ingestion queues | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-07 | Indexing jobs | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-08 | Embedding status | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-09 | Chunk preview | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-10 | Metadata viewer | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-11 | Retrieval preview | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-12 | Query simulator | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-13 | Top matching chunks | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-14 | Relevance scores | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-15 | Citation preview | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-16 | Failed retrieval dashboard | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-17 | Missing source alerts | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-18 | Content coverage matrix | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-19 | Reindex controls | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-20 | Model configuration forms | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-21 | Prompt template editor | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-22 | Tutor mode settings | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-23 | AI policy settings | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-24 | Model routing configuration | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-25 | Token usage statistics | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-26 | Estimated usage costs | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-27 | AI error logs | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-28 | Feedback reports | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-29 | Incorrect answer review | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-30 | Source mismatch reports | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-31 | Quality evaluation datasets | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-32 | Version comparison | `/admin/knowledge-base` | ⬜ Todo | — |
-| AKB-33 | Rollback UI | `/admin/knowledge-base` | ⬜ Todo | — |
+| AKB-01 | Overview <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-02 | Document collections <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-03 | Subject collections <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-04 | Curriculum collections <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-05 | Source document list <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-06 | Ingestion queues <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-07 | Indexing jobs <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-08 | Embedding status <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-09 | Chunk preview <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-10 | Metadata viewer <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-11 | Retrieval preview <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-12 | Query simulator <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-13 | Top matching chunks <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-14 | Relevance scores <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-15 | Citation preview <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-16 | Failed retrieval dashboard <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-17 | Missing source alerts <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-18 | Content coverage matrix <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-19 | Reindex controls <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-20 | Model configuration forms <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-21 | Prompt template editor <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-22 | Tutor mode settings <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-23 | AI policy settings <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-24 | Model routing configuration <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-25 | Token usage statistics <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-26 | Estimated usage costs <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-27 | AI error logs <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-28 | Feedback reports <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-29 | Incorrect answer review <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-30 | Source mismatch reports <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-31 | Quality evaluation datasets <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-32 | Version comparison <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
+| AKB-33 | Rollback UI <br><sub>All model/provider settings operate on a local mock config</sub> | `/admin/knowledge-base` | ✅ Done | smoke |
 
-## §37 Admin exam management (0/22)
+## §37 Admin exam management (22/22)
 
 - **Roles:** Content Manager, Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1192,30 +1192,30 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| AEX-01 | Exam list | `/admin/exams` | ⬜ Todo | — |
-| AEX-02 | Creation wizard | `/admin/exams` | ⬜ Todo | — |
-| AEX-03 | Template library | `/admin/exams` | ⬜ Todo | — |
-| AEX-04 | Chapter test creation | `/admin/exams` | ⬜ Todo | — |
-| AEX-05 | Full syllabus model test | `/admin/exams` | ⬜ Todo | — |
-| AEX-06 | Board pattern templates | `/admin/exams` | ⬜ Todo | — |
-| AEX-07 | Question selection | `/admin/exams` | ⬜ Todo | — |
-| AEX-08 | Randomization | `/admin/exams` | ⬜ Todo | — |
-| AEX-09 | Exam preview | `/admin/exams` | ⬜ Todo | — |
-| AEX-10 | Marks distribution | `/admin/exams` | ⬜ Todo | — |
-| AEX-11 | Duration config | `/admin/exams` | ⬜ Todo | — |
-| AEX-12 | Negative marking rules | `/admin/exams` | ⬜ Todo | — |
-| AEX-13 | Scheduling | `/admin/exams` | ⬜ Todo | — |
-| AEX-14 | Publishing | `/admin/exams` | ⬜ Todo | — |
-| AEX-15 | Draft management | `/admin/exams` | ⬜ Todo | — |
-| AEX-16 | Exam analytics | `/admin/exams` | ⬜ Todo | — |
-| AEX-17 | Student attempt reports | `/admin/exams` | ⬜ Todo | — |
-| AEX-18 | Answer key management | `/admin/exams` | ⬜ Todo | — |
-| AEX-19 | CQ marking rubrics | `/admin/exams` | ⬜ Todo | — |
-| AEX-20 | Grading review | `/admin/exams` | ⬜ Todo | — |
-| AEX-21 | Manual override | `/admin/exams` | ⬜ Todo | — |
-| AEX-22 | Result publication | `/admin/exams` | ⬜ Todo | — |
+| AEX-01 | Exam list | `/admin/exams` | ✅ Done | smoke |
+| AEX-02 | Creation wizard | `/admin/exams` | ✅ Done | e2e |
+| AEX-03 | Template library | `/admin/exams` | ✅ Done | smoke |
+| AEX-04 | Chapter test creation | `/admin/exams` | ✅ Done | smoke |
+| AEX-05 | Full syllabus model test | `/admin/exams` | ✅ Done | smoke |
+| AEX-06 | Board pattern templates | `/admin/exams` | ✅ Done | smoke |
+| AEX-07 | Question selection | `/admin/exams` | ✅ Done | smoke |
+| AEX-08 | Randomization | `/admin/exams` | ✅ Done | smoke |
+| AEX-09 | Exam preview | `/admin/exams` | ✅ Done | smoke |
+| AEX-10 | Marks distribution | `/admin/exams` | ✅ Done | smoke |
+| AEX-11 | Duration config | `/admin/exams` | ✅ Done | smoke |
+| AEX-12 | Negative marking rules | `/admin/exams` | ✅ Done | smoke |
+| AEX-13 | Scheduling | `/admin/exams` | ✅ Done | smoke |
+| AEX-14 | Publishing | `/admin/exams` | ✅ Done | e2e |
+| AEX-15 | Draft management | `/admin/exams` | ✅ Done | smoke |
+| AEX-16 | Exam analytics | `/admin/exams` | ✅ Done | smoke |
+| AEX-17 | Student attempt reports | `/admin/exams` | ✅ Done | smoke |
+| AEX-18 | Answer key management | `/admin/exams` | ✅ Done | smoke |
+| AEX-19 | CQ marking rubrics | `/admin/exams` | ✅ Done | smoke |
+| AEX-20 | Grading review | `/admin/exams` | ✅ Done | smoke |
+| AEX-21 | Manual override | `/admin/exams` | ✅ Done | smoke |
+| AEX-22 | Result publication | `/admin/exams` | ✅ Done | smoke |
 
-## §38 Admin student & user management (0/17)
+## §38 Admin student & user management (17/17)
 
 - **Roles:** Support, Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1224,25 +1224,25 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| AUSR-01 | User directory | `/admin/users` | ⬜ Todo | — |
-| AUSR-02 | User search | `/admin/users` | ⬜ Todo | — |
-| AUSR-03 | Advanced filters | `/admin/users` | ⬜ Todo | — |
-| AUSR-04 | Student profile | `/admin/users/[userId]` | ⬜ Todo | — |
-| AUSR-05 | Academic details | `/admin/users` | ⬜ Todo | — |
-| AUSR-06 | Learning analytics | `/admin/users` | ⬜ Todo | — |
-| AUSR-07 | Subscription status | `/admin/users` | ⬜ Todo | — |
-| AUSR-08 | Account status | `/admin/users` | ⬜ Todo | — |
-| AUSR-09 | Support history | `/admin/users` | ⬜ Todo | — |
-| AUSR-10 | Role management | `/admin/users` | ⬜ Todo | — |
-| AUSR-11 | Guardian links | `/admin/users` | ⬜ Todo | — |
-| AUSR-12 | Institution links | `/admin/users` | ⬜ Todo | — |
-| AUSR-13 | Suspend / reactivate | `/admin/users` | ⬜ Todo | — |
-| AUSR-14 | Permission viewer | `/admin/users` | ⬜ Todo | — |
-| AUSR-15 | Consent status | `/admin/users` | ⬜ Todo | — |
-| AUSR-16 | Account deletion workflow | `/admin/users` | ⬜ Todo | — |
-| AUSR-17 | Audit history | `/admin/users` | ⬜ Todo | — |
+| AUSR-01 | User directory | `/admin/users` | ✅ Done | smoke |
+| AUSR-02 | User search | `/admin/users` | ✅ Done | smoke |
+| AUSR-03 | Advanced filters | `/admin/users` | ✅ Done | smoke |
+| AUSR-04 | Student profile | `/admin/users/[userId]` | ✅ Done | smoke |
+| AUSR-05 | Academic details | `/admin/users` | ✅ Done | smoke |
+| AUSR-06 | Learning analytics | `/admin/users` | ✅ Done | smoke |
+| AUSR-07 | Subscription status | `/admin/users` | ✅ Done | smoke |
+| AUSR-08 | Account status | `/admin/users` | ✅ Done | smoke |
+| AUSR-09 | Support history | `/admin/users` | ✅ Done | smoke |
+| AUSR-10 | Role management | `/admin/users` | ✅ Done | smoke |
+| AUSR-11 | Guardian links | `/admin/users` | ✅ Done | smoke |
+| AUSR-12 | Institution links | `/admin/users` | ✅ Done | smoke |
+| AUSR-13 | Suspend / reactivate | `/admin/users` | ✅ Done | smoke |
+| AUSR-14 | Permission viewer | `/admin/users` | ✅ Done | smoke |
+| AUSR-15 | Consent status | `/admin/users` | ✅ Done | smoke |
+| AUSR-16 | Account deletion workflow | `/admin/users` | ✅ Done | smoke |
+| AUSR-17 | Audit history | `/admin/users` | ✅ Done | smoke |
 
-## §39 Admin teacher & reviewer management (0/11)
+## §39 Admin teacher & reviewer management (11/11)
 
 - **Roles:** Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1251,19 +1251,19 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| ATCH-01 | Teacher directory | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-02 | Reviewer profiles | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-03 | Subject assignment | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-04 | Role assignment | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-05 | Review queues | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-06 | Workload overview | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-07 | Approval performance | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-08 | Review history | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-09 | Quality feedback | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-10 | Teacher invitations (simulated) | `/admin/teachers` | ⬜ Todo | — |
-| ATCH-11 | Access management | `/admin/teachers` | ⬜ Todo | — |
+| ATCH-01 | Teacher directory | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-02 | Reviewer profiles | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-03 | Subject assignment | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-04 | Role assignment | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-05 | Review queues | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-06 | Workload overview | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-07 | Approval performance | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-08 | Review history | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-09 | Quality feedback | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-10 | Teacher invitations (simulated) | `/admin/teachers` | ✅ Done | smoke |
+| ATCH-11 | Access management | `/admin/teachers` | ✅ Done | smoke |
 
-## §40 Subscription & billing (0/25)
+## §40 Subscription & billing (25/25)
 
 - **Roles:** Platform/Super Admin (Support read); Student/Parent checkout
 - **Flutter:** Student checkout in mobile repo
@@ -1272,33 +1272,33 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| BILL-01 | Pricing plan manager | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-02 | Free plan | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-03 | Student Pro plan | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-04 | Family plan | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-05 | Institution plan | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-06 | Plan feature limits | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-07 | AI credit quotas | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-08 | Voice usage quotas | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-09 | Subscription directory | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-10 | Payment history | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-11 | Invoice list | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-12 | Coupon management | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-13 | Discounts | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-14 | Trial management | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-15 | Checkout simulator | `/student/subscription/checkout` | ⬜ Todo | — |
-| BILL-16 | Payment success | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-17 | Payment failed | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-18 | Pending payment | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-19 | Refund request UI | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-20 | Cancellation flow | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-21 | Upgrade / downgrade | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-22 | Revenue analytics | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-23 | Subscription analytics | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-24 | Entitlement displays update on plan change | `/admin/subscriptions` | ⬜ Todo | — |
-| BILL-25 | All financial numbers labeled demo | `/admin/subscriptions` | ⬜ Todo | — |
+| BILL-01 | Pricing plan manager | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-02 | Free plan | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-03 | Student Pro plan | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-04 | Family plan | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-05 | Institution plan | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-06 | Plan feature limits | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-07 | AI credit quotas | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-08 | Voice usage quotas | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-09 | Subscription directory | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-10 | Payment history | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-11 | Invoice list | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-12 | Coupon management | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-13 | Discounts | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-14 | Trial management | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-15 | Checkout simulator | `/student/subscription/checkout` | ✅ Done | unit+e2e |
+| BILL-16 | Payment success | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-17 | Payment failed | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-18 | Pending payment | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-19 | Refund request UI | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-20 | Cancellation flow | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-21 | Upgrade / downgrade | `/admin/subscriptions` | ✅ Done | unit+e2e |
+| BILL-22 | Revenue analytics | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-23 | Subscription analytics | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-24 | Entitlement displays update on plan change | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-25 | All financial numbers labeled demo | `/admin/subscriptions` | ✅ Done | unit |
 
-## §41 Admin analytics & BI (0/28)
+## §41 Admin analytics & BI (28/28)
 
 - **Roles:** Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1307,36 +1307,36 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| BI-01 | User acquisition | `/admin/analytics` | ⬜ Todo | — |
-| BI-02 | User activity | `/admin/analytics` | ⬜ Todo | — |
-| BI-03 | Learning retention | `/admin/analytics` | ⬜ Todo | — |
-| BI-04 | DAU | `/admin/analytics` | ⬜ Todo | — |
-| BI-05 | MAU | `/admin/analytics` | ⬜ Todo | — |
-| BI-06 | Subscription conversion | `/admin/analytics` | ⬜ Todo | — |
-| BI-07 | Churn | `/admin/analytics` | ⬜ Todo | — |
-| BI-08 | MRR | `/admin/analytics` | ⬜ Todo | — |
-| BI-09 | Revenue by plan | `/admin/analytics` | ⬜ Todo | — |
-| BI-10 | AI cost estimates | `/admin/analytics` | ⬜ Todo | — |
-| BI-11 | Cost per active student | `/admin/analytics` | ⬜ Todo | — |
-| BI-12 | Subject popularity | `/admin/analytics` | ⬜ Todo | — |
-| BI-13 | Chapter completion | `/admin/analytics` | ⬜ Todo | — |
-| BI-14 | Exam performance | `/admin/analytics` | ⬜ Todo | — |
-| BI-15 | Average study duration | `/admin/analytics` | ⬜ Todo | — |
-| BI-16 | Question coverage | `/admin/analytics` | ⬜ Todo | — |
-| BI-17 | User feedback | `/admin/analytics` | ⬜ Todo | — |
-| BI-18 | Voice usage | `/admin/analytics` | ⬜ Todo | — |
-| BI-19 | Moderation volume | `/admin/analytics` | ⬜ Todo | — |
-| BI-20 | Institution usage | `/admin/analytics` | ⬜ Todo | — |
-| BI-21 | Content quality metrics | `/admin/analytics` | ⬜ Todo | — |
-| BI-22 | Date ranges | `/admin/analytics` | ⬜ Todo | — |
-| BI-23 | Chart filtering | `/admin/analytics` | ⬜ Todo | — |
-| BI-24 | Data table views | `/admin/analytics` | ⬜ Todo | — |
-| BI-25 | CSV export | `/admin/analytics` | ⬜ Todo | — |
-| BI-26 | Comparison views | `/admin/analytics` | ⬜ Todo | — |
-| BI-27 | Empty states | `/admin/analytics` | ⬜ Todo | — |
-| BI-28 | Drill-down | `/admin/analytics` | ⬜ Todo | — |
+| BI-01 | User acquisition <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-02 | User activity <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-03 | Learning retention <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-04 | DAU <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-05 | MAU <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-06 | Subscription conversion <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-07 | Churn <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-08 | MRR <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-09 | Revenue by plan <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-10 | AI cost estimates <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-11 | Cost per active student <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-12 | Subject popularity <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-13 | Chapter completion <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-14 | Exam performance <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-15 | Average study duration <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-16 | Question coverage <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-17 | User feedback <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-18 | Voice usage <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-19 | Moderation volume <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-20 | Institution usage <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-21 | Content quality metrics <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-22 | Date ranges <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-23 | Chart filtering <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-24 | Data table views <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-25 | CSV export <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-26 | Comparison views <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-27 | Empty states <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-28 | Drill-down <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
 
-## §42 Security, moderation & audit (0/17)
+## §42 Security, moderation & audit (17/17)
 
 - **Roles:** Super Admin (Platform Admin, Support subsets)
 - **Flutter:** — (web management)
@@ -1345,25 +1345,25 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| SEC-01 | Role permissions management | `/admin/security` | ⬜ Todo | — |
-| SEC-02 | Permission matrix | `/admin/security` | ⬜ Todo | — |
-| SEC-03 | Content approval audit | `/admin/security` | ⬜ Todo | — |
-| SEC-04 | Admin activity log | `/admin/security` | ⬜ Todo | — |
-| SEC-05 | Account management logs | `/admin/security` | ⬜ Todo | — |
-| SEC-06 | User reports | `/admin/moderation` | ⬜ Todo | — |
-| SEC-07 | AI response reports | `/admin/moderation` | ⬜ Todo | — |
-| SEC-08 | Moderation queue | `/admin/moderation` | ⬜ Todo | — |
-| SEC-09 | Sensitive content review | `/admin/moderation` | ⬜ Todo | — |
-| SEC-10 | Privacy requests | `/admin/moderation?tab=privacy` | ⬜ Todo | — |
-| SEC-11 | Data deletion requests | `/admin/moderation?tab=privacy` | ⬜ Todo | — |
-| SEC-12 | Guardian consent review | `/admin/moderation?tab=consent` | ⬜ Todo | — |
-| SEC-13 | Security alerts | `/admin/security` | ⬜ Todo | — |
-| SEC-14 | Session management | `/admin/security` | ⬜ Todo | — |
-| SEC-15 | API key settings (masked placeholders) | `/admin/security` | ⬜ Todo | — |
-| SEC-16 | System configuration | `/admin/security` | ⬜ Todo | — |
-| SEC-17 | Access denied states | `/admin/security` | ⬜ Todo | — |
+| SEC-01 | Role permissions management | `/admin/security` | ✅ Done | smoke |
+| SEC-02 | Permission matrix | `/admin/security` | ✅ Done | smoke |
+| SEC-03 | Content approval audit | `/admin/security` | ✅ Done | smoke |
+| SEC-04 | Admin activity log | `/admin/security` | ✅ Done | smoke |
+| SEC-05 | Account management logs | `/admin/security` | ✅ Done | smoke |
+| SEC-06 | User reports | `/admin/moderation` | ✅ Done | smoke |
+| SEC-07 | AI response reports | `/admin/moderation` | ✅ Done | smoke |
+| SEC-08 | Moderation queue | `/admin/moderation` | ✅ Done | smoke |
+| SEC-09 | Sensitive content review | `/admin/moderation` | ✅ Done | smoke |
+| SEC-10 | Privacy requests | `/admin/moderation?tab=privacy` | ✅ Done | smoke |
+| SEC-11 | Data deletion requests | `/admin/moderation?tab=privacy` | ✅ Done | smoke |
+| SEC-12 | Guardian consent review | `/admin/moderation?tab=consent` | ✅ Done | smoke |
+| SEC-13 | Security alerts | `/admin/security` | ✅ Done | smoke |
+| SEC-14 | Session management | `/admin/security` | ✅ Done | smoke |
+| SEC-15 | API key settings (masked placeholders) | `/admin/security` | ✅ Done | smoke |
+| SEC-16 | System configuration | `/admin/security` | ✅ Done | smoke |
+| SEC-17 | Access denied states | `/admin/security` | ✅ Done | e2e |
 
-## §43 Notification system (0/15)
+## §43 Notification system (15/15)
 
 - **Roles:** All
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -1372,23 +1372,23 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| NTF-01 | Types: study reminder, upcoming exam, revision reminder | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-02 | Types: assignment, exam result, teacher feedback | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-03 | Types: subscription, payment, curriculum update | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-04 | Types: board announcement, content correction, system, achievement | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-05 | Inbox | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-06 | Read / unread | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-07 | Mark all read | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-08 | Filter | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-09 | Delete / archive | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-10 | Notification detail | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-11 | Deep linking | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-12 | Preference settings | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-13 | Push permission UI | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-14 | Email preference UI | `/{portal}/notifications` | ⬜ Todo | — |
-| NTF-15 | In-app notification simulation | `/{portal}/notifications` | ⬜ Todo | — |
+| NTF-01 | Types: study reminder, upcoming exam, revision reminder | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-02 | Types: assignment, exam result, teacher feedback | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-03 | Types: subscription, payment, curriculum update | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-04 | Types: board announcement, content correction, system, achievement | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-05 | Inbox | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-06 | Read / unread | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-07 | Mark all read | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-08 | Filter | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-09 | Delete / archive | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-10 | Notification detail | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-11 | Deep linking | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-12 | Preference settings | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-13 | Push permission UI | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-14 | Email preference UI | `/{portal}/notifications` | ✅ Done | smoke |
+| NTF-15 | In-app notification simulation | `/{portal}/notifications` | ✅ Done | smoke |
 
-## §44 Student profile & settings (0/24)
+## §44 Student profile & settings (24/24)
 
 - **Roles:** Student (equivalents per role)
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -1397,32 +1397,32 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| SET-01 | Personal profile | `/student/settings` | ⬜ Todo | — |
-| SET-02 | Academic profile | `/student/settings` | ⬜ Todo | — |
-| SET-03 | Learning preferences | `/student/settings` | ⬜ Todo | — |
-| SET-04 | Language settings | `/student/settings` | ⬜ Todo | — |
-| SET-05 | Theme settings | `/student/settings` | ⬜ Todo | — |
-| SET-06 | Notification preferences | `/student/settings` | ⬜ Todo | — |
-| SET-07 | AI tutor preferences | `/student/settings` | ⬜ Todo | — |
-| SET-08 | Voice preferences | `/student/settings` | ⬜ Todo | — |
-| SET-09 | Study goals | `/student/settings` | ⬜ Todo | — |
-| SET-10 | Exam target | `/student/settings` | ⬜ Todo | — |
-| SET-11 | Subscription management | `/student/subscription` | ⬜ Todo | — |
-| SET-12 | Billing history | `/student/subscription` | ⬜ Todo | — |
-| SET-13 | Security settings | `/student/settings` | ⬜ Todo | — |
-| SET-14 | Privacy settings | `/student/settings` | ⬜ Todo | — |
-| SET-15 | Connected guardian | `/student/settings` | ⬜ Todo | — |
-| SET-16 | Institution details | `/student/settings` | ⬜ Todo | — |
-| SET-17 | Storage usage | `/student/settings` | ⬜ Todo | — |
-| SET-18 | Offline downloads | `/student/offline` | ⬜ Todo | — |
-| SET-19 | Help center | `/student/help` | ⬜ Todo | — |
-| SET-20 | Feedback | `/student/help` | ⬜ Todo | — |
-| SET-21 | Report problem | `/student/help` | ⬜ Todo | — |
-| SET-22 | Account deletion request | `/student/settings` | ⬜ Todo | — |
-| SET-23 | Logout | `/student/settings` | ⬜ Todo | — |
-| SET-24 | Reset demo data | `/student/settings` | ⬜ Todo | — |
+| SET-01 | Personal profile | `/student/settings` | ✅ Done | smoke |
+| SET-02 | Academic profile | `/student/settings` | ✅ Done | smoke |
+| SET-03 | Learning preferences | `/student/settings` | ✅ Done | smoke |
+| SET-04 | Language settings | `/student/settings` | ✅ Done | e2e |
+| SET-05 | Theme settings | `/student/settings` | ✅ Done | e2e |
+| SET-06 | Notification preferences | `/student/settings` | ✅ Done | smoke |
+| SET-07 | AI tutor preferences | `/student/settings` | ✅ Done | smoke |
+| SET-08 | Voice preferences | `/student/settings` | ✅ Done | smoke |
+| SET-09 | Study goals | `/student/settings` | ✅ Done | smoke |
+| SET-10 | Exam target | `/student/settings` | ✅ Done | smoke |
+| SET-11 | Subscription management | `/student/subscription` | ✅ Done | smoke |
+| SET-12 | Billing history | `/student/subscription` | ✅ Done | smoke |
+| SET-13 | Security settings | `/student/settings` | ✅ Done | smoke |
+| SET-14 | Privacy settings | `/student/settings` | ✅ Done | smoke |
+| SET-15 | Connected guardian | `/student/settings` | ✅ Done | smoke |
+| SET-16 | Institution details | `/student/settings` | ✅ Done | smoke |
+| SET-17 | Storage usage | `/student/settings` | ✅ Done | smoke |
+| SET-18 | Offline downloads | `/student/offline` | ✅ Done | smoke |
+| SET-19 | Help center | `/student/help` | ✅ Done | smoke |
+| SET-20 | Feedback | `/student/help` | ✅ Done | smoke |
+| SET-21 | Report problem | `/student/help` | ✅ Done | smoke |
+| SET-22 | Account deletion request | `/student/settings` | ✅ Done | smoke |
+| SET-23 | Logout | `/student/settings` | ✅ Done | smoke |
+| SET-24 | Reset demo data | `/student/settings` | ✅ Done | smoke |
 
-## §45 Search system (0/14)
+## §45 Search system (14/14)
 
 - **Roles:** All
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -1431,22 +1431,22 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| SRCH-01 | Across subjects, chapters, topics | `/student/search` | ⬜ Todo | — |
-| SRCH-02 | Across questions, board papers, institution papers | `/student/search` | ⬜ Todo | — |
-| SRCH-03 | Across notes, flashcards, books | `/student/search` | ⬜ Todo | — |
-| SRCH-04 | Across exams, conversations, resources | `/student/search` | ⬜ Todo | — |
-| SRCH-05 | Global search (⌘K palette) | `/student/search` | ⬜ Todo | — |
-| SRCH-06 | Suggestions | `/student/search` | ⬜ Todo | — |
-| SRCH-07 | Recent searches | `/student/search` | ⬜ Todo | — |
-| SRCH-08 | Popular topics | `/student/search` | ⬜ Todo | — |
-| SRCH-09 | Filters | `/student/search` | ⬜ Todo | — |
-| SRCH-10 | Grouped results | `/student/search` | ⬜ Todo | — |
-| SRCH-11 | Keyboard shortcuts | `/student/search` | ⬜ Todo | — |
-| SRCH-12 | Empty results | `/student/search` | ⬜ Todo | — |
-| SRCH-13 | Loading | `/student/search` | ⬜ Todo | — |
-| SRCH-14 | Search history removal | `/student/search` | ⬜ Todo | — |
+| SRCH-01 | Across subjects, chapters, topics | `/student/search` | ✅ Done | smoke |
+| SRCH-02 | Across questions, board papers, institution papers | `/student/search` | ✅ Done | smoke |
+| SRCH-03 | Across notes, flashcards, books | `/student/search` | ✅ Done | smoke |
+| SRCH-04 | Across exams, conversations, resources | `/student/search` | ✅ Done | smoke |
+| SRCH-05 | Global search (⌘K palette) | `/student/search` | ✅ Done | smoke |
+| SRCH-06 | Suggestions | `/student/search` | ✅ Done | smoke |
+| SRCH-07 | Recent searches | `/student/search` | ✅ Done | smoke |
+| SRCH-08 | Popular topics | `/student/search` | ✅ Done | smoke |
+| SRCH-09 | Filters | `/student/search` | ✅ Done | smoke |
+| SRCH-10 | Grouped results | `/student/search` | ✅ Done | smoke |
+| SRCH-11 | Keyboard shortcuts | `/student/search` | ✅ Done | smoke |
+| SRCH-12 | Empty results | `/student/search` | ✅ Done | smoke |
+| SRCH-13 | Loading | `/student/search` | ✅ Done | smoke |
+| SRCH-14 | Search history removal | `/student/search` | ✅ Done | smoke |
 
-## §46 Content coverage & quality (0/15)
+## §46 Content coverage & quality (15/15)
 
 - **Roles:** Admins; simplified for students
 - **Flutter:** Simplified student view in mobile repo
@@ -1455,23 +1455,23 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| COV-01 | Total curriculum chapters | `/admin/coverage` | ⬜ Todo | — |
-| COV-02 | Published chapters | `/admin/coverage` | ⬜ Todo | — |
-| COV-03 | Verified topics | `/admin/coverage` | ⬜ Todo | — |
-| COV-04 | Questions per learning outcome | `/admin/coverage` | ⬜ Todo | — |
-| COV-05 | Question type coverage | `/admin/coverage` | ⬜ Todo | — |
-| COV-06 | Question source quality | `/admin/coverage` | ⬜ Todo | — |
-| COV-07 | Subject coverage | `/admin/coverage` | ⬜ Todo | — |
-| COV-08 | Board archive completeness | `/admin/coverage` | ⬜ Todo | — |
-| COV-09 | Content review status | `/admin/coverage` | ⬜ Todo | — |
-| COV-10 | Outdated curriculum content | `/admin/coverage` | ⬜ Todo | — |
-| COV-11 | Missing learning outcomes | `/admin/coverage` | ⬜ Todo | — |
-| COV-12 | Source availability | `/admin/coverage` | ⬜ Todo | — |
-| COV-13 | Reported errors | `/admin/coverage` | ⬜ Todo | — |
-| COV-14 | Drill-down into missing content | `/admin/coverage` | ⬜ Todo | — |
-| COV-15 | Simplified student coverage view | `/student/curriculum/[subjectId]` | ⬜ Todo | — |
+| COV-01 | Total curriculum chapters | `/admin/coverage` | ✅ Done | smoke |
+| COV-02 | Published chapters | `/admin/coverage` | ✅ Done | smoke |
+| COV-03 | Verified topics | `/admin/coverage` | ✅ Done | smoke |
+| COV-04 | Questions per learning outcome | `/admin/coverage` | ✅ Done | smoke |
+| COV-05 | Question type coverage | `/admin/coverage` | ✅ Done | smoke |
+| COV-06 | Question source quality | `/admin/coverage` | ✅ Done | smoke |
+| COV-07 | Subject coverage | `/admin/coverage` | ✅ Done | smoke |
+| COV-08 | Board archive completeness | `/admin/coverage` | ✅ Done | smoke |
+| COV-09 | Content review status | `/admin/coverage` | ✅ Done | smoke |
+| COV-10 | Outdated curriculum content | `/admin/coverage` | ✅ Done | smoke |
+| COV-11 | Missing learning outcomes | `/admin/coverage` | ✅ Done | smoke |
+| COV-12 | Source availability | `/admin/coverage` | ✅ Done | smoke |
+| COV-13 | Reported errors | `/admin/coverage` | ✅ Done | smoke |
+| COV-14 | Drill-down into missing content | `/admin/coverage` | ✅ Done | smoke |
+| COV-15 | Simplified student coverage view | `/student/curriculum/[subjectId]` | ✅ Done | smoke |
 
-## §47 Marketing & public website (0/22)
+## §47 Marketing & public website (22/22)
 
 - **Roles:** Guest
 - **Flutter:** — (web management)
@@ -1480,30 +1480,30 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| MKT-01 | Homepage | `/` | ⬜ Todo | — |
-| MKT-02 | About | `/about` | ⬜ Todo | — |
-| MKT-03 | AI Tutor showcase (interactive demo) | `/features/ai-tutor` | ⬜ Todo | — |
-| MKT-04 | Voice Tutor showcase | `/features/voice-tutor` | ⬜ Todo | — |
-| MKT-05 | Question bank showcase | `/features/question-bank` | ⬜ Todo | — |
-| MKT-06 | Board preparation showcase | `/features/board-preparation` | ⬜ Todo | — |
-| MKT-07 | Learning features | `/features` | ⬜ Todo | — |
-| MKT-08 | Testimonials (clearly labeled demo) | `/` | ⬜ Todo | — |
-| MKT-09 | Pricing | `/pricing` | ⬜ Todo | — |
-| MKT-10 | For Parents | `/for-parents` | ⬜ Todo | — |
-| MKT-11 | For Teachers | `/for-teachers` | ⬜ Todo | — |
-| MKT-12 | For Schools | `/for-schools` | ⬜ Todo | — |
-| MKT-13 | For Colleges | `/for-colleges` | ⬜ Todo | — |
-| MKT-14 | FAQ | `/faq` | ⬜ Todo | — |
-| MKT-15 | Contact | `/contact` | ⬜ Todo | — |
-| MKT-16 | Help center | `/help` | ⬜ Todo | — |
-| MKT-17 | Terms of service | `/terms` | ⬜ Todo | — |
-| MKT-18 | Privacy policy | `/privacy` | ⬜ Todo | — |
-| MKT-19 | Accessibility | `/accessibility` | ⬜ Todo | — |
-| MKT-20 | Login / signup entry | `/login` | ⬜ Todo | — |
-| MKT-21 | Download mobile app section | `/` | ⬜ Todo | — |
-| MKT-22 | No fabricated statistics | `/` | ⬜ Todo | — |
+| MKT-01 | Homepage | `/` | ✅ Done | e2e |
+| MKT-02 | About | `/about` | ✅ Done | e2e |
+| MKT-03 | AI Tutor showcase (interactive demo) | `/features/ai-tutor` | ✅ Done | e2e |
+| MKT-04 | Voice Tutor showcase | `/features/voice-tutor` | ✅ Done | e2e |
+| MKT-05 | Question bank showcase | `/features/question-bank` | ✅ Done | e2e |
+| MKT-06 | Board preparation showcase | `/features/board-preparation` | ✅ Done | e2e |
+| MKT-07 | Learning features | `/features` | ✅ Done | e2e |
+| MKT-08 | Testimonials (clearly labeled demo) | `/` | ✅ Done | e2e |
+| MKT-09 | Pricing | `/pricing` | ✅ Done | e2e |
+| MKT-10 | For Parents | `/for-parents` | ✅ Done | e2e |
+| MKT-11 | For Teachers | `/for-teachers` | ✅ Done | e2e |
+| MKT-12 | For Schools | `/for-schools` | ✅ Done | e2e |
+| MKT-13 | For Colleges | `/for-colleges` | ✅ Done | e2e |
+| MKT-14 | FAQ | `/faq` | ✅ Done | e2e |
+| MKT-15 | Contact | `/contact` | ✅ Done | e2e |
+| MKT-16 | Help center | `/help` | ✅ Done | e2e |
+| MKT-17 | Terms of service | `/terms` | ✅ Done | e2e |
+| MKT-18 | Privacy policy | `/privacy` | ✅ Done | e2e |
+| MKT-19 | Accessibility | `/accessibility` | ✅ Done | e2e |
+| MKT-20 | Login / signup entry | `/login` | ✅ Done | e2e |
+| MKT-21 | Download mobile app section | `/` | ✅ Done | e2e |
+| MKT-22 | No fabricated statistics <br><sub>Only true product facts; testimonials labelled as demo personas</sub> | `/` | ✅ Done | e2e |
 
-## §49–50 Mock data & connected workflows (0/14)
+## §49–50 Mock data & connected workflows (14/14)
 
 - **Roles:** —
 - **Flutter:** Platform-neutral JSON schemas
@@ -1512,22 +1512,22 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| DATA-01 | Typed repository layer (mock + API adapters) | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-02 | IndexedDB persistence for domain data | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-03 | localStorage only for preferences | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-04 | Exam result updates analytics | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-05 | Completed chapter updates progress | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-06 | Bookmarked question appears in bookmarks | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-07 | Created note appears in notes | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-08 | Uploaded book appears in admin books | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-09 | Published content updates student catalog | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-10 | New exam appears in exam lists | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-11 | Subscription change updates entitlements | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-12 | Rich multi-role seed data | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-13 | Synthetic content clearly labeled | `src/mock-data, src/services` | ⬜ Todo | — |
-| DATA-14 | Environment switch NEXT_PUBLIC_USE_MOCK_API | `src/mock-data, src/services` | ⬜ Todo | — |
+| DATA-01 | Typed repository layer (mock + API adapters) | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-02 | IndexedDB persistence for domain data | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-03 | localStorage only for preferences | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-04 | Exam result updates analytics | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-05 | Completed chapter updates progress | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-06 | Bookmarked question appears in bookmarks | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-07 | Created note appears in notes | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-08 | Uploaded book appears in admin books | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-09 | Published content updates student catalog | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-10 | New exam appears in exam lists | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-11 | Subscription change updates entitlements | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-12 | Rich multi-role seed data | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-13 | Synthetic content clearly labeled | `src/mock-data, src/services` | ✅ Done | unit+e2e |
+| DATA-14 | Environment switch NEXT_PUBLIC_USE_MOCK_API | `src/mock-data, src/services` | ✅ Done | unit+e2e |
 
-## §52–53 Accessibility, i18n, privacy (0/19)
+## §52–53 Accessibility, i18n, privacy (17/19)
 
 - **Roles:** All
 - **Flutter:** Mirrored in mobile repo
@@ -1536,27 +1536,27 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| A11Y-01 | Bangla UI | `global` | ⬜ Todo | — |
-| A11Y-02 | English UI | `global` | ⬜ Todo | — |
-| A11Y-03 | Persistent language preference | `global` | ⬜ Todo | — |
-| A11Y-04 | Bangla numerals | `global` | ⬜ Todo | — |
-| A11Y-05 | Keyboard navigation & focus states | `global` | ⬜ Todo | — |
-| A11Y-06 | Accessible forms & labels | `global` | ⬜ Todo | — |
-| A11Y-07 | Reduced motion | `global` | ⬜ Todo | — |
-| A11Y-08 | Text scaling | `global` | ⬜ Todo | — |
-| A11Y-09 | Accessible exam navigation | `global` | ⬜ Todo | — |
-| A11Y-10 | Captions/transcripts | `global` | ⬜ Todo | — |
-| A11Y-11 | Diagram alt descriptions | `global` | ⬜ Todo | — |
-| A11Y-12 | Translation dictionaries | `global` | ⬜ Todo | — |
-| A11Y-13 | Guardian consent & withdrawal | `global` | ⬜ Todo | — |
-| A11Y-14 | Data retention settings | `global` | ⬜ Todo | — |
-| A11Y-15 | Data export request | `global` | ⬜ Todo | — |
-| A11Y-16 | AI transparency labels | `global` | ⬜ Todo | — |
-| A11Y-17 | Teacher escalation | `global` | ⬜ Todo | — |
-| A11Y-18 | Student-controlled sharing | `global` | ⬜ Todo | — |
-| A11Y-19 | Parent link permissions | `global` | ⬜ Todo | — |
+| A11Y-01 | Bangla UI | `global` | ✅ Done | smoke |
+| A11Y-02 | English UI | `global` | ✅ Done | smoke |
+| A11Y-03 | Persistent language preference | `global` | ✅ Done | smoke |
+| A11Y-04 | Bangla numerals | `global` | ✅ Done | smoke |
+| A11Y-05 | Keyboard navigation & focus states <br><sub>Keyboard paths built in; no formal WCAG 2.2 AA audit or screen-reader pass yet</sub> | `global` | 🟨 Partial | smoke |
+| A11Y-06 | Accessible forms & labels <br><sub>Labelled forms; no formal audit yet</sub> | `global` | 🟨 Partial | smoke |
+| A11Y-07 | Reduced motion | `global` | ✅ Done | smoke |
+| A11Y-08 | Text scaling | `global` | ✅ Done | smoke |
+| A11Y-09 | Accessible exam navigation | `global` | ✅ Done | smoke |
+| A11Y-10 | Captions/transcripts | `global` | ✅ Done | smoke |
+| A11Y-11 | Diagram alt descriptions | `global` | ✅ Done | smoke |
+| A11Y-12 | Translation dictionaries | `global` | ✅ Done | smoke |
+| A11Y-13 | Guardian consent & withdrawal | `global` | ✅ Done | smoke |
+| A11Y-14 | Data retention settings | `global` | ✅ Done | smoke |
+| A11Y-15 | Data export request | `global` | ✅ Done | smoke |
+| A11Y-16 | AI transparency labels | `global` | ✅ Done | smoke |
+| A11Y-17 | Teacher escalation | `global` | ✅ Done | smoke |
+| A11Y-18 | Student-controlled sharing | `global` | ✅ Done | smoke |
+| A11Y-19 | Parent link permissions | `global` | ✅ Done | smoke |
 
-## §55 Testing (0/8)
+## §55 Testing (7/8)
 
 - **Roles:** —
 - **Flutter:** Flutter repo
@@ -1565,11 +1565,11 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| TEST-01 | Unit tests (services/algorithms) | `tests/**, e2e/**` | ⬜ Todo | — |
-| TEST-02 | Component tests | `tests/**, e2e/**` | ⬜ Todo | — |
-| TEST-03 | Form validation tests | `tests/**, e2e/**` | ⬜ Todo | — |
-| TEST-04 | Role permission tests | `tests/**, e2e/**` | ⬜ Todo | — |
-| TEST-05 | Mock repository tests | `tests/**, e2e/**` | ⬜ Todo | — |
-| TEST-06 | Exam scoring tests | `tests/**, e2e/**` | ⬜ Todo | — |
-| TEST-07 | Search/filter tests | `tests/**, e2e/**` | ⬜ Todo | — |
-| TEST-08 | Playwright key journeys | `tests/**, e2e/**` | ⬜ Todo | — |
+| TEST-01 | Unit tests (services/algorithms) | `tests/**, e2e/**` | ✅ Done | unit+e2e |
+| TEST-02 | Component tests <br><sub>Component tests cover DataTable only; most UI is covered by e2e</sub> | `tests/**, e2e/**` | 🟨 Partial | unit |
+| TEST-03 | Form validation tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
+| TEST-04 | Role permission tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
+| TEST-05 | Mock repository tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
+| TEST-06 | Exam scoring tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
+| TEST-07 | Search/filter tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
+| TEST-08 | Playwright key journeys | `tests/**, e2e/**` | ✅ Done | unit+e2e |

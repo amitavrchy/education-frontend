@@ -14,7 +14,9 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "docs:matrix": "node scripts/feature-matrix/generate.mjs",
-    "pdf:samples": "node scripts/generate-sample-pdfs.mjs"
+    "pdf:samples": "node scripts/generate-sample-pdfs.mjs",
+    "docs:screens": "node scripts/screen-inventory.mjs",
+    "docs": "npm run docs:matrix && npm run docs:screens"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.8",

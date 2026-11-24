@@ -65,3 +65,12 @@ describe("mock repository", () => {
     expect(queryItems([], { page: 2 }).items).toEqual([]);
   });
 });
+
+describe("API path convention", () => {
+  it("maps collection names to REST paths", async () => {
+    const { defaultApiPath } = await import("@/services/core/repository");
+    expect(defaultApiPath("questions")).toBe("/questions");
+    expect(defaultApiPath("examAttempts:u-student-1")).toBe("/exam-attempts/u-student-1");
+    expect(defaultApiPath("kbPassages")).toBe("/kb-passages");
+  });
+});

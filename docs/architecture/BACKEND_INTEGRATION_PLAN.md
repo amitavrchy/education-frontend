@@ -1,0 +1,54 @@
+# Backend Integration Plan
+
+Target backends: NestJS API (PostgreSQL/Prisma, Redis, object storage) and a Python FastAPI AI service
+(RAG over a vector DB, realtime voice, OCR), plus payment and notification providers.
+
+## The switch
+
+Set `NEXT_PUBLIC_USE_MOCK_API=false` and `NEXT_PUBLIC_API_URL=<api base>`.
+
+`createMockRepository()` then returns `createApiRepository(apiPath)` for **every** repository, with the same
+`Repository<T>` interface. Services and UI components do not change. The default `apiPath` is the collection
+name in kebab case (`examAttempts:u-1` → `/exam-attempts/u-1`); override it per repository with the `apiPath`
+option.
+
+REST conventions expected by the adapter (`src/services/core/repository.ts`):
+
+| Operation | HTTP |
+| --- | --- |
+| list | `GET /path?page=&pageSize=&search=&sortBy=&sortOrder=&filter[key]=v1,v2` → `{ data: T[], meta: { total, page, pageSize, totalPages } }` |
+| all | `GET /path?all=true&filter[...]` → `{ data: T[] }` |
+| get / find | `GET /path/:id` → `{ data: T }` |
+| create | `POST /path` → `{ data: T }` |
+| update | `PATCH /path/:id` → `{ data: T }` |
+| remove | `DELETE /path/:id` |
+| bulkUpdate | `PATCH /path/bulk { ids, patch }` |
+| bulkRemove | `POST /path/bulk-delete { ids }` |
+
+Errors: `{ message, code, errors?: Record<field, string[]> }` with HTTP status. `ApiError` maps them, and
+`errorText()` localises known codes (`VALIDATION`, `NOT_FOUND`, `FORBIDDEN`, `OFFLINE`, domain codes such as
+`COUPON_INVALID`, `OTP_INVALID`).
+
+## What still needs backend work (not just a URL)
+
+1. **Composite domain operations** that services implement over several collections in the mock. These should
+   become dedicated endpoints. `replaceAll()` throws in API mode to surface them:
+   - `progressService.recordAttempts` (attempts + mastery + XP + badges) → `POST /progress/attempts`
+   - `tutorService.send/regenerate` → streaming endpoint (see `docs/api/AI_TUTOR_CONTRACT.md`)
+   - `examService.start/submit` (scoring must be server-side) → `POST /exams/:id/attempts`, `POST /attempts/:id/submit`
+   - `billingService.checkout` → payment-intent flow with provider webhooks
+   - `ingestionService.*` → job API + websocket/SSE progress (see `UPLOAD_PIPELINE_CONTRACT.md`)
+   - `reviewService.transition` → server-enforced state machine
+2. **Auth**: move tokens to httpOnly cookies; `auth.service.ts` already isolates login/OTP/refresh calls
+   (`src/lib/api/endpoints.ts`).
+3. **Authorisation**: re-implement `ROLE_PERMISSIONS` checks server-side. Client guards are UX only.
+4. **Uploads**: presigned object-storage URLs; the client already tracks progress, cancel and retry.
+5. **Realtime**: voice (WebRTC/WebSocket), notifications (SSE/WebSocket), ingestion progress.
+6. **Search**: replace in-memory providers in `search-registry.ts` with a search endpoint.
+
+## Suggested order
+
+Auth → curriculum (read) → questions/bank → exams + scoring → progress → tutor streaming → notifications →
+admin content ops + ingestion → billing → voice.
+
+Detailed shapes: [`../api/API_CONTRACTS.md`](../api/API_CONTRACTS.md) and the other contracts in `docs/api/`.

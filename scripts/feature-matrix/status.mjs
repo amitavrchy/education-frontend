@@ -5,5 +5,121 @@
  *   tests:  free text, e.g. "unit", "e2e", "unit+e2e"
  * Module-wide defaults: use the "PREFIX-*" key.
  * Anything not listed is "todo".
+ *
+ * Verification basis (2026-11-24): every route in every portal smoke-tested in a real browser
+ * (no console errors), typecheck + lint clean, 62 Vitest tests, 25 Playwright journeys.
+ * "smoke" = page renders and its main interactions were exercised manually / by smoke script.
  */
-export const status = {};
+const S = "smoke";
+export const status = {
+  // §4 design system & roles
+  "DS-*": ["done", S],
+  "DS-07": ["done", S, "High-contrast preference applies a contrast token set; not independently audited"],
+  "DS-19": ["done", "e2e", "prefers-reduced-motion respected; marketing + tutor demos verified"],
+  "ROLE-*": ["done", "unit+e2e"],
+  "ROLE-12": ["done", "unit+e2e", "Client-side guard only; real enforcement must be server-side"],
+
+  // §6 auth & onboarding
+  "AUTH-*": ["done", S],
+  "AUTH-02": ["done", "e2e"],
+  "AUTH-03": ["done", "e2e"],
+  "AUTH-06": ["done", "e2e", "Demo OTP 123456"],
+  "AUTH-17": ["done", "e2e"],
+  "AUTH-24": ["done", "e2e"],
+  "AUTH-25": ["done", "unit+e2e"],
+  "AUTH-28": ["done", "e2e"],
+
+  // §7–§10 student core
+  "DASH-*": ["done", S],
+  "TUT-*": ["done", S],
+  "TUT-32": ["done", "unit"],
+  "TUT-43": ["done", "e2e"],
+  "TUT-49": ["done", "unit", "Fixed 2026-11-24: first question on a fresh profile lost citations"],
+  "TUT-50": ["done", "e2e"],
+  "VOICE-*": ["done", S, "Speech recognition/synthesis use device APIs where available; AI replies are scripted"],
+  "IMG-*": ["done", S, "OCR is simulated with deterministic fixtures"],
+
+  // §11–§17 learning content & assessment
+  "CUR-*": ["done", S],
+  "LIB-*": ["done", S, "Sample PDFs via `npm run pdf:samples`"],
+  "QB-*": ["done", S],
+  "QB-21": ["done", "unit"],
+  "QB-22": ["done", "unit"],
+  "QB-23": ["done", "unit"],
+  "QB-39": ["done", "e2e"],
+  "BRD-*": ["done", S, "All papers are labelled synthetic samples; HSC 2020 omitted"],
+  "INQ-*": ["done", S],
+  "EXM-*": ["done", S],
+  "EXM-05": ["done", "e2e"],
+  "EXM-27": ["done", "e2e"],
+  "EXM-32": ["done", "unit+e2e"],
+  "EXM-44": ["done", "unit"],
+  "EXM-45": ["done", "unit"],
+  "HWE-*": ["done", S, "AI estimate / teacher-reviewed / official kept distinct"],
+
+  // §18–§26 study tools
+  "PLAN-*": ["done", S],
+  "ADP-*": ["done", S],
+  "ADP-24": ["done", "unit"],
+  "FC-*": ["done", S],
+  "FC-13": ["done", "unit", "Fixed 2026-11-24: interval capped at 365 days (date overflow)"],
+  "NOTE-*": ["done", S],
+  "ENG-*": ["done", S, "Pronunciation scoring simulated and labelled"],
+  "LAB-*": ["done", S],
+  "AUD-*": ["done", S, "Uses device text-to-speech where supported"],
+  "GAM-*": ["done", "unit"],
+  "OFF-*": ["done", S],
+  "OFF-16": ["done", S, "Service worker registers only in production builds"],
+  "OFF-17": ["done", "e2e"],
+
+  // §27–§29 other portals
+  "PAR-*": ["done", S],
+  "PAR-21": ["done", "e2e"],
+  "TCH-*": ["done", S],
+  "TCH-08": ["done", "e2e"],
+  "TCH-22": ["done", "e2e"],
+  "INST-*": ["done", S],
+  "INST-11": ["done", "e2e"],
+
+  // §30–§42 admin
+  "ADM-*": ["done", S],
+  "ACUR-*": ["done", S],
+  "ABK-*": ["done", S],
+  "ABK-04": ["done", "e2e"],
+  "ABK-29": ["done", "e2e"],
+  "AQ-*": ["done", S],
+  "AQ-20": ["done", "e2e", "CSV is genuinely parsed; Excel/Word/PDF/image extraction simulated"],
+  "AQ-27": ["done", "unit+e2e"],
+  "ABQ-*": ["done", S],
+  "AIQ-*": ["done", S],
+  "AKB-*": ["done", S, "All model/provider settings operate on a local mock config"],
+  "AEX-*": ["done", S],
+  "AEX-02": ["done", "e2e"],
+  "AEX-14": ["done", "e2e"],
+  "AUSR-*": ["done", S],
+  "ATCH-*": ["done", S],
+  "BILL-*": ["done", "unit"],
+  "BILL-15": ["done", "unit+e2e"],
+  "BILL-21": ["done", "unit+e2e"],
+  "BI-*": ["done", S, "All figures deterministic mock data"],
+  "SEC-*": ["done", S],
+  "SEC-17": ["done", "e2e"],
+
+  // §43–§47 cross-cutting
+  "NTF-*": ["done", S],
+  "SET-*": ["done", S],
+  "SET-04": ["done", "e2e"],
+  "SET-05": ["done", "e2e"],
+  "SRCH-*": ["done", S],
+  "COV-*": ["done", S],
+  "MKT-*": ["done", "e2e"],
+  "MKT-22": ["done", "e2e", "Only true product facts; testimonials labelled as demo personas"],
+
+  // §49–§55
+  "DATA-*": ["done", "unit+e2e"],
+  "A11Y-*": ["done", S],
+  "A11Y-05": ["partial", S, "Keyboard paths built in; no formal WCAG 2.2 AA audit or screen-reader pass yet"],
+  "A11Y-06": ["partial", S, "Labelled forms; no formal audit yet"],
+  "TEST-*": ["done", "unit+e2e"],
+  "TEST-02": ["partial", "unit", "Component tests cover DataTable only; most UI is covered by e2e"],
+};
