@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BookOpen, Bot, CheckCircle2, CircleDashed, Clock, FileQuestionMark, Lock, PlayCircle, Timer } from "lucide-react";
+import { AlertTriangle, ArrowRight, BookOpen, Bot, CheckCircle2, CircleDashed, Clock, FileQuestionMark, Library, Lock, PlayCircle, ShieldCheck, Timer } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { DIFFICULTY_TONE, difficultyLabel, relevanceLabel } from "@/components/common/labels";
@@ -19,6 +19,7 @@ import { useCurriculum } from "@/hooks/use-curriculum";
 import { useChapterProgress, useMastery } from "@/hooks/use-progress";
 import { useFormat, useL } from "@/i18n";
 import { cn } from "@/lib/utils";
+import { passagesRepo } from "@/services/kb.service";
 import { questionService } from "@/services/question.service";
 
 export function SubjectOverview({ subjectId }: { subjectId: string }) {
@@ -28,6 +29,8 @@ export function SubjectOverview({ subjectId }: { subjectId: string }) {
   const progress = useChapterProgress();
   const mastery = useMastery();
   const counts = useQuery({ queryKey: ["questions", "counts"], queryFn: questionService.countsByChapter, staleTime: 5 * 60_000 });
+  // §46 simplified coverage: which chapters have textbook sources for the AI tutor.
+  const sourced = useQuery({ queryKey: ["kb", "sourcedChapters"], queryFn: async () => new Set((await passagesRepo.raw()).map((p) => p.chapterId)), staleTime: 5 * 60_000 });
   const [paper, setPaper] = useState<string>("all");
   const subject = cur?.subject(subjectId);
   useCrumbLabel(subjectId, subject ? f.pick(subject.name) : undefined);
@@ -99,6 +102,16 @@ export function SubjectOverview({ subjectId }: { subjectId: string }) {
         <StatCard label={l("প্রশ্ন", "Questions")} value={f.digits(all.reduce((s, c) => s + (counts.data?.[c.id] ?? 0), 0))} icon={FileQuestionMark} tone="warning" />
       </div>
 
+      <ContentAvailability
+        chapters={all.length}
+        published={all.filter((c) => c.status === "published").length}
+        withQuestions={all.filter((c) => (counts.data?.[c.id] ?? 0) > 0).length}
+        withSources={sourced.data ? all.filter((c) => sourced.data.has(c.id)).length : null}
+        verifiedTopics={all.flatMap((c) => cur.topicsOf(c.id)).filter((t) => t.verified).length}
+        totalTopics={all.flatMap((c) => cur.topicsOf(c.id)).length}
+        outdated={all.filter((c) => c.outdated).length}
+      />
+
       {papers.length > 0 && (
         <div className="mb-4 flex gap-1.5">
           {[{ id: "all", name: { bn: "সব পত্র", en: "All papers" } }, ...papers].map((p) => (
@@ -147,6 +160,11 @@ export function SubjectOverview({ subjectId }: { subjectId: string }) {
                       <span className="flex items-center gap-1">
                         <FileQuestionMark className="size-3" /> {f.digits(counts.data?.[c.id] ?? 0)} {l("প্রশ্ন", "questions")}
                       </span>
+                      {sourced.data && !sourced.data.has(c.id) && (
+                        <span className="flex items-center gap-1 text-warning-foreground dark:text-warning">
+                          <AlertTriangle className="size-3" /> {l("AI উৎস এখনো যোগ হয়নি", "AI sources not added yet")}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="flex w-full items-center gap-3 sm:w-48">
@@ -161,5 +179,47 @@ export function SubjectOverview({ subjectId }: { subjectId: string }) {
         })}
       </ol>
     </>
+  );
+}
+
+/** Student-facing, simplified content coverage (§46): what is ready to study for this subject. */
+function ContentAvailability({ chapters, published, withQuestions, withSources, verifiedTopics, totalTopics, outdated }: { chapters: number; published: number; withQuestions: number; withSources: number | null; verifiedTopics: number; totalTopics: number; outdated: number }) {
+  const l = useL();
+  const f = useFormat();
+  const rows: { icon: typeof BookOpen; label: string; done: number; total: number }[] = [
+    { icon: BookOpen, label: l("প্রকাশিত অধ্যায়", "Published chapters"), done: published, total: chapters },
+    { icon: FileQuestionMark, label: l("প্রশ্নসহ অধ্যায়", "Chapters with questions"), done: withQuestions, total: chapters },
+    { icon: Library, label: l("AI টিউটরের পাঠ্যবই-উৎসসহ অধ্যায়", "Chapters with textbook sources for the AI tutor"), done: withSources ?? 0, total: chapters },
+    { icon: ShieldCheck, label: l("যাচাইকৃত টপিক", "Verified topics"), done: verifiedTopics, total: totalTopics },
+  ];
+  return (
+    <Card className="mb-6 gap-3 p-4" aria-labelledby="coverage-title">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id="coverage-title" className="font-semibold">
+          {l("এই বিষয়ে কী কী প্রস্তুত", "What's ready for this subject")}
+        </h2>
+        {outdated > 0 && (
+          <Badge variant="outline" className="gap-1">
+            <AlertTriangle /> {l(`${f.digits(outdated)}টি অধ্যায় পুরনো কারিকুলামের`, `${outdated} chapter(s) from an older curriculum`)}
+          </Badge>
+        )}
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {rows.map((r) => (
+          <div key={r.label} className="space-y-1">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <r.icon className="size-3.5" /> {r.label}
+            </div>
+            <div className="flex items-center gap-2">
+              <Progress value={r.total ? (r.done / r.total) * 100 : 0} className="flex-1" aria-label={`${r.label}: ${r.done}/${r.total}`} />
+              <span className="text-xs tabular-nums">
+                {withSources === null && r.icon === Library ? "…" : `${f.digits(r.done)}/${f.digits(r.total)}`}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-muted-foreground">{l("যেসব অধ্যায়ে উৎস নেই, সেখানে AI টিউটর উত্তরকে 'সাধারণ AI ব্যাখ্যা' হিসেবে চিহ্নিত করবে।", "Where a chapter has no sources, the AI tutor labels answers as 'general AI explanation'.")}</p>
+    </Card>
   );
 }
