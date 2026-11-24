@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { AlertTriangle, Archive, CheckCircle2, Circle, FileUp, History, Loader2, PauseCircle, RefreshCcw, RotateCcw, Send, Upload, XCircle } from "lucide-react";
@@ -26,6 +28,7 @@ import { useFormat, useL } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { bookPage } from "@/mock-data/books";
 import { audit, auditRepo, ingestionService } from "@/services/admin.service";
+import { avatarService } from "@/services/avatar.service";
 import { passagesRepo } from "@/services/kb.service";
 import { booksRepo } from "@/services/library.service";
 import { teacherProfilesRepo } from "@/services/people.service";
@@ -106,6 +109,7 @@ export function AdminBooks() {
     { accessorKey: "publicationYear", header: l("প্রকাশ", "Year"), meta: { label: l("প্রকাশ", "Year") } },
     { id: "license", accessorFn: (b) => b.license.type, header: l("লাইসেন্স", "License"), meta: { label: l("লাইসেন্স", "License") }, cell: ({ row }) => <Badge variant="outline">{row.original.license.type}</Badge> },
     { id: "ingest", header: l("ইনজেশন", "Ingestion"), enableSorting: false, cell: ({ row }) => { const j = (jobs.data ?? []).find((x) => x.bookId === row.original.id); return j ? <Badge className={cn(j.stageStatus === "failed" ? "bg-destructive/10 text-destructive" : j.stageStatus === "succeeded" ? "bg-success/15 text-success" : "bg-info/15 text-info")}>{j.stageStatus === "succeeded" ? l("সম্পন্ন", "Done") : `${l(...STAGE_LABEL[j.stage])} · ${j.stageStatus}`}</Badge> : <span className="text-xs text-muted-foreground">—</span>; } },
+    { id: "avatar", header: l("অ্যাভাটার", "Avatar"), enableSorting: false, cell: ({ row }) => <Link href={`/admin/book-avatars?book=${row.original.id}`} onClick={(e) => e.stopPropagation()} className="text-xs font-medium text-primary hover:underline">{l("শিক্ষক অ্যাভাটার", "Teacher avatar")}</Link> },
     { accessorKey: "status", header: l("অবস্থা", "Status"), meta: { label: l("অবস্থা", "Status") }, cell: ({ row }) => <StatusBadge status={row.original.status} /> },
   ];
 
@@ -435,11 +439,13 @@ function UploadDialog({ onClose, onDone }: { onClose: () => void; onDone: () => 
           createdAt: nowIso(),
           updatedAt: nowIso(),
         });
+        // Every book gets its own teacher avatar (editable in Admin → Book avatars).
+        await avatarService.ensureForBook({ id, title: { bn: file.name.replace(/\.pdf$/i, ""), en: file.name.replace(/\.pdf$/i, "") }, language, subjectId });
         await ingestionService.create(id, file.name, file.name, Math.round(file.size / 1024) || 1200, simulateFail ? "ocr" : undefined);
         await audit(actor, "content", "book.ingest", { type: "book", id, label: file.name });
       }
     },
-    onSuccess: () => (toast.success(l("আপলোড সম্পন্ন — ইনজেশন শুরু হয়েছে", "Uploaded — ingestion started")), onDone(), onClose()),
+    onSuccess: () => (toast.success(l("আপলোড সম্পন্ন — ইনজেশন শুরু হয়েছে, বইয়ের অ্যাভাটার শিক্ষক তৈরি হয়েছে", "Uploaded — ingestion started and the book's avatar teacher was created")), onDone(), onClose()),
     onError: (e) => toast.error((e as Error).message),
   });
   return (

@@ -11,11 +11,11 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | Status | Count |
 | --- | --- |
-| ✅ Done | 1084 |
+| ✅ Done | 1096 |
 | 🟨 Partial | 3 |
 | ⬜ Todo | 0 |
 | ⛔ Blocked | 0 |
-| **Total** | **1087** |
+| **Total** | **1099** |
 
 ## §4 Design system & UI states (20/20)
 
@@ -1555,6 +1555,28 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | A11Y-17 | Teacher escalation | `global` | ✅ Done | smoke |
 | A11Y-18 | Student-controlled sharing | `global` | ✅ Done | smoke |
 | A11Y-19 | Parent link permissions | `global` | ✅ Done | smoke |
+
+## Book avatar Per-book live 2D avatar teacher (12/12)
+
+- **Roles:** Student, Admin, Teacher, Institution, Parent
+- **Flutter:** Student mobile app (separate Flutter repo)
+- **Mock data source:** avatarService + book-avatar-engine (answers from the book's pages only)
+- **Loading/error/empty states:** Idle/listening/thinking/speaking, offline unavailable, no-voice fallback, mic denied, out-of-scope
+
+| ID | Feature | Web screen | Status | Tests |
+| --- | --- | --- | --- | --- |
+| AVT-01 | One avatar per book, auto-created on admin upload | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-02 | Animated 2D teacher (blink, breathe, lip-sync, state cues) | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-03 | Ask by text | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-04 | Ask by voice (push-to-talk + hands-free) <br><sub>Uses the browser's speech recognition; demo questions where unsupported</sub> | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | smoke |
+| AVT-05 | Spoken answer with captions (TTS, speed, mute) <br><sub>Device TTS; lip-syncs silently when no Bangla voice is installed</sub> | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | smoke |
+| AVT-06 | Answers grounded only in the book, with page citations | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-07 | Out-of-book questions declined with book-topic suggestions | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-08 | Session history, feedback and answer reports | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-09 | Admin editor: appearance, voice, persona, greeting, chapter scope, status | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-10 | Admin/teacher test chat and report resolution | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-11 | Institution on/off per avatar | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-12 | Parent usage counts (no transcripts) | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /institution/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
 
 ## §55 Testing (7/8)
 

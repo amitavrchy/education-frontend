@@ -54,6 +54,35 @@ Lighthouse budget on a low-end device profile; backend endpoints per `docs/archi
 
 ## Log
 
+### 2026-11-24 — session 6 (per-book avatar teacher)
+- New main feature: every book has its own live 2D teacher avatar.
+  - Students ask by text or voice. The avatar answers only from that book, with page citations, and declines
+    anything outside the book.
+  - All mock/static for now. The API comes later; see `docs/api/BOOK_AVATAR_CONTRACT.md`.
+- Panels:
+  - Student: gallery and classroom.
+  - Admin: editor, test chat and reports. Uploading a book auto-creates its avatar, and the books table links
+    to it.
+  - Teacher: own subjects, plus report fixes.
+  - Institution: on/off per avatar.
+  - Parent: counts only.
+  - The book reader has an "ask this book's teacher" button.
+- Code: `src/components/avatar/*`, `src/services/avatar.service.ts`, `src/services/ai/book-avatar-engine.ts`.
+- Fixes:
+  - Avatar crash: negative palette index from a signed shift.
+  - Every avatar got the same name and gender: hash low bits. Now uses an fmix32 mixer.
+  - Satisfaction % was off by ×100.
+  - `toSpoken` read markdown link URLs aloud.
+  - Sheet `sm:max-w-*` overrides were ignored app-wide, so every wide sheet rendered at `max-w-sm`.
+    `ui/sheet.tsx` now lets callers override the width.
+- Tests: `tests/unit/book-avatar.test.ts` (9) and `tests/e2e/avatar.spec.ts` (2).
+- Verification:
+  - Typecheck clean, lint 0 errors. 72/72 unit, 27/27 e2e. `next build` OK.
+  - All 6 avatar routes smoke-tested per role with no console errors.
+- Not done yet: the Flutter counterpart; real API, TTS and STT.
+- Node on this PC: the old install was quarantined. A fresh official Node 22 is in `~/.local/node`
+  (PATH set in `~/.zshrc`).
+
 ### 2026-11-24 — session 5
 - Audited the repo against the master prompt. Gaps found: admin (12 of 17 pages missing, 5 components
   unrouted), marketing site (homepage only), tests, §57 docs, feature-matrix statuses.

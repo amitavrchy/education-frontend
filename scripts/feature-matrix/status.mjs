@@ -7,7 +7,7 @@
  * Anything not listed is "todo".
  *
  * Verification basis (2026-11-24): every route in every portal smoke-tested in a real browser
- * (no console errors), typecheck + lint clean, 62 Vitest tests, 25 Playwright journeys.
+ * (no console errors), typecheck + lint clean, 72 Vitest tests, 27 Playwright journeys.
  * "smoke" = page renders and its main interactions were exercised manually / by smoke script.
  */
 const S = "smoke";
@@ -18,6 +18,11 @@ export const status = {
   "DS-19": ["done", "e2e", "prefers-reduced-motion respected; marketing + tutor demos verified"],
   "ROLE-*": ["done", "unit+e2e"],
   "ROLE-12": ["done", "unit+e2e", "Client-side guard only; real enforcement must be server-side"],
+
+  // Per-book avatar teacher
+  "AVT-*": ["done", "unit+e2e"],
+  "AVT-04": ["done", S, "Uses the browser's speech recognition; demo questions where unsupported"],
+  "AVT-05": ["done", S, "Device TTS; lip-syncs silently when no Bangla voice is installed"],
 
   // §6 auth & onboarding
   "AUTH-*": ["done", S],

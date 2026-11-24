@@ -9,6 +9,7 @@ import {
   Bot,
   Building,
   CalendarDays,
+  ContactRound,
   CalendarRange,
   Camera,
   ChartLine,
@@ -72,6 +73,7 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
         items: [
           { slug: "dashboard", titleKey: "nav.dashboard", icon: LayoutDashboard, mobile: true },
           { slug: "ai-tutor", titleKey: "nav.aiTutor", icon: Bot, badge: "AI", mobile: true },
+          { slug: "avatar-tutor", titleKey: "nav.avatarTutor", icon: ContactRound, badge: "নতুন" },
           { slug: "voice-tutor", titleKey: "nav.voiceTutor", icon: Mic },
           { slug: "photo-solver", titleKey: "nav.photoSolver", icon: Camera },
         ],
@@ -136,6 +138,7 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
           { slug: "goals", titleKey: "nav.goals", icon: Target },
           { slug: "feedback", titleKey: "nav.feedback", icon: HeartHandshake },
           { slug: "reports", titleKey: "nav.reports", icon: FileText },
+          { slug: "avatar-activity", titleKey: "nav.avatarActivity", icon: ContactRound },
         ],
       },
       {
@@ -163,6 +166,7 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
           { slug: "rubrics", titleKey: "nav.rubrics", icon: ListChecks, permission: ["rubric.manage", "content.create"] },
           { slug: "evaluations", titleKey: "nav.evaluations", icon: FileCheck, permission: "evaluation.review" },
           { slug: "history", titleKey: "nav.history", icon: History, permission: ["content.review", "content.submit"] },
+          { slug: "avatars", titleKey: "nav.avatars", icon: ContactRound, permission: ["content.review", "teacher.dashboard"] },
         ],
       },
       {
@@ -214,6 +218,7 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
           { slug: "question-papers", titleKey: "nav.questionPapers", icon: FileStack },
           { slug: "question-bank", titleKey: "nav.questionBank", icon: FileQuestionMark },
           { slug: "resources", titleKey: "nav.resources", icon: FolderOpen },
+          { slug: "avatars", titleKey: "nav.avatars", icon: ContactRound },
           { slug: "analytics", titleKey: "nav.analytics", icon: ChartLine },
         ],
       },
@@ -259,7 +264,10 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
       },
       {
         labelKey: "navGroups.ai",
-        items: [{ slug: "knowledge-base", titleKey: "nav.knowledgeBase", icon: Database, permission: ["kb.view", "kb.manage"] }],
+        items: [
+          { slug: "knowledge-base", titleKey: "nav.knowledgeBase", icon: Database, permission: ["kb.view", "kb.manage"] },
+          { slug: "book-avatars", titleKey: "nav.bookAvatars", icon: ContactRound, permission: ["books.manage", "kb.manage"] },
+        ],
       },
       {
         labelKey: "navGroups.people",
