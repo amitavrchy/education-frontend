@@ -122,7 +122,7 @@ function Footer() {
         ))}
       </div>
       <div className="border-t py-4 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} {siteConfig.name}
+        © {siteConfig.copyrightYear} {siteConfig.name}
       </div>
     </footer>
   );

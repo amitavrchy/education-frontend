@@ -9,4 +9,6 @@ export const siteConfig = {
   url: env.NEXT_PUBLIC_APP_URL,
   locale: "bn-BD",
   defaultLanguage: "bn",
+  /** Static so marketing pages stay prerenderable (no `new Date()` during render). */
+  copyrightYear: 2026,
 } as const;
