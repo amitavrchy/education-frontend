@@ -60,6 +60,7 @@ function RangePicker({ value, onChange }: { value: number; onChange: (n: number)
 
 export function AdminDashboard() {
   const l = useL();
+  const [now] = useState(() => Date.now());
   const f = useFormat();
   const { index: cur } = useCurriculum();
   const [range, setRange] = useState(30);
@@ -74,9 +75,9 @@ export function AdminDashboard() {
   if (!data.data || !cur) return <Skeleton className="h-[600px]" />;
   const d = data.data;
   const students = d.users.filter((u) => u.role === "student");
-  const active = students.filter((u) => u.lastActiveAt && Date.now() - new Date(u.lastActiveAt).getTime() < 7 * 864e5);
+  const active = students.filter((u) => u.lastActiveAt && now - new Date(u.lastActiveAt).getTime() < 7 * 864e5);
   const paid = d.subs.filter((s) => s.status === "active" || s.status === "trialing");
-  const revenue = d.payments.filter((p) => p.status === "success" && Date.now() - new Date(p.createdAt).getTime() < range * 864e5).reduce((s, p) => s + p.amount, 0);
+  const revenue = d.payments.filter((p) => p.status === "success" && now - new Date(p.createdAt).getTime() < range * 864e5).reduce((s, p) => s + p.amount, 0);
   const publishedChapters = cur.chapters.filter((c) => c.status === "published").length;
   const pending = d.reviews.filter((r) => ["submitted", "in_review"].includes(r.status)).length;
   const topSubjects = [...new Map(d.questions.map((q) => [q.subjectId, 0])).keys()]
@@ -187,6 +188,7 @@ export function AdminDashboard() {
 
 export function AdminAnalytics() {
   const l = useL();
+  const [now] = useState(() => Date.now());
   const f = useFormat();
   const { index: cur } = useCurriculum();
   const [range, setRange] = useState(30);
@@ -290,7 +292,7 @@ export function AdminAnalytics() {
               <TableBody>
                 {Array.from({ length: 6 }, (_, c) => (
                   <TableRow key={c}>
-                    <TableCell>{f.date(new Date(Date.now() - (6 - c) * 7 * 864e5), { day: "numeric", month: "short" })}</TableCell>
+                    <TableCell>{f.date(new Date(now - (6 - c) * 7 * 864e5), { day: "numeric", month: "short" })}</TableCell>
                     {[0, 1, 2, 3, 4, 5].map((w) => {
                       const v = w > 5 - c ? null : Math.round(100 * Math.pow(0.82, w) - c);
                       return (
