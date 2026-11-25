@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SegmentedControl } from "@/components/forms/segmented-control";
 import { useL, useT } from "@/i18n";
 import { ROUTES } from "@/lib/constants";
 import { errorText } from "@/lib/errors";
@@ -109,12 +109,15 @@ export function RegisterScreen() {
           <Input className="h-10" autoComplete="name" value={form.name} onChange={(e) => set("name", e.target.value)} />
         </Field>
 
-        <Tabs value={channel} onValueChange={(v) => setChannel(v as "email" | "phone")}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="phone">{t("auth.withPhone")}</TabsTrigger>
-            <TabsTrigger value="email">{t("auth.withEmail")}</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <SegmentedControl
+          label={l("যোগাযোগের মাধ্যম", "Contact method")}
+          value={channel}
+          onChange={setChannel}
+          options={[
+            { value: "phone", label: t("auth.withPhone") },
+            { value: "email", label: t("auth.withEmail") },
+          ]}
+        />
         <Field label={channel === "email" ? t("auth.identifierEmail") : t("auth.identifierPhone")} error={errors.identifier} required>
           <Input
             className="h-10"

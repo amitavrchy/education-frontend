@@ -24,7 +24,7 @@ export function Logo({ href = "/", iconOnly = false, inverted = false, className
       </span>
       {!iconOnly && (
         <span className="text-lg tracking-tight">
-          Shikkha<span className={inverted ? "opacity-80" : "text-primary"}>AI</span>
+          Shikkha<span className={inverted ? "font-bold" : "text-primary"}>AI</span>
         </span>
       )}
     </Link>

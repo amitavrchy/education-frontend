@@ -223,7 +223,7 @@ function Streak({ d }: { d: DashboardData }) {
           <div className="flex justify-between gap-1" role="list" aria-label={l("গত ৭ দিনের সক্রিয়তা", "Activity in the last 7 days")}>
             {days.map((day) => (
               <div key={day} role="listitem" className="flex flex-col items-center gap-1">
-                <span className={cn("size-6 rounded-full border-2", active.has(day) ? "border-warning bg-warning/70" : "border-muted")} aria-label={`${day}: ${active.has(day) ? l("সক্রিয়", "active") : l("নিষ্ক্রিয়", "inactive")}`} />
+                <span role="img" className={cn("size-6 rounded-full border-2", active.has(day) ? "border-warning bg-warning/70" : "border-muted")} aria-label={`${day}: ${active.has(day) ? l("সক্রিয়", "active") : l("নিষ্ক্রিয়", "inactive")}`} />
                 <span className="text-[10px] text-muted-foreground">{f.date(`${day}T06:00:00Z`, { weekday: "narrow" })}</span>
               </div>
             ))}
@@ -791,7 +791,7 @@ function StudyCalendar({ d }: { d: DashboardData }) {
         <Skeleton className="h-48" />
       ) : (
         <div className="grid gap-4 sm:grid-cols-[auto_1fr]">
-          <div className="grid grid-cols-7 gap-1" role="grid" aria-label={l("৩ সপ্তাহের ক্যালেন্ডার", "3-week calendar")}>
+          <div className="grid grid-cols-7 gap-1" role="group" aria-label={l("৩ সপ্তাহের ক্যালেন্ডার", "3-week calendar")}>
             {days.map((day) => {
               const mins = minutesBy.get(day) ?? 0;
               const isPast = day < d.today;

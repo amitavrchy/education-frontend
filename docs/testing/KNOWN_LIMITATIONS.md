@@ -21,9 +21,8 @@ None of them is presented as complete in the UI.
 
 ## Follow-ups (not yet done)
 
-1. **Accessibility audit**: no formal WCAG 2.2 AA audit or screen-reader pass yet (A11Y-05/06 partial).
-   Add axe to the e2e suite.
-2. **Component tests** cover `DataTable` only; other UI is covered by e2e and smoke (TEST-02 partial).
+1. **Accessibility audit**: automated axe-core WCAG 2.2 A/AA checks run in e2e (`tests/e2e/a11y.spec.ts`) and pass; a manual screen-reader pass (NVDA/TalkBack with Bangla) has not been done yet.
+2. **Component tests** cover DataTable, QuestionInput, form controls, ExamRunner and OnboardingWizard; other screens rely on e2e and smoke tests.
 3. **Platform-neutral schemas**: contracts are TypeScript. A JSON-schema export for the Flutter repo is
    planned but not generated.
 4. **Monorepo layout**: the spec's `edumentor-ai/apps/*` + `packages/*` structure was not adopted. Web and

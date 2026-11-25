@@ -7,3 +7,12 @@ import { configureMockRuntime } from "@/services/core/mock-runtime";
 configureMockRuntime({ latencyScale: 0, failureRate: 0, offline: false });
 
 afterEach(() => cleanup());
+
+// jsdom lacks ResizeObserver (used by Radix Slider/ScrollArea).
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}

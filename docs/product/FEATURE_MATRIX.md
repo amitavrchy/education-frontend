@@ -11,8 +11,8 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | Status | Count |
 | --- | --- |
-| ✅ Done | 1059 |
-| 🟨 Partial | 3 |
+| ✅ Done | 1062 |
+| 🟨 Partial | 0 |
 | ⬜ Todo | 0 |
 | ⛔ Blocked | 0 |
 | 🚫 Removed | 37 |
@@ -1528,7 +1528,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | DATA-13 | Synthetic content clearly labeled | `src/mock-data, src/services` | ✅ Done | unit+e2e |
 | DATA-14 | Environment switch NEXT_PUBLIC_USE_MOCK_API | `src/mock-data, src/services` | ✅ Done | unit+e2e |
 
-## §52–53 Accessibility, i18n, privacy (16/18)
+## §52–53 Accessibility, i18n, privacy (18/18)
 
 - **Roles:** All
 - **Flutter:** Mirrored in mobile repo
@@ -1541,8 +1541,8 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | A11Y-02 | English UI | `global` | ✅ Done | smoke |
 | A11Y-03 | Persistent language preference | `global` | ✅ Done | smoke |
 | A11Y-04 | Bangla numerals | `global` | ✅ Done | smoke |
-| A11Y-05 | Keyboard navigation & focus states <br><sub>Keyboard paths built in; no formal WCAG 2.2 AA audit or screen-reader pass yet</sub> | `global` | 🟨 Partial | smoke |
-| A11Y-06 | Accessible forms & labels <br><sub>Labelled forms; no formal audit yet</sub> | `global` | 🟨 Partial | smoke |
+| A11Y-05 | Keyboard navigation & focus states <br><sub>Automated axe WCAG 2.2 A/AA audit (13 pages + palette) and keyboard e2e (skip link, focus ring, Ctrl+K/Esc). Manual screen-reader pass still recommended before launch</sub> | `global` | ✅ Done | e2e |
+| A11Y-06 | Accessible forms & labels <br><sub>Field/PasswordInput/SegmentedControl label + error wiring unit-tested; selects auto-labelled; axe form-label rules pass</sub> | `global` | ✅ Done | unit+e2e |
 | A11Y-07 | Reduced motion | `global` | ✅ Done | smoke |
 | A11Y-08 | Text scaling | `global` | ✅ Done | smoke |
 | A11Y-09 | Accessible exam navigation | `global` | ✅ Done | smoke |
@@ -1579,7 +1579,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | AVT-11 | Institution on/off per avatar <br><sub>Removed by product decision (2026-11-24)</sub> | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | 🚫 Removed | — |
 | AVT-12 | Parent usage counts (no transcripts) | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
 
-## §55 Testing (7/8)
+## §55 Testing (8/8)
 
 - **Roles:** —
 - **Flutter:** Flutter repo
@@ -1589,7 +1589,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
 | TEST-01 | Unit tests (services/algorithms) | `tests/**, e2e/**` | ✅ Done | unit+e2e |
-| TEST-02 | Component tests <br><sub>Component tests cover DataTable only; most UI is covered by e2e</sub> | `tests/**, e2e/**` | 🟨 Partial | unit |
+| TEST-02 | Component tests <br><sub>DataTable, QuestionInput (all answer types), form controls, ExamRunner, OnboardingWizard</sub> | `tests/**, e2e/**` | ✅ Done | unit |
 | TEST-03 | Form validation tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
 | TEST-04 | Role permission tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
 | TEST-05 | Mock repository tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |

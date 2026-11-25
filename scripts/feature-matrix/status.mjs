@@ -136,8 +136,8 @@ export const status = {
   // §49–§55
   "DATA-*": ["done", "unit+e2e"],
   "A11Y-*": ["done", S],
-  "A11Y-05": ["partial", S, "Keyboard paths built in; no formal WCAG 2.2 AA audit or screen-reader pass yet"],
-  "A11Y-06": ["partial", S, "Labelled forms; no formal audit yet"],
+  "A11Y-05": ["done", "e2e", "Automated axe WCAG 2.2 A/AA audit (13 pages + palette) and keyboard e2e (skip link, focus ring, Ctrl+K/Esc). Manual screen-reader pass still recommended before launch"],
+  "A11Y-06": ["done", "unit+e2e", "Field/PasswordInput/SegmentedControl label + error wiring unit-tested; selects auto-labelled; axe form-label rules pass"],
   "TEST-*": ["done", "unit+e2e"],
-  "TEST-02": ["partial", "unit", "Component tests cover DataTable only; most UI is covered by e2e"],
+  "TEST-02": ["done", "unit", "DataTable, QuestionInput (all answer types), form controls, ExamRunner, OnboardingWizard"],
 };

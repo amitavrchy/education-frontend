@@ -37,11 +37,9 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 6. ✅ Admin dashboard modules (§30–§42)
 7. ✅ Tests (Vitest 63, Playwright 25), docs set from §57, audit + fixes
 
-**Status (2026-11-24):** 1,087 features — 1,084 done, 3 partial (formal a11y audit ×2, broader component
-tests). See `docs/testing/FEATURE_ACCEPTANCE_REPORT.md` and `docs/testing/KNOWN_LIMITATIONS.md`.
+**Status (2026-11-25):** 1,099 features tracked — 1,062 done, 37 removed by product decision, 0 partial/todo. See `docs/testing/FEATURE_ACCEPTANCE_REPORT.md` and `docs/testing/KNOWN_LIMITATIONS.md`.
 
-**Suggested next steps:** axe accessibility checks in e2e + manual screen-reader pass; component tests for
-exam runner / question editor / onboarding; JSON-schema export of `src/contracts` for the Flutter repo;
+**Suggested next steps:** manual screen-reader pass (NVDA/TalkBack, Bangla); JSON-schema export of `src/contracts` for the Flutter repo;
 Lighthouse budget on a low-end device profile; backend endpoints per `docs/architecture/BACKEND_INTEGRATION_PLAN.md`.
 
 ## Continue on another PC
@@ -53,6 +51,28 @@ Lighthouse budget on a low-end device profile; backend endpoints per `docs/archi
 4. Verify: `npm run check` and `npm run test:e2e` (first time: `npx playwright install chromium`).
 
 ## Log
+
+### 2026-11-25 — session 7 (last partial features: A11Y-05/06, TEST-02)
+- Automated accessibility suite `tests/e2e/a11y.spec.ts`:
+  - axe-core WCAG 2.2 A/AA on public pages, student pages, the teacher/parent/admin homes and the open command palette.
+  - Keyboard tests: skip link, focus ring, login by keyboard, Ctrl+K/Escape, announced form errors.
+- Bugs found and fixed:
+  - Command palette crashed on open (cmdk items outside `<Command>`). `CommandDialog` now wraps them.
+  - Login/register used Tabs without panels (invalid `aria-controls`). They now use a new `SegmentedControl` radiogroup.
+  - The password field had no accessible label. New `PasswordInput` forwards the `<Field>` props to the real input.
+  - 84 select triggers had no label. `SelectTrigger` now links itself to its sibling `<Label>`.
+  - Charts were focusable inside `aria-hidden` (recharts accessibility layer, pie `rootTabIndex`).
+  - Some spans had `aria-label` without a role, and the dashboard calendar had a misused `role="grid"`.
+  - Light-theme contrast: darker primary, muted-foreground, destructive, success and info tokens. Removed
+    opacity text on the auth panel.
+- Component tests:
+  - QuestionInput (every answer type), Field, PasswordInput, SegmentedControl.
+  - ExamRunner (keyboard answering, palette, mark, autosave, submit).
+  - OnboardingWizard (validation, draft resume, full finish).
+- Verification:
+  - Typecheck clean, lint 0 errors. 87/87 unit, 37/37 e2e. `next build` OK.
+- Still open:
+  - The manual screen-reader pass. See `docs/testing/KNOWN_LIMITATIONS.md`.
 
 ### 2026-11-24 — session 6b (scope cut: institution portal + guardian consent)
 - Product decision from the user:

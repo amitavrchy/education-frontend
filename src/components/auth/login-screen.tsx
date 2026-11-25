@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff, Loader2, Mail, Smartphone } from "lucide-react";
+import { Loader2, Mail, Smartphone } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PasswordInput } from "@/components/forms/password-input";
+import { SegmentedControl } from "@/components/forms/segmented-control";
 import { useStartSession } from "@/hooks/use-auth";
 import { useL, useT } from "@/i18n";
 import { ROUTES } from "@/lib/constants";
@@ -32,7 +33,6 @@ export function LoginScreen() {
   const [method, setMethod] = useState<"password" | "otp">("password");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [errors, setErrors] = useState<{ identifier?: string; password?: string; form?: string }>({});
   const [busy, setBusy] = useState(false);
@@ -85,23 +85,19 @@ export function LoginScreen() {
           <AlertDescription>{t("auth.resetSuccess")}</AlertDescription>
         </Alert>
       )}
-      <Tabs
+      <SegmentedControl
+        label={t("auth.loginTitle")}
         value={channel}
-        onValueChange={(v) => {
-          setChannel(v as "email" | "phone");
+        onChange={(v) => {
+          setChannel(v);
           setIdentifier("");
           setErrors({});
         }}
-      >
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="email">
-            <Mail /> {t("auth.withEmail")}
-          </TabsTrigger>
-          <TabsTrigger value="phone">
-            <Smartphone /> {t("auth.withPhone")}
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+        options={[
+          { value: "email", label: <><Mail /> {t("auth.withEmail")}</> },
+          { value: "phone", label: <><Smartphone /> {t("auth.withPhone")}</> },
+        ]}
+      />
 
       <form onSubmit={submit} noValidate className="space-y-4">
         {errors.form && (
@@ -134,23 +130,7 @@ export function LoginScreen() {
 
         {method === "password" && (
           <Field label={t("common.password")} error={errors.password} required hint={l("ডেমো: যেকোনো পাসওয়ার্ড চলবে, ‘wrongpass’ দিলে ত্রুটি দেখাবে", "Demo: any password works; ‘wrongpass’ shows the error state")}>
-            <div className="relative">
-              <Input
-                className="h-10 pr-10"
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? l("পাসওয়ার্ড লুকান", "Hide password") : l("পাসওয়ার্ড দেখুন", "Show password")}
-              >
-                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-              </button>
-            </div>
+            <PasswordInput className="h-10" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </Field>
         )}
 

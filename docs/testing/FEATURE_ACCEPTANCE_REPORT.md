@@ -1,27 +1,35 @@
 # Feature Acceptance Report — education-frontend
 
-Date: 2026-11-24 · Scope: Next.js web (public site, student, parent, teacher/reviewer, admin).
+Date: 2026-11-25 · Scope: Next.js web (public site, student, parent, teacher/reviewer, admin).
 
 ## Result
 
 | Check | Result |
 | --- | --- |
-| Feature matrix | **1,087 features: 1,084 done, 3 partial, 0 todo** ([FEATURE_MATRIX.md](../product/FEATURE_MATRIX.md)) |
-| Routes | 129 routes ([SCREEN_INVENTORY.md](../product/SCREEN_INVENTORY.md)) |
+| Feature matrix | **1,099 tracked: 1,062 done, 37 removed by product decision, 0 partial, 0 todo** ([FEATURE_MATRIX.md](../product/FEATURE_MATRIX.md)) |
+| Routes | 111 routes ([SCREEN_INVENTORY.md](../product/SCREEN_INVENTORY.md)) |
 | Route smoke | Every route of every portal opened with its role in Chromium: all render, **0 console errors** |
 | Typecheck | `tsc --noEmit` clean |
 | Lint | 0 errors (18 warnings: `set-state-in-effect` and `exhaustive-deps` advisories) |
-| Unit/component tests | **63/63 pass** (Vitest) |
-| E2E journeys | **25/25 pass** (Playwright; desktop + mobile tags) |
+| Unit/component tests | **87/87 pass** (Vitest) |
+| E2E journeys | **37/37 pass** (Playwright; includes axe WCAG 2.2 A/AA + keyboard suite) |
 | Production build | `next build` succeeds |
 
 ## Partial items
 
-| ID | Gap | Plan |
+None. The last three (A11Y-05, A11Y-06, TEST-02) were completed on 2026-11-25 with an automated axe audit, keyboard
+e2e tests and component tests. A manual screen-reader pass is still recommended
+(see [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md)).
+
+## Defects found by the accessibility suite (2026-11-25) and fixed
+
+| Defect | Impact | Fix |
 | --- | --- | --- |
-| A11Y-05 | Keyboard/focus built in; no formal WCAG 2.2 AA audit or screen-reader pass | axe in e2e + manual NVDA/TalkBack pass |
-| A11Y-06 | Accessible forms built; not audited | same |
-| TEST-02 | Component tests cover DataTable only | add tests for exam runner, question editor, onboarding wizard |
+| Command palette crashed when opened (cmdk items rendered outside `<Command>`) | ⌘K search unusable in every portal | `CommandDialog` wraps its children in `<Command>` |
+| 84 select triggers had no accessible name | Screen readers announced unnamed comboboxes | `SelectTrigger` links itself to its sibling `<Label>` |
+| Login/register tabs had no panels (invalid `aria-controls`); password input unlabelled | Invalid ARIA; unnamed field | `SegmentedControl` radiogroup; `PasswordInput` |
+| Charts focusable inside `aria-hidden`; `aria-label` on role-less spans; misused `role="grid"` | Hidden focus stops; ignored labels | Recharts accessibility layer off (data mirrored in sr-only tables); `role="img"`/`group` |
+| Light-theme text contrast below 4.5:1 on tinted backgrounds | Low-vision readability | Darker primary, muted-foreground, destructive, success and info tokens |
 
 ## Defects found by the new tests and fixed
 

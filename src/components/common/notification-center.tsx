@@ -175,7 +175,7 @@ export function NotificationCenter({ portal }: { portal: PortalKey }) {
                 </span>
                 <button type="button" className="min-w-0 flex-1 text-left" onClick={() => openItem(n)}>
                   <span className="flex items-center gap-2">
-                    {!n.read && <span className="size-2 shrink-0 rounded-full bg-primary" aria-label={l("অপঠিত", "Unread")} />}
+                    {!n.read && <span role="img" className="size-2 shrink-0 rounded-full bg-primary" aria-label={l("অপঠিত", "Unread")} />}
                     <span className={cn("truncate", !n.read && "font-semibold")}>{n.title}</span>
                     {n.priority === "high" && <Badge variant="destructive" className="text-[10px]">{l("জরুরি", "Urgent")}</Badge>}
                   </span>

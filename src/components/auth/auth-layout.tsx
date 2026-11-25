@@ -25,19 +25,19 @@ export function AuthLayout({ children }: WithChildren) {
         <Logo inverted />
         <div className="max-w-md space-y-6">
           <h2 className="text-h1">{siteConfig.nameBn}</h2>
-          <p className="text-lg opacity-90">{l(siteConfig.tagline, "AI-powered learning for SSC and HSC students in Bangladesh")}</p>
+          <p className="text-lg">{l(siteConfig.tagline, "AI-powered learning for SSC and HSC students in Bangladesh")}</p>
           <ul className="space-y-3">
             {points.map(({ icon: Icon, text }) => (
               <li key={text} className="flex items-center gap-3">
                 <span className="flex size-9 items-center justify-center rounded-lg bg-primary-foreground/15">
                   <Icon className="size-4" />
                 </span>
-                <span className="opacity-95">{text}</span>
+                <span >{text}</span>
               </li>
             ))}
           </ul>
         </div>
-        <p className="text-sm opacity-75">{l("ডেমো সংস্করণ — সব তথ্য কৃত্রিম", "Demo build — all data is synthetic")}</p>
+        <p className="text-sm">{l("ডেমো সংস্করণ — সব তথ্য কৃত্রিম", "Demo build — all data is synthetic")}</p>
       </aside>
       <div className="flex flex-col">
         <div className="flex h-header items-center justify-between px-4 sm:px-6 lg:justify-end">
