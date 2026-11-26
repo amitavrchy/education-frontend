@@ -265,3 +265,89 @@ export interface AudioProgress {
   downloaded: boolean;
   lastPlayedAt?: string;
 }
+
+// ---------------------------------------------------------------- Book avatar teachers
+
+/** Visual configuration for the 2D teacher avatar (rendered as SVG). */
+export interface AvatarAppearance {
+  gender: "female" | "male";
+  skinTone: string;
+  hairStyle: "short" | "side_part" | "long" | "bun" | "hijab" | "bald";
+  hairColor: string;
+  outfit: "saree" | "salwar" | "shirt" | "panjabi" | "blazer";
+  outfitColor: string;
+  accentColor: string;
+  glasses: boolean;
+  beard: boolean;
+  background: string;
+}
+
+/** One live teacher avatar per book. Answers strictly from that book's content. */
+export interface BookAvatar extends Timestamps {
+  id: string;
+  bookId: string;
+  name: Bilingual;
+  title: Bilingual;
+  appearance: AvatarAppearance;
+  voice: { language: "bn" | "en"; rate: number; pitch: number; voiceURI?: string };
+  greeting: Bilingual;
+  persona: { style: "friendly" | "formal" | "socratic"; answerLength: "short" | "balanced" | "detailed"; useExamples: boolean };
+  /** Empty = the whole book. */
+  scopeChapterIds: string[];
+  /** When true the avatar refuses questions outside the book. */
+  strictBookScope: boolean;
+  status: "draft" | "active" | "disabled";
+  stats: { sessions: number; questions: number; outOfScope: number; helpful: number; notHelpful: number };
+}
+
+export interface AvatarCitation {
+  page: number;
+  chapterTitle: string;
+  heading?: string;
+  excerpt: string;
+}
+
+export interface AvatarMessage {
+  id: string;
+  sessionId: string;
+  role: "student" | "avatar";
+  text: string;
+  /** Plain text the avatar speaks (no Markdown/LaTeX). */
+  spoken?: string;
+  inputMode?: "text" | "voice";
+  at: string;
+  citations: AvatarCitation[];
+  grounded?: "book" | "greeting" | "out_of_scope";
+  followUps: string[];
+  feedback?: "up" | "down";
+  flagged?: boolean;
+  /** Always true in this build — answers come from the local mock engine. */
+  simulated: boolean;
+}
+
+export interface AvatarSession {
+  id: string;
+  bookId: string;
+  avatarId: string;
+  studentId: string;
+  title: string;
+  startedAt: string;
+  lastAt: string;
+  messageCount: number;
+  voiceTurns: number;
+  minutes: number;
+}
+
+/** Student-flagged avatar answers, reviewed by teachers/content managers. */
+export interface AvatarReport extends Timestamps {
+  id: string;
+  bookId: string;
+  avatarId: string;
+  studentId: string;
+  question: string;
+  answer: string;
+  reason: string;
+  status: "open" | "resolved" | "dismissed";
+  resolution?: string;
+  resolvedBy?: string;
+}

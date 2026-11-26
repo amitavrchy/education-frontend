@@ -46,7 +46,6 @@ const KIND_LABEL: Record<ExamKind, [string, string]> = {
   daily_challenge: ["দৈনিক চ্যালেঞ্জ", "Daily challenge"],
   adaptive: ["অ্যাডাপটিভ", "Adaptive"],
   custom: ["কাস্টম", "Custom"],
-  institution: ["প্রতিষ্ঠান", "Institution"],
   teacher_assigned: ["শিক্ষক নির্ধারিত", "Teacher assigned"],
   mixed: ["মিশ্র", "Mixed"],
   oral: ["মৌখিক", "Oral"],

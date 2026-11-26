@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, AudioLines, BookOpen, Bot, Brain, Building2, Calendar, Camera, CheckCircle2, ClipboardCheck, FlaskConical, GraduationCap, Headphones, Languages, Layers, Mic, NotebookPen, PenLine, Play, RotateCcw, School, ShieldCheck, Smartphone, Sparkles, Square, Users, WifiOff, XCircle } from "lucide-react";
+import { ArrowRight, AudioLines, BookOpen, Bot, Brain, Calendar, Camera, CheckCircle2, ClipboardCheck, FlaskConical, GraduationCap, Headphones, Languages, Layers, Mic, NotebookPen, PenLine, Play, RotateCcw, ShieldCheck, Smartphone, Sparkles, Square, Users, WifiOff, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { RichText } from "@/components/content/rich-text";
@@ -273,13 +273,11 @@ export function HomePage() {
     { icon: Languages, title: l("ইংরেজি কোচ", "English coach"), desc: l("গ্রামার, লেখা ও স্পিকিং", "Grammar, writing and speaking"), href: "/features#english" },
     { icon: Headphones, title: l("অডিও রিভিশন", "Audio revision"), desc: l("যাতায়াতের পথে শুনে রিভিশন", "Revise while you commute"), href: "/features#audio" },
     { icon: WifiOff, title: l("অফলাইন শেখা", "Offline learning"), desc: l("ইন্টারনেট ছাড়াও বই ও কুইজ", "Books and quizzes without internet"), href: "/features#offline" },
-    { icon: ShieldCheck, title: l("নিরাপদ ও গোপনীয়", "Safe & private"), desc: l("অভিভাবক সম্মতি, প্রাইভেট কথোপকথন", "Guardian consent, private chats"), href: "/privacy" },
+    { icon: ShieldCheck, title: l("নিরাপদ ও গোপনীয়", "Safe & private"), desc: l("প্রাইভেট কথোপকথন, তথ্য তোমার নিয়ন্ত্রণে", "Private chats, you control your data"), href: "/privacy" },
   ];
   const audiences = [
     { icon: Users, title: l("অভিভাবকদের জন্য", "For parents"), desc: l("সন্তানের অগ্রগতি, পরীক্ষার ফল ও শিক্ষকের মতামত — গোপনীয়তা বজায় রেখে।", "Your child's progress, results and teacher feedback — with privacy respected."), href: "/for-parents" },
     { icon: GraduationCap, title: l("শিক্ষকদের জন্য", "For teachers"), desc: l("প্রশ্ন তৈরি, পরীক্ষা, খাতা মূল্যায়ন ও কনটেন্ট পর্যালোচনা।", "Create questions and exams, review answer scripts and content."), href: "/for-teachers" },
-    { icon: School, title: l("স্কুলের জন্য", "For schools"), desc: l("ক্লাস, শিক্ষক, পরীক্ষা ও প্রতিষ্ঠানের প্রশ্নব্যাংক এক জায়গায়।", "Classes, teachers, exams and a private question bank in one place."), href: "/for-schools" },
-    { icon: Building2, title: l("কলেজের জন্য", "For colleges"), desc: l("HSC বিভাগভিত্তিক পরিকল্পনা, মডেল টেস্ট ও বিশ্লেষণ।", "HSC group-wise planning, model tests and analytics."), href: "/for-colleges" },
   ];
   const personas = [
     { name: l("তানিয়া (ডেমো চরিত্র)", "Tania (demo persona)"), meta: l("SSC পরীক্ষার্থী, বিজ্ঞান", "SSC candidate, science"), quote: l("রাতে পদার্থবিজ্ঞানের অঙ্ক আটকে গেলে AI টিউটরকে জিজ্ঞেস করি — বইয়ের কোন পৃষ্ঠা থেকে উত্তর এল সেটাও দেখায়।", "When I get stuck on physics at night I ask the AI tutor — it even shows which textbook page the answer came from.") },
@@ -396,8 +394,8 @@ export function HomePage() {
         </div>
       </Section>
 
-      <Section muted eyebrow={l("সবার জন্য", "For everyone")} title={l("শিক্ষার্থী, অভিভাবক, শিক্ষক ও প্রতিষ্ঠান — একসাথে", "Students, parents, teachers and institutions — together")}>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <Section muted eyebrow={l("সবার জন্য", "For everyone")} title={l("শিক্ষার্থী, অভিভাবক ও শিক্ষক — একসাথে", "Students, parents and teachers — together")}>
+        <div className="grid gap-4 md:grid-cols-2">
           {audiences.map((a) => (
             <Card key={a.title} className="flex flex-col">
               <CardHeader>

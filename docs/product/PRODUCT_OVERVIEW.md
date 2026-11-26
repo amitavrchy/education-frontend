@@ -13,12 +13,11 @@ config change.
 
 | Surface | Base route | Audience |
 | --- | --- | --- |
-| Public website | `/` | Prospective students, parents, teachers, institutions |
+| Public website | `/` | Prospective students, parents, teachers |
 | Auth & onboarding | `/login`, `/register`, `/onboarding`, … | Everyone |
 | Student web app | `/student/*` | Students |
 | Parent / guardian portal | `/parent/*` | Guardians |
 | Teacher & content-reviewer portal | `/teacher/*` | Teachers, content reviewers |
-| School / college portal | `/institution/*` | School and college admins |
 | Admin dashboard | `/admin/*` | Content manager, support, platform admin, super admin |
 
 The Flutter student app is a **separate repository** (`education-flutter`); see
@@ -37,8 +36,8 @@ The Flutter student app is a **separate repository** (`education-flutter`); see
 | Study planning | `/student/study-planner` |
 | Adaptive learning | `/student/analytics` |
 | Exams & evaluation | `/student/exams`, `/student/answer-evaluation` |
-| Analytics | student analytics, parent progress, teacher/institution/admin analytics |
-| Parent & institution collaboration | `/parent/*`, `/institution/*`, `/teacher/*` |
+| Analytics | student analytics, parent progress, teacher/admin analytics |
+| Parent & teacher collaboration | `/parent/*`, `/teacher/*` |
 | Content management | `/admin/*` (curriculum, books + ingestion, questions, board/institution papers, AI knowledge base) |
 
 ## Frontend-only, mock-backed

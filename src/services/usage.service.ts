@@ -8,7 +8,6 @@ export const PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   free: { aiMessagesPerDay: 20, voiceMinutesPerMonth: 15, photoSolvesPerDay: 5, offlineDownloads: 3, members: 1, handwritingEvaluationsPerMonth: 3 },
   pro: { aiMessagesPerDay: 300, voiceMinutesPerMonth: 300, photoSolvesPerDay: 60, offlineDownloads: 50, members: 1, handwritingEvaluationsPerMonth: 40 },
   family: { aiMessagesPerDay: 300, voiceMinutesPerMonth: 300, photoSolvesPerDay: 60, offlineDownloads: 50, members: 4, handwritingEvaluationsPerMonth: 40 },
-  institution: { aiMessagesPerDay: 500, voiceMinutesPerMonth: 600, photoSolvesPerDay: 100, offlineDownloads: 100, members: 1000, handwritingEvaluationsPerMonth: 100 },
 };
 
 export type UsageKind = "ai" | "voice" | "photo" | "handwriting";

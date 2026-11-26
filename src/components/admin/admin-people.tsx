@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Ban, CheckCircle2, Loader2, Mail, Plus, RotateCcw, Star, Trash2, UserCog } from "lucide-react";
+import { Ban, Mail, Plus, RotateCcw, Star, Trash2, UserCog } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { BarsChart } from "@/components/charts/kit";
@@ -32,8 +32,8 @@ import { audit, auditRepo } from "@/services/admin.service";
 import { usersRepo } from "@/services/auth.service";
 import { subscriptionsRepo } from "@/services/billing.service";
 import { mockRequest, newId, nowIso } from "@/services/core/mock-runtime";
-import { consentRepo, guardianLinksRepo, institutionsRepo, privacyRequestsRepo, profilesRepo, teacherProfilesRepo } from "@/services/people.service";
-import { ConfirmAction, DemoDataNote, KeyValue } from "./admin-shared";
+import { guardianLinksRepo, institutionsRepo, privacyRequestsRepo, profilesRepo, teacherProfilesRepo } from "@/services/people.service";
+import { ConfirmAction, KeyValue } from "./admin-shared";
 
 export const ROLE_LABEL: Record<UserRole, [string, string]> = {
   student: ["শিক্ষার্থী", "Student"],
@@ -41,8 +41,6 @@ export const ROLE_LABEL: Record<UserRole, [string, string]> = {
   teacher: ["শিক্ষক", "Teacher"],
   content_reviewer: ["কনটেন্ট পর্যালোচক", "Content reviewer"],
   content_manager: ["কনটেন্ট ম্যানেজার", "Content manager"],
-  school_admin: ["স্কুল অ্যাডমিন", "School admin"],
-  college_admin: ["কলেজ অ্যাডমিন", "College admin"],
   support: ["কাস্টমার সাপোর্ট", "Customer support"],
   platform_admin: ["প্ল্যাটফর্ম অ্যাডমিন", "Platform admin"],
   super_admin: ["সুপার অ্যাডমিন", "Super admin"],
@@ -62,25 +60,24 @@ export function AdminUsers() {
   const [open, setOpen] = useState<UserAccount | null>(null);
   const counts = useMemo(() => {
     const d = users.data ?? [];
-    return { total: d.length, students: d.filter((u) => u.role === "student").length, suspended: d.filter((u) => u.status === "suspended").length, consent: d.filter((u) => u.consent === "pending").length };
+    return { total: d.length, students: d.filter((u) => u.role === "student").length, suspended: d.filter((u) => u.status === "suspended").length, paid: d.filter((u) => (u.planCode ?? "free") !== "free").length };
   }, [users.data]);
   const columns: ColumnDef<UserAccount, unknown>[] = [
     { accessorKey: "name", header: l("নাম", "Name"), meta: { label: l("নাম", "Name") }, cell: ({ row }) => <span className="font-medium">{row.original.name}</span> },
     { accessorKey: "email", header: l("ইমেইল", "Email"), meta: { label: l("ইমেইল", "Email") }, cell: ({ row }) => <span className="text-xs">{row.original.email}</span> },
     { accessorKey: "role", header: l("ভূমিকা", "Role"), meta: { label: l("ভূমিকা", "Role") }, cell: ({ row }) => l(...ROLE_LABEL[row.original.role]) },
     { accessorKey: "planCode", header: l("প্ল্যান", "Plan"), meta: { label: l("প্ল্যান", "Plan") }, cell: ({ row }) => row.original.planCode ?? "—" },
-    { accessorKey: "consent", header: l("সম্মতি", "Consent"), meta: { label: l("সম্মতি", "Consent") } },
     { accessorKey: "lastActiveAt", header: l("সর্বশেষ সক্রিয়", "Last active"), meta: { label: l("সর্বশেষ সক্রিয়", "Last active") }, cell: ({ row }) => (row.original.lastActiveAt ? f.relative(row.original.lastActiveAt) : "—") },
     { accessorKey: "status", header: l("অবস্থা", "Status"), meta: { label: l("অবস্থা", "Status") }, cell: ({ row }) => <Badge variant={STATUS_VARIANT[row.original.status]}>{row.original.status}</Badge> },
   ];
   return (
     <>
-      <PageHeader title={l("ব্যবহারকারী ব্যবস্থাপনা", "User management")} description={l("ব্যবহারকারী ডিরেক্টরি, প্রোফাইল, সাবস্ক্রিপশন, ভূমিকা, অভিভাবক/প্রতিষ্ঠান সংযোগ, সম্মতি, স্থগিতকরণ ও অডিট", "User directory, profiles, subscriptions, roles, guardian/institution links, consent, suspension and audit")} />
+      <PageHeader title={l("ব্যবহারকারী ব্যবস্থাপনা", "User management")} description={l("ব্যবহারকারী ডিরেক্টরি, প্রোফাইল, সাবস্ক্রিপশন, ভূমিকা, অভিভাবক সংযোগ, স্থগিতকরণ ও অডিট", "User directory, profiles, subscriptions, roles, guardian links, suspension and audit")} />
       <div className="mb-4 grid gap-3 sm:grid-cols-4">
         <StatCard label={l("মোট ব্যবহারকারী", "Total users")} value={f.number(counts.total)} />
         <StatCard label={l("শিক্ষার্থী", "Students")} value={f.number(counts.students)} tone="info" />
         <StatCard label={l("স্থগিত", "Suspended")} value={f.number(counts.suspended)} tone="destructive" />
-        <StatCard label={l("সম্মতি অপেক্ষমাণ", "Consent pending")} value={f.number(counts.consent)} tone="warning" />
+        <StatCard label={l("পেইড প্ল্যান", "Paid plans")} value={f.number(counts.paid)} tone="success" />
       </div>
       <DataTable
         data={users.data}
@@ -92,8 +89,7 @@ export function AdminUsers() {
         facets={[
           { id: "role", label: l("ভূমিকা", "Role"), options: USER_ROLES.map((r) => ({ value: r, label: l(...ROLE_LABEL[r]) })), get: (u) => u.role },
           { id: "status", label: l("অবস্থা", "Status"), options: ["active", "invited", "suspended", "pending_deletion"].map((s) => ({ value: s, label: s })), get: (u) => u.status },
-          { id: "plan", label: l("প্ল্যান", "Plan"), options: ["free", "pro", "family", "institution"].map((s) => ({ value: s, label: s })), get: (u) => u.planCode ?? "free" },
-          { id: "consent", label: l("সম্মতি", "Consent"), options: ["not_required", "pending", "granted", "withdrawn"].map((s) => ({ value: s, label: s })), get: (u) => u.consent },
+          { id: "plan", label: l("প্ল্যান", "Plan"), options: ["free", "pro", "family"].map((s) => ({ value: s, label: s })), get: (u) => u.planCode ?? "free" },
         ]}
         onRowClick={setOpen}
         getRowId={(u) => u.id}
@@ -116,7 +112,6 @@ function UserDetail({ user, canManage, canRoles, onClose }: { user: UserAccount;
   const profile = useQuery({ queryKey: ["admin", "profile", user.id], queryFn: () => profilesRepo.find(user.id), enabled: user.role === "student" });
   const subs = useQuery({ queryKey: ["admin", "subs", user.id], queryFn: async () => (await subscriptionsRepo.raw()).filter((s) => s.userId === user.id) });
   const links = useQuery({ queryKey: ["admin", "links", user.id], queryFn: async () => (await guardianLinksRepo.raw()).filter((g) => g.studentId === user.id || g.guardianId === user.id) });
-  const consents = useQuery({ queryKey: ["admin", "consents", user.id], queryFn: async () => (await consentRepo.raw()).filter((c) => c.studentId === user.id) });
   const privacy = useQuery({ queryKey: ["admin", "privacy", user.id], queryFn: async () => (await privacyRequestsRepo.raw()).filter((p) => p.userId === user.id) });
   const history = useQuery({ queryKey: ["admin", "audit", user.id], queryFn: async () => (await auditRepo.raw()).filter((a) => a.target.id === user.id) });
   const insts = useQuery({ queryKey: ["institutions"], queryFn: () => institutionsRepo.all() });
@@ -178,7 +173,7 @@ function UserDetail({ user, canManage, canRoles, onClose }: { user: UserAccount;
           <TabsList className="flex-wrap">
             <TabsTrigger value="profile">{l("প্রোফাইল", "Profile")}</TabsTrigger>
             <TabsTrigger value="access">{l("ভূমিকা ও অনুমতি", "Role & permissions")}</TabsTrigger>
-            <TabsTrigger value="links">{l("সংযোগ ও সম্মতি", "Links & consent")}</TabsTrigger>
+            <TabsTrigger value="links">{l("অভিভাবক সংযোগ", "Guardian links")}</TabsTrigger>
             <TabsTrigger value="support">{l("সাপোর্ট", "Support")}</TabsTrigger>
             <TabsTrigger value="audit">{l("অডিট", "Audit")}</TabsTrigger>
           </TabsList>
@@ -298,15 +293,6 @@ function UserDetail({ user, canManage, canRoles, onClose }: { user: UserAccount;
                     · {l("AI কথোপকথন ডিফল্টভাবে প্রাইভেট", "AI conversations private by default")}
                   </p>
                 </div>
-              ))}
-            </div>
-            <div>
-              <p className="mb-1 text-sm font-medium">{l("সম্মতির অবস্থা", "Consent status")}</p>
-              <KeyValue label={l("অ্যাকাউন্ট", "Account")}>{u.consent}</KeyValue>
-              {(consents.data ?? []).map((c) => (
-                <KeyValue key={c.id} label={`${c.guardianName} (${c.method})`}>
-                  {c.status} · {f.date(c.updatedAt)}
-                </KeyValue>
               ))}
             </div>
             <div>
@@ -557,100 +543,6 @@ export function AdminTeachers() {
           </div>
         )}
       </ConfirmAction>
-    </>
-  );
-}
-
-// =====================================================================================
-// Institutions directory (platform view)
-// =====================================================================================
-
-export function AdminInstitutions() {
-  const l = useL();
-  const f = useFormat();
-  const actor = useActor();
-  const qc = useQueryClient();
-  const insts = useQuery({ queryKey: ["institutions"], queryFn: () => institutionsRepo.all() });
-  const [open, setOpen] = useState<Institution | null>(null);
-  const update = useMutation({
-    mutationFn: async ({ id, patch, action }: { id: string; patch: Partial<Institution>; action: string }) => {
-      const i = await institutionsRepo.update(id, patch);
-      await audit(actor, "account", `institution.${action}`, { type: "institution", id, label: i.name.bn });
-      return i;
-    },
-    onSuccess: (i) => (toast.success(l("হালনাগাদ হয়েছে", "Updated")), setOpen(i), void qc.invalidateQueries({ queryKey: ["institutions"] })),
-  });
-  const columns: ColumnDef<Institution, unknown>[] = [
-    { id: "name", accessorFn: (i) => f.pick(i.name), header: l("প্রতিষ্ঠান", "Institution"), meta: { label: l("প্রতিষ্ঠান", "Institution") }, cell: ({ row }) => <span className="font-medium">{f.pick(row.original.name)}</span> },
-    { accessorKey: "type", header: l("ধরন", "Type"), meta: { label: l("ধরন", "Type") } },
-    { accessorKey: "district", header: l("জেলা", "District"), meta: { label: l("জেলা", "District") } },
-    { accessorKey: "studentCount", header: l("শিক্ষার্থী", "Students"), meta: { label: l("শিক্ষার্থী", "Students") }, cell: ({ row }) => f.number(row.original.studentCount) },
-    { accessorKey: "teacherCount", header: l("শিক্ষক", "Teachers"), meta: { label: l("শিক্ষক", "Teachers") }, cell: ({ row }) => f.number(row.original.teacherCount) },
-    { accessorKey: "planCode", header: l("প্ল্যান", "Plan"), meta: { label: l("প্ল্যান", "Plan") } },
-    { accessorKey: "onboardingComplete", header: l("অনবোর্ডিং", "Onboarded"), meta: { label: l("অনবোর্ডিং", "Onboarded") }, cell: ({ row }) => (row.original.onboardingComplete ? <CheckCircle2 className="size-4 text-success" /> : l(`ধাপ ${f.digits(row.original.onboardingStep)}`, `Step ${row.original.onboardingStep}`)) },
-    { accessorKey: "verified", header: l("যাচাইকৃত", "Verified"), meta: { label: l("যাচাইকৃত", "Verified") }, cell: ({ row }) => (row.original.verified ? <Badge variant="secondary">{l("যাচাইকৃত", "Verified")}</Badge> : <Badge variant="outline">{l("অপেক্ষমাণ", "Pending")}</Badge>) },
-  ];
-  return (
-    <>
-      <PageHeader title={l("প্রতিষ্ঠান ডিরেক্টরি", "Institution directory")} description={l("প্ল্যাটফর্মে থাকা স্কুল ও কলেজ — যাচাই, প্ল্যান ও অনবোর্ডিং অবস্থা", "Schools and colleges on the platform — verification, plan and onboarding status")} />
-      <DataTable
-        data={insts.data}
-        columns={columns}
-        isLoading={insts.isPending}
-        error={insts.error}
-        searchText={(i) => `${i.name.bn} ${i.name.en} ${i.district} ${i.code}`}
-        facets={[
-          { id: "type", label: l("ধরন", "Type"), options: ["school", "college", "school_and_college"].map((s) => ({ value: s, label: s })), get: (i) => i.type },
-          { id: "district", label: l("জেলা", "District"), options: [...new Set((insts.data ?? []).map((i) => i.district))].map((d) => ({ value: d, label: d })), get: (i) => i.district },
-        ]}
-        onRowClick={setOpen}
-        getRowId={(i) => i.id}
-        exportName="institutions"
-        footnote={l("প্রতিষ্ঠানের কোড কৃত্রিম — প্রকৃত EIIN নয়।", "Institution codes are synthetic — not real EIINs.")}
-      />
-      <Sheet open={!!open} onOpenChange={(o) => !o && setOpen(null)}>
-        <SheetContent className="w-full overflow-y-auto sm:max-w-md">
-          {open && (
-            <>
-              <SheetHeader>
-                <SheetTitle>{f.pick(open.name)}</SheetTitle>
-                <SheetDescription>
-                  {open.address} · {open.code}
-                </SheetDescription>
-              </SheetHeader>
-              <div className="space-y-3 px-4">
-                <KeyValue label={l("প্রধান", "Principal")}>{open.principal}</KeyValue>
-                <KeyValue label={l("যোগাযোগ", "Contact")}>
-                  {open.contactEmail} · {open.contactPhone}
-                </KeyValue>
-                <KeyValue label={l("প্রতিষ্ঠিত", "Established")}>{f.digits(open.established)}</KeyValue>
-                <KeyValue label={l("বিভাগ", "Division")}>{open.division}</KeyValue>
-                <KeyValue label={l("ডেটা সংরক্ষণ", "Data retention")}>{l(`${f.digits(open.privacy.dataRetentionMonths)} মাস`, `${open.privacy.dataRetentionMonths} months`)}</KeyValue>
-                <div className="space-y-1">
-                  <Label>{l("প্ল্যান", "Plan")}</Label>
-                  <Select value={open.planCode} onValueChange={(v) => update.mutate({ id: open.id, patch: { planCode: v }, action: "plan" })}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {["free", "institution"].map((p) => (
-                        <SelectItem key={p} value={p}>
-                          {p}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button className="w-full" variant={open.verified ? "outline" : "default"} onClick={() => update.mutate({ id: open.id, patch: { verified: !open.verified }, action: open.verified ? "unverify" : "verify" })}>
-                  {open.verified ? l("যাচাই প্রত্যাহার", "Revoke verification") : l("প্রতিষ্ঠান যাচাই করুন", "Verify institution")}
-                </Button>
-                <DemoDataNote />
-              </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
-      {update.isPending && <Loader2 className="sr-only" aria-hidden />}
     </>
   );
 }

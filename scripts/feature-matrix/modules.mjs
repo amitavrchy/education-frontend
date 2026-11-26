@@ -1689,6 +1689,31 @@ export const modules = [
       "Parent link permissions",
     ],
   },
+  // Per-book avatar teacher (product requirement, 2026-11-24) -----------
+  {
+    prefix: "AVT",
+    module: "Per-book live 2D avatar teacher",
+    section: "Book avatar",
+    roles: "Student, Admin, Teacher, Parent",
+    route: "/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity",
+    flutter: M,
+    source: "avatarService + book-avatar-engine (answers from the book's pages only)",
+    states: "Idle/listening/thinking/speaking, offline unavailable, no-voice fallback, mic denied, out-of-scope",
+    features: [
+      "One avatar per book, auto-created on admin upload",
+      "Animated 2D teacher (blink, breathe, lip-sync, state cues)",
+      "Ask by text",
+      "Ask by voice (push-to-talk + hands-free)",
+      "Spoken answer with captions (TTS, speed, mute)",
+      "Answers grounded only in the book, with page citations",
+      "Out-of-book questions declined with book-topic suggestions",
+      "Session history, feedback and answer reports",
+      "Admin editor: appearance, voice, persona, greeting, chapter scope, status",
+      "Admin/teacher test chat and report resolution",
+      "Institution on/off per avatar",
+      "Parent usage counts (no transcripts)",
+    ],
+  },
   // §55 -----------------------------------------------------------------
   {
     prefix: "TEST",

@@ -59,7 +59,8 @@ function CommandDialog({
         )}
         showCloseButton={showCloseButton}
       >
-        {children}
+        {/* cmdk items/separators need the <Command> store as an ancestor. */}
+        <Command className="**:data-[slot=command-input-wrapper]:h-12">{children}</Command>
       </DialogContent>
     </Dialog>
   )

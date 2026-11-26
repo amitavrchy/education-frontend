@@ -37,9 +37,9 @@ REST conventions (pagination, filtering, errors, bulk operations) are in
 | Adaptive / progress | `TopicMastery`, `ChapterProgress`, `ActivityEntry`, `GamificationState` | `/progress/:studentId/*` |
 | Notes / flashcards | `Note`, `Flashcard`, `FlashcardDeck` | `/notes/:studentId`, `/flashcards/:studentId` |
 | Notifications | `Notification`, `Notice` | `/notifications` |
-| Schools | `Institution`, `InstitutionMember`, `AcademicSession`, `ClassGroup`, `Assignment`, `Submission`, `Announcement`, `InstitutionResource` | `/institutions`, `/institution-members`, … |
+| Schools (directory + teacher classes) | `Institution` (archive directory, student affiliation), `ClassGroup`, `Assignment`, `Submission` | `/institutions` (read-only), `/classes`, `/assignments`, … |
 | Teachers | `TeacherProfile`, `TeacherFeedback`, `ReviewItem`, `Rubric` | `/teacher-profiles`, `/review-items`, `/rubrics` |
-| Parents | `GuardianLink` (permission flags; `aiConversations` defaults false), `ConsentRecord` | `/guardian-links`, `/consent-records` |
+| Parents | `GuardianLink` (permission flags; `aiConversations` defaults false) | `/guardian-links` |
 | Billing | `Plan`, `Subscription`, `Payment`, `Coupon`, `RefundRequest`, `UsageMeter` | `/plans`, `/subscriptions`, `/payments`, `/coupons`, `/refunds` |
 | Admin ops | `IngestionJob`, `AuditLog`, `ModerationCase`, `PrivacyRequest`, `SecurityAlert`, `SessionRecord`, `ApiKeySetting`, `SystemConfig` | `/ingestion-jobs`, `/audit-logs`, `/moderation-cases`, … |
 | Analytics | series shapes in `analyticsSeries()` | `/analytics/*?from=&to=` |
@@ -50,5 +50,5 @@ REST conventions (pagination, filtering, errors, bulk operations) are in
 - Exam scoring (`scoreAttempt`), negative marking, time limits and result publication policy.
 - Content status transitions (`CONTENT_TRANSITIONS` + role checks in `allowedTransitions`).
 - Plan entitlements and quotas (`PlanLimits`, `UsageMeter`).
-- Guardian visibility (`GuardianLink.permissions`, consent status).
+- Guardian visibility (`GuardianLink.permissions`). No guardian consent step: students of any age sign up on their own.
 - Audit logging of every admin mutation.

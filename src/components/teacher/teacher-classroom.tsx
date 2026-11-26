@@ -330,7 +330,6 @@ export function ExamForm({ subjectIds, classes, institutionId, onClose, onCreate
               <SelectContent>
                 <SelectItem value="teacher_assigned">{l("শ্রেণি পরীক্ষা", "Class test")}</SelectItem>
                 <SelectItem value="chapter">{l("অধ্যায় কুইজ", "Chapter quiz")}</SelectItem>
-                <SelectItem value="institution">{l("প্রতিষ্ঠানের পরীক্ষা", "Institution exam")}</SelectItem>
               </SelectContent>
             </Select>
             <Select value={d.subjectId} onValueChange={(v) => setD({ ...d, subjectId: v, chapterIds: [] })}>
@@ -421,7 +420,7 @@ export function ExamForm({ subjectIds, classes, institutionId, onClose, onCreate
   );
 }
 
-export function TeacherAssignments({ scope = "teacher" }: { scope?: "teacher" | "institution" }) {
+export function TeacherAssignments() {
   const l = useL();
   const f = useFormat();
   const actor = useActor();
@@ -431,13 +430,12 @@ export function TeacherAssignments({ scope = "teacher" }: { scope?: "teacher" | 
   const classes = useTeacherClasses();
   const { index: cur } = useCurriculum();
   const inst = user?.institutionId ?? "inst-1";
-  const list = useQuery({ queryKey: ["assignments", scope, actor.id], queryFn: () => schoolService.assignments(scope === "teacher" ? { teacherId: actor.id } : { institutionId: inst }) });
-  const allClasses = useQuery({ queryKey: ["classes", inst], queryFn: () => schoolService.classes(inst) });
+  const list = useQuery({ queryKey: ["assignments", "teacher", actor.id], queryFn: () => schoolService.assignments({ teacherId: actor.id }) });
   const subs = useQuery({ queryKey: ["submissions"], queryFn: () => schoolService.submissions() });
   const [editing, setEditing] = useState<Assignment | null>(null);
   const remove = useMutation({ mutationFn: (id: string) => schoolService.removeAssignment(id), onSuccess: () => qc.invalidateQueries({ queryKey: ["assignments"] }) });
-  const classList = scope === "teacher" ? (classes.data?.classes ?? []) : (allClasses.data ?? []);
-  const subjectIds = scope === "teacher" ? (profile.data?.subjectIds ?? []) : [...new Set(classList.flatMap((c) => c.subjectIds))];
+  const classList = classes.data?.classes ?? [];
+  const subjectIds = profile.data?.subjectIds ?? [];
   const blank = (): Assignment => ({ id: newId("as"), title: "", instructions: "", subjectId: subjectIds[0] ?? "ssc-physics", institutionId: inst, teacherId: actor.id, teacherName: actor.name, classGroupIds: [], studentIds: [], dueAt: new Date(Date.now() + 3 * 864e5).toISOString(), totalMarks: 10, status: "draft", attachments: [], createdAt: nowIso(), updatedAt: nowIso() });
   return (
     <>
@@ -480,7 +478,7 @@ export function TeacherAssignments({ scope = "teacher" }: { scope?: "teacher" | 
                   </Button>
                   {a.status === "assigned" && (
                     <Button asChild size="sm" variant="ghost">
-                      <Link href={`${scope === "teacher" ? "/teacher" : "/institution"}/${scope === "teacher" ? "submissions" : "assignments"}?assignment=${a.id}`}>{l("জমা দেখুন", "Submissions")}</Link>
+                      <Link href={`/teacher/submissions?assignment=${a.id}`}>{l("জমা দেখুন", "Submissions")}</Link>
                     </Button>
                   )}
                   <Button size="icon" variant="ghost" className="ml-auto size-8 text-destructive" aria-label={l("মুছুন", "Delete")} onClick={() => remove.mutate(a.id)}>

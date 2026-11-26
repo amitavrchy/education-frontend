@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { DEMO, heading, login, logout } from "./helpers";
+import { DEMO, heading, login } from "./helpers";
 
 test.describe("student journeys", () => {
   test("signs up, verifies OTP and finishes onboarding", async ({ page }) => {
@@ -15,8 +15,7 @@ test.describe("student journeys", () => {
     await expect(page).toHaveURL(/verify-otp/);
     for (const [i, d] of [..."123456"].entries()) await page.getByRole("textbox", { name: `সংখ্যা ${i + 1}` }).fill(d);
     await page.getByRole("button", { name: "যাচাই করুন" }).click();
-    await page.waitForURL(/consent|onboarding/, { timeout: 60_000 });
-    if (page.url().includes("consent")) await page.getByRole("button", { name: /পরে করব/ }).click();
+    await page.waitForURL(/onboarding/, { timeout: 60_000 });
     await expect(page).toHaveURL(/onboarding/);
     for (let i = 0; i < 6; i++) await page.getByRole("button", { name: "পরবর্তী" }).click();
     await page.getByRole("button", { name: "শেষ করুন" }).click();
@@ -89,7 +88,7 @@ test.describe("student journeys", () => {
   });
 });
 
-test.describe("guardian & institution", () => {
+test.describe("guardian", () => {
   test("guardian sees authorised progress but not private AI chats", async ({ page }) => {
     await login(page, DEMO.parent);
     await page.goto("/parent/progress");
@@ -99,12 +98,4 @@ test.describe("guardian & institution", () => {
     await expect(page.getByText(/কথোপকথন/).first()).toBeVisible();
   });
 
-  test("institution admin can open exam creation", async ({ page }) => {
-    await login(page, DEMO.school);
-    await page.goto("/institution/exams");
-    await expect(page.locator("h1").first()).toBeVisible();
-    await page.getByRole("button", { name: "প্রতিষ্ঠানের পরীক্ষা" }).click();
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await logout(page);
-  });
 });

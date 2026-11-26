@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, ArrowLeft, Bookmark, BookmarkCheck, Bot, ChevronLeft, ChevronRight, Download, FileText, Highlighter, ListTree, Loader2, Lock, NotebookPen, Printer, Search, Sparkles, StickyNote, Trash2, ZoomIn, ZoomOut } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Bookmark, BookmarkCheck, Bot, ChevronLeft, ContactRound, ChevronRight, Download, FileText, Highlighter, ListTree, Loader2, Lock, NotebookPen, Printer, Search, Sparkles, StickyNote, Trash2, ZoomIn, ZoomOut } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -430,6 +430,11 @@ function Reader({ book }: { book: Book }) {
               <Bot className="size-4 text-primary" /> {l("AI সহায়তা", "AI help")}
             </p>
             <div className="space-y-1.5">
+              <Button asChild size="sm" className="w-full justify-start">
+                <Link href={`/student/avatar-tutor/${book.id}`}>
+                  <ContactRound /> {l("এই বইয়ের শিক্ষককে জিজ্ঞেস করো", "Ask this book's teacher")}
+                </Link>
+              </Button>
               <Button asChild size="sm" variant="outline" className="w-full justify-start">
                 <Link href={tutorHref(l(`পাঠ্যবইয়ের পৃষ্ঠা ${current} (${pageQ.data?.heading ?? ""}) সহজ ভাষায় বুঝিয়ে দাও`, `Explain page ${current} (${pageQ.data?.heading ?? ""}) simply`))}>
                   <Sparkles /> {l("এই পৃষ্ঠা নিয়ে জিজ্ঞাসা", "Ask AI about this page")}

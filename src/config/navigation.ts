@@ -7,8 +7,8 @@ import {
   BookCopy,
   BookOpen,
   Bot,
-  Building,
   CalendarDays,
+  ContactRound,
   CalendarRange,
   Camera,
   ChartLine,
@@ -21,7 +21,6 @@ import {
   FileStack,
   FileText,
   FlaskConical,
-  FolderOpen,
   GalleryVerticalEnd,
   GraduationCap,
   HeartHandshake,
@@ -32,7 +31,6 @@ import {
   Library,
   LifeBuoy,
   ListChecks,
-  Megaphone,
   Mic,
   NotebookPen,
   PenLine,
@@ -43,7 +41,6 @@ import {
   Settings,
   ShieldCheck,
   ShieldX,
-  Sparkles,
   Target,
   TrendingUp,
   Trophy,
@@ -72,6 +69,7 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
         items: [
           { slug: "dashboard", titleKey: "nav.dashboard", icon: LayoutDashboard, mobile: true },
           { slug: "ai-tutor", titleKey: "nav.aiTutor", icon: Bot, badge: "AI", mobile: true },
+          { slug: "avatar-tutor", titleKey: "nav.avatarTutor", icon: ContactRound, badge: "নতুন" },
           { slug: "voice-tutor", titleKey: "nav.voiceTutor", icon: Mic },
           { slug: "photo-solver", titleKey: "nav.photoSolver", icon: Camera },
         ],
@@ -136,6 +134,7 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
           { slug: "goals", titleKey: "nav.goals", icon: Target },
           { slug: "feedback", titleKey: "nav.feedback", icon: HeartHandshake },
           { slug: "reports", titleKey: "nav.reports", icon: FileText },
+          { slug: "avatar-activity", titleKey: "nav.avatarActivity", icon: ContactRound },
         ],
       },
       {
@@ -163,6 +162,7 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
           { slug: "rubrics", titleKey: "nav.rubrics", icon: ListChecks, permission: ["rubric.manage", "content.create"] },
           { slug: "evaluations", titleKey: "nav.evaluations", icon: FileCheck, permission: "evaluation.review" },
           { slug: "history", titleKey: "nav.history", icon: History, permission: ["content.review", "content.submit"] },
+          { slug: "avatars", titleKey: "nav.avatars", icon: ContactRound, permission: ["content.review", "teacher.dashboard"] },
         ],
       },
       {
@@ -179,60 +179,7 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
       { labelKey: "navGroups.account", items: [notifications, settings] },
     ],
   },
-  institution: {
-    key: "institution",
-    titleKey: "portals.institution",
-    basePath: "/institution",
-    sections: [
-      {
-        items: [
-          { slug: "dashboard", titleKey: "nav.dashboard", icon: LayoutDashboard },
-          { slug: "onboarding", titleKey: "nav.onboarding", icon: Sparkles },
-        ],
-      },
-      {
-        labelKey: "navGroups.setup",
-        items: [
-          { slug: "profile", titleKey: "nav.profile", icon: Building },
-          { slug: "sessions", titleKey: "nav.sessions", icon: CalendarRange },
-          { slug: "classes", titleKey: "nav.classes", icon: School },
-          { slug: "subjects", titleKey: "nav.subjects", icon: BookOpen },
-        ],
-      },
-      {
-        labelKey: "navGroups.people",
-        items: [
-          { slug: "students", titleKey: "nav.students", icon: Users },
-          { slug: "teachers", titleKey: "nav.teachers", icon: GraduationCap },
-        ],
-      },
-      {
-        labelKey: "navGroups.academics",
-        items: [
-          { slug: "exams", titleKey: "nav.exams", icon: ClipboardList },
-          { slug: "assignments", titleKey: "nav.assignments", icon: ClipboardCheck },
-          { slug: "question-papers", titleKey: "nav.questionPapers", icon: FileStack },
-          { slug: "question-bank", titleKey: "nav.questionBank", icon: FileQuestionMark },
-          { slug: "resources", titleKey: "nav.resources", icon: FolderOpen },
-          { slug: "analytics", titleKey: "nav.analytics", icon: ChartLine },
-        ],
-      },
-      {
-        labelKey: "navGroups.communication",
-        items: [
-          { slug: "announcements", titleKey: "nav.announcements", icon: Megaphone },
-          notifications,
-        ],
-      },
-      {
-        labelKey: "navGroups.account",
-        items: [
-          { slug: "billing", titleKey: "nav.billing", icon: CreditCard, permission: "institution.billing" },
-          settings,
-        ],
-      },
-    ],
-  },
+
   admin: {
     key: "admin",
     titleKey: "portals.admin",
@@ -259,14 +206,16 @@ export const portalNavigation: Record<PortalKey, PortalNavigation> = {
       },
       {
         labelKey: "navGroups.ai",
-        items: [{ slug: "knowledge-base", titleKey: "nav.knowledgeBase", icon: Database, permission: ["kb.view", "kb.manage"] }],
+        items: [
+          { slug: "knowledge-base", titleKey: "nav.knowledgeBase", icon: Database, permission: ["kb.view", "kb.manage"] },
+          { slug: "book-avatars", titleKey: "nav.bookAvatars", icon: ContactRound, permission: ["books.manage", "kb.manage"] },
+        ],
       },
       {
         labelKey: "navGroups.people",
         items: [
           { slug: "users", titleKey: "nav.users", icon: UserCog, permission: ["users.view", "users.manage"] },
           { slug: "teachers", titleKey: "nav.teachers", icon: GraduationCap, permission: "teachers.manage" },
-          { slug: "institutions", titleKey: "nav.institutions", icon: Building, permission: "users.manage" },
         ],
       },
       {
@@ -302,7 +251,6 @@ export const marketingNavigation: MarketingNavLink[] = [
   { titleKey: "marketingNav.pricing", href: "/pricing" },
   { titleKey: "marketingNav.parents", href: "/for-parents" },
   { titleKey: "marketingNav.teachers", href: "/for-teachers" },
-  { titleKey: "marketingNav.schools", href: "/for-schools" },
   { titleKey: "marketingNav.faq", href: "/faq" },
 ];
 

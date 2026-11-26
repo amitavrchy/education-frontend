@@ -9,8 +9,8 @@ import { status } from "./status.mjs";
 const here = dirname(fileURLToPath(import.meta.url));
 const out = resolve(here, "../../docs/product/FEATURE_MATRIX.md");
 
-const ICON = { done: "✅ Done", partial: "🟨 Partial", todo: "⬜ Todo", blocked: "⛔ Blocked" };
-const totals = { done: 0, partial: 0, todo: 0, blocked: 0 };
+const ICON = { done: "✅ Done", partial: "🟨 Partial", todo: "⬜ Todo", blocked: "⛔ Blocked", removed: "🚫 Removed" };
+const totals = { done: 0, partial: 0, todo: 0, blocked: 0, removed: 0 };
 const esc = (s) => String(s).replaceAll("|", "\\|");
 
 const sections = modules.map((m) => {
@@ -22,8 +22,9 @@ const sections = modules.map((m) => {
     return `| ${id} | ${esc(title)}${note ? ` <br><sub>${esc(note)}</sub>` : ""} | \`${esc(route)}\` | ${ICON[st]} | ${esc(tests)} |`;
   });
   const done = rows.filter((r) => r.includes(ICON.done)).length;
+  const live = rows.filter((r) => !r.includes(ICON.removed)).length;
   return [
-    `## ${m.section} ${m.module} (${done}/${rows.length})`,
+    `## ${m.section} ${m.module} (${done}/${live})`,
     "",
     `- **Roles:** ${m.roles}`,
     `- **Flutter:** ${m.flutter}`,
@@ -55,9 +56,10 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | 🟨 Partial | ${totals.partial} |
 | ⬜ Todo | ${totals.todo} |
 | ⛔ Blocked | ${totals.blocked} |
+| 🚫 Removed | ${totals.removed} |
 | **Total** | **${total}** |
 
 ${sections.join("\n")}`;
 
 writeFileSync(out, md);
-console.log(`FEATURE_MATRIX.md written: ${total} features (${totals.done} done, ${totals.partial} partial, ${totals.todo} todo, ${totals.blocked} blocked)`);
+console.log(`FEATURE_MATRIX.md written: ${total} features (${totals.done} done, ${totals.partial} partial, ${totals.todo} todo, ${totals.blocked} blocked, ${totals.removed} removed)`);

@@ -5,8 +5,6 @@ export const USER_ROLES = [
   "teacher",
   "content_reviewer",
   "content_manager",
-  "school_admin",
-  "college_admin",
   "support",
   "platform_admin",
   "super_admin",
@@ -15,7 +13,7 @@ export const USER_ROLES = [
 export type UserRole = (typeof USER_ROLES)[number];
 
 /** Portals are UI shells. Several roles can share one portal with different permissions. */
-export const PORTALS = ["student", "parent", "teacher", "institution", "admin"] as const;
+export const PORTALS = ["student", "parent", "teacher", "admin"] as const;
 
 export type PortalKey = (typeof PORTALS)[number];
 

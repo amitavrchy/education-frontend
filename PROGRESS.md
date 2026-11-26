@@ -6,7 +6,7 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 
 ## Ground rules (from the user, this repo only)
 
-- This repo = Next.js app: student web, marketing site, admin, teacher/reviewer, institution, parent
+- This repo = Next.js app: student web, marketing site, admin, teacher/reviewer, parent
   portals (route groups + role guards), docs, shared contracts and mock data. Flutter is a separate repo.
 - Do **not** edit `docs/MASTER_PROMPT.md`.
 - `NEXT_PUBLIC_USE_MOCK_API` stays `true`; the frontend must never hit real APIs.
@@ -19,7 +19,7 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 | Decision | Why |
 | --- | --- |
 | Keep the existing "ShikkhaAI" brand, centralised in `src/config/site.ts` + env | Master prompt asks for a centrally swappable temporary name; repo already chose ShikkhaAI. Changing `NEXT_PUBLIC_APP_NAME` rebrands everything. |
-| 5 portals (`student`, `parent`, `teacher`, `institution`, `admin`) host 10 roles | Teacher portal = teacher + content reviewer; institution = school + college admin; admin = content manager, support, platform admin, super admin. Navigation is filtered by permissions. |
+| 4 portals (`student`, `parent`, `teacher`, `admin`) host 8 roles | Teacher portal = teacher + content reviewer; admin = content manager, support, platform admin, super admin. Navigation is filtered by permissions. The institution portal (school/college admin) was removed on 2026-11-24. |
 | All domain data goes through repositories in `src/services/**` | UI never imports mock data directly; `NEXT_PUBLIC_USE_MOCK_API=false` swaps **every** repository (factory-level switch in `services/core/repository.ts`) to a REST adapter with the same interface. |
 | Mock DB = IndexedDB (one store, one record per collection) with in-memory fallback | Survives reloads, resettable from Settings, works in tests via fake-indexeddb. |
 | Preferences (locale, theme extras, dashboard layout) in localStorage via Zustand | Prompt: localStorage only for lightweight settings. |
@@ -37,11 +37,9 @@ Feature-level status lives in `docs/product/FEATURE_MATRIX.md` (generated — ed
 6. ✅ Admin dashboard modules (§30–§42)
 7. ✅ Tests (Vitest 63, Playwright 25), docs set from §57, audit + fixes
 
-**Status (2026-11-24):** 1,087 features — 1,084 done, 3 partial (formal a11y audit ×2, broader component
-tests). See `docs/testing/FEATURE_ACCEPTANCE_REPORT.md` and `docs/testing/KNOWN_LIMITATIONS.md`.
+**Status (2026-11-25):** 1,099 features tracked — 1,062 done, 37 removed by product decision, 0 partial/todo. See `docs/testing/FEATURE_ACCEPTANCE_REPORT.md` and `docs/testing/KNOWN_LIMITATIONS.md`.
 
-**Suggested next steps:** axe accessibility checks in e2e + manual screen-reader pass; component tests for
-exam runner / question editor / onboarding; JSON-schema export of `src/contracts` for the Flutter repo;
+**Suggested next steps:** manual screen-reader pass (NVDA/TalkBack, Bangla); JSON-schema export of `src/contracts` for the Flutter repo;
 Lighthouse budget on a low-end device profile; backend endpoints per `docs/architecture/BACKEND_INTEGRATION_PLAN.md`.
 
 ## Continue on another PC
@@ -53,6 +51,85 @@ Lighthouse budget on a low-end device profile; backend endpoints per `docs/archi
 4. Verify: `npm run check` and `npm run test:e2e` (first time: `npx playwright install chromium`).
 
 ## Log
+
+### 2026-11-25 — session 7 (last partial features: A11Y-05/06, TEST-02)
+- Automated accessibility suite `tests/e2e/a11y.spec.ts`:
+  - axe-core WCAG 2.2 A/AA on public pages, student pages, the teacher/parent/admin homes and the open command palette.
+  - Keyboard tests: skip link, focus ring, login by keyboard, Ctrl+K/Escape, announced form errors.
+- Bugs found and fixed:
+  - Command palette crashed on open (cmdk items outside `<Command>`). `CommandDialog` now wraps them.
+  - Login/register used Tabs without panels (invalid `aria-controls`). They now use a new `SegmentedControl` radiogroup.
+  - The password field had no accessible label. New `PasswordInput` forwards the `<Field>` props to the real input.
+  - 84 select triggers had no label. `SelectTrigger` now links itself to its sibling `<Label>`.
+  - Charts were focusable inside `aria-hidden` (recharts accessibility layer, pie `rootTabIndex`).
+  - Some spans had `aria-label` without a role, and the dashboard calendar had a misused `role="grid"`.
+  - Light-theme contrast: darker primary, muted-foreground, destructive, success and info tokens. Removed
+    opacity text on the auth panel.
+- Component tests:
+  - QuestionInput (every answer type), Field, PasswordInput, SegmentedControl.
+  - ExamRunner (keyboard answering, palette, mark, autosave, submit).
+  - OnboardingWizard (validation, draft resume, full finish).
+- Verification:
+  - Typecheck clean, lint 0 errors. 87/87 unit, 37/37 e2e. `next build` OK.
+- Still open:
+  - The manual screen-reader pass. See `docs/testing/KNOWN_LIMITATIONS.md`.
+
+### 2026-11-24 — session 6b (scope cut: institution portal + guardian consent)
+- Product decision from the user:
+  - Schools/colleges are no longer onboarded as clients.
+  - Students under 18 no longer need guardian permission.
+- Removed (institution):
+  - `school_admin` / `college_admin` roles and the `institution.*` permissions.
+  - The whole `/institution/*` portal and its components, and admin `/admin/institutions`.
+  - The institution plan and its `SCHOOL30` coupon (replaced by `FAMILY30`).
+  - Institution exam kind (seed exams became teacher-assigned).
+  - Marketing `/for-schools` and `/for-colleges`.
+  - The avatar on/off per institution.
+  - Institution notifications and demo logins.
+- Kept:
+  - The student "school & college questions" archive and its admin moderation.
+  - A student's school affiliation (onboarding, settings, admin user detail).
+  - The `Institution` directory data that the archive uses.
+- Removed (guardian consent):
+  - The under-18 checkbox at signup and `/consent/guardian` with its screen.
+  - `ConsentRecord`, `consentRepo` and `consentService`.
+  - `UserAccount.consent` and `profile.guardian.consent`.
+  - The admin moderation consent tab, admin consent column/filter/stat, and the system min-age setting.
+  - Consent records in the parent privacy page.
+  - The guardian-consent wording on the site, help and FAQ.
+  - The parent portal stays; guardians still see only what the student shares.
+- Feature matrix: new 🚫 Removed status (37 features). `npm run docs` regenerated.
+- Verification:
+  - Typecheck clean, lint 0 errors. 70/70 unit, 26/26 e2e.
+  - Removed routes return 404, and changed pages were smoke-tested per role with no console errors.
+
+### 2026-11-24 — session 6 (per-book avatar teacher)
+- New main feature: every book has its own live 2D teacher avatar.
+  - Students ask by text or voice. The avatar answers only from that book, with page citations, and declines
+    anything outside the book.
+  - All mock/static for now. The API comes later; see `docs/api/BOOK_AVATAR_CONTRACT.md`.
+- Panels:
+  - Student: gallery and classroom.
+  - Admin: editor, test chat and reports. Uploading a book auto-creates its avatar, and the books table links
+    to it.
+  - Teacher: own subjects, plus report fixes.
+  - Parent: counts only.
+  - The book reader has an "ask this book's teacher" button.
+- Code: `src/components/avatar/*`, `src/services/avatar.service.ts`, `src/services/ai/book-avatar-engine.ts`.
+- Fixes:
+  - Avatar crash: negative palette index from a signed shift.
+  - Every avatar got the same name and gender: hash low bits. Now uses an fmix32 mixer.
+  - Satisfaction % was off by ×100.
+  - `toSpoken` read markdown link URLs aloud.
+  - Sheet `sm:max-w-*` overrides were ignored app-wide, so every wide sheet rendered at `max-w-sm`.
+    `ui/sheet.tsx` now lets callers override the width.
+- Tests: `tests/unit/book-avatar.test.ts` (9) and `tests/e2e/avatar.spec.ts` (2).
+- Verification:
+  - Typecheck clean, lint 0 errors. 72/72 unit, 27/27 e2e. `next build` OK.
+  - All 6 avatar routes smoke-tested per role with no console errors.
+- Not done yet: the Flutter counterpart; real API, TTS and STT.
+- Node on this PC: the old install was quarantined. A fresh official Node 22 is in `~/.local/node`
+  (PATH set in `~/.zshrc`).
 
 ### 2026-11-24 — session 5
 - Audited the repo against the master prompt. Gaps found: admin (12 of 17 pages missing, 5 components

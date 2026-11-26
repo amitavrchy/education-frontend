@@ -83,7 +83,7 @@ export function TrendChart({ data, x, series, height = 240, label, area = true, 
   return (
     <Frame height={height} label={label} table={<SrTable data={data} x={x} series={series} label={label} />}>
       <ResponsiveContainer width="100%" height="100%">
-        <Chart data={data} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
+        <Chart accessibilityLayer={false} data={data} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
           <defs>
             {series.map((s, i) => (
               <linearGradient key={s.key} id={`g-${s.key}`} x1="0" y1="0" x2="0" y2="1">
@@ -114,7 +114,7 @@ export function BarsChart({ data, x, series, height = 240, label, horizontal, st
   return (
     <Frame height={height} label={label} table={<SrTable data={data} x={x} series={series} label={label} />}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"} margin={{ top: 8, right: 12, left: horizontal ? 8 : -12, bottom: 0 }}>
+        <BarChart accessibilityLayer={false} data={data} layout={horizontal ? "vertical" : "horizontal"} margin={{ top: 8, right: 12, left: horizontal ? 8 : -12, bottom: 0 }}>
           <CartesianGrid vertical={!!horizontal} horizontal={!horizontal} stroke="var(--border)" />
           {horizontal ? (
             <>
@@ -145,8 +145,8 @@ export function DonutChart({ data, height = 200, label, centerLabel }: { data: {
     <div className="relative">
       <Frame height={height} label={label} table={<SrTable data={data} x="name" series={[{ key: "value", label }]} label={label} />}>
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie data={data} dataKey="value" nameKey="name" innerRadius="62%" outerRadius="90%" paddingAngle={2} stroke="none">
+          <PieChart accessibilityLayer={false}>
+            <Pie rootTabIndex={-1} data={data} dataKey="value" nameKey="name" innerRadius="62%" outerRadius="90%" paddingAngle={2} stroke="none">
               {data.map((d, i) => (
                 <Cell key={d.name} fill={d.color ?? SERIES[i % SERIES.length]} />
               ))}
@@ -164,7 +164,7 @@ export function RadarSkill({ data, x, series, height = 260, label }: { data: Dat
   return (
     <Frame height={height} label={label} table={<SrTable data={data} x={x} series={series} label={label} />}>
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={data} outerRadius="72%">
+        <RadarChart accessibilityLayer={false} data={data} outerRadius="72%">
           <PolarGrid stroke="var(--border)" />
           <PolarAngleAxis dataKey={x} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
           {series.map((s, i) => (

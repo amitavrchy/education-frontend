@@ -30,6 +30,31 @@ function SelectValue({
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
 }
 
+/**
+ * When a trigger has no accessible name of its own, link it to the visible <Label> that precedes it
+ * in the same wrapper (the common `<div><Label/><Select/></div>` pattern) via aria-labelledby.
+ */
+function useAutoLabel(props: Record<string, unknown>) {
+  const ref = React.useRef<HTMLButtonElement>(null)
+  const explicit = !!(props["aria-label"] || props["aria-labelledby"] || props.id)
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el || explicit || el.getAttribute("aria-labelledby")) return
+    let node: Element | null = el
+    for (let depth = 0; node && depth < 3; depth++) {
+      let sib: Element | null = node.previousElementSibling
+      while (sib && !(sib.matches("label, [data-slot=label]"))) sib = sib.previousElementSibling
+      if (sib) {
+        if (!sib.id) sib.id = `lbl-${Math.random().toString(36).slice(2, 9)}`
+        el.setAttribute("aria-labelledby", sib.id)
+        return
+      }
+      node = node.parentElement
+    }
+  }, [explicit])
+  return ref
+}
+
 function SelectTrigger({
   className,
   size = "default",
@@ -38,8 +63,10 @@ function SelectTrigger({
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
   size?: "sm" | "default"
 }) {
+  const ref = useAutoLabel(props as Record<string, unknown>)
   return (
     <SelectPrimitive.Trigger
+      ref={ref}
       data-slot="select-trigger"
       data-size={size}
       className={cn(

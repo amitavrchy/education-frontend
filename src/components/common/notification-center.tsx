@@ -47,7 +47,6 @@ const SIMULATIONS: Record<PortalKey, { type: NotificationType; title: string; bo
   ],
   parent: [{ type: "exam_result", title: "রাফির নতুন পরীক্ষার ফল", body: "পদার্থবিজ্ঞান মডেল টেস্টে ৮৪%।", href: "/parent/results" }],
   teacher: [{ type: "new_assignment", title: "নতুন জমা: ৫টি উত্তরপত্র", body: "১০ম শ্রেণি (ক) — বল অধ্যায়ের অ্যাসাইনমেন্ট।", href: "/teacher/submissions" }],
-  institution: [{ type: "system", title: "নতুন শিক্ষক যোগদানের অনুরোধ", body: "২ জন শিক্ষক আমন্ত্রণ গ্রহণ করেছেন।", href: "/institution/teachers" }],
   admin: [{ type: "content_correction", title: "নতুন কনটেন্ট রিপোর্ট", body: "একটি প্রশ্নের উত্তর ভুল বলে রিপোর্ট হয়েছে।", href: "/admin/moderation" }],
 };
 
@@ -176,7 +175,7 @@ export function NotificationCenter({ portal }: { portal: PortalKey }) {
                 </span>
                 <button type="button" className="min-w-0 flex-1 text-left" onClick={() => openItem(n)}>
                   <span className="flex items-center gap-2">
-                    {!n.read && <span className="size-2 shrink-0 rounded-full bg-primary" aria-label={l("অপঠিত", "Unread")} />}
+                    {!n.read && <span role="img" className="size-2 shrink-0 rounded-full bg-primary" aria-label={l("অপঠিত", "Unread")} />}
                     <span className={cn("truncate", !n.read && "font-semibold")}>{n.title}</span>
                     {n.priority === "high" && <Badge variant="destructive" className="text-[10px]">{l("জরুরি", "Urgent")}</Badge>}
                   </span>

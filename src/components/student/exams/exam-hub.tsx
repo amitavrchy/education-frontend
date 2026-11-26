@@ -4,7 +4,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   BookCheck,
   Brain,
-  Building2,
   CalendarClock,
   ClipboardList,
   Clock,
@@ -57,7 +56,6 @@ const KIND_META: Record<ExamKind, { icon: typeof ClipboardList; bn: string; en: 
   daily_challenge: { icon: Flame, bn: "দৈনিক চ্যালেঞ্জ", en: "Daily challenge" },
   adaptive: { icon: Brain, bn: "অ্যাডাপটিভ", en: "Adaptive" },
   custom: { icon: Settings2, bn: "কাস্টম", en: "Custom" },
-  institution: { icon: Building2, bn: "প্রতিষ্ঠানের পরীক্ষা", en: "Institution exam" },
   teacher_assigned: { icon: UserCheck, bn: "শিক্ষক নির্ধারিত", en: "Teacher-assigned" },
   mixed: { icon: Shuffle, bn: "মিশ্র অনুশীলন", en: "Mixed practice" },
   oral: { icon: Mic, bn: "মৌখিক অনুশীলন", en: "Oral practice" },
@@ -91,7 +89,7 @@ export function ExamHub() {
           <Catalog filter={(e) => ["model_test", "full_syllabus", "board_previous", "oral"].includes(e.kind)} showDaily />
         </TabsContent>
         <TabsContent value="assigned" className="mt-5">
-          <Catalog filter={(e) => e.kind === "institution" || e.kind === "teacher_assigned"} />
+          <Catalog filter={(e) => e.kind === "teacher_assigned"} />
         </TabsContent>
         <TabsContent value="create" className="mt-5">
           <SetupForm />

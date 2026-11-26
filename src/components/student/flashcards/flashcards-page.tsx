@@ -158,7 +158,7 @@ export function FlashcardsPage() {
                       <span className="block text-xs text-muted-foreground">
                         {l(...SOURCE_LABEL[d.source])} · {l(`${f.digits(dc.length)}টি কার্ড`, `${dc.length} cards`)}
                       </span>
-                      <span className="flex h-1.5 overflow-hidden rounded-full bg-muted" aria-label={l(`${kn} জানা`, `${kn} known`)}>
+                      <span role="img" className="flex h-1.5 overflow-hidden rounded-full bg-muted" aria-label={l(`${kn} জানা`, `${kn} known`)}>
                         <span className="bg-success" style={{ width: `${dc.length ? (kn / dc.length) * 100 : 0}%` }} />
                       </span>
                     </button>

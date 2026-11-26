@@ -7,7 +7,7 @@ Each journey lists its route path and how it is verified. **e2e** means it is co
 
 | # | Journey | Path | Verified |
 | --- | --- | --- | --- |
-| 1 | Sign up → OTP → guardian consent (or later) → 7-step onboarding → dashboard | `/register` → `/verify-otp` → `/consent/guardian` → `/onboarding` | e2e |
+| 1 | Sign up → OTP → 7-step onboarding → dashboard (no guardian permission needed, any age) | `/register` → `/verify-otp` → `/onboarding` | e2e |
 | 2 | Pick subject → chapter → topic, mark complete | `/student/curriculum/[subject]/[chapter]` | smoke |
 | 3 | Ask the AI tutor; see grounding label, citation, open source viewer | `/student/ai-tutor` | e2e |
 | 4 | Start and end a voice session; save transcript to notes | `/student/voice-tutor` | smoke |
@@ -24,14 +24,13 @@ Each journey lists its route path and how it is verified. **e2e** means it is co
 | 15 | Change language and theme (persisted) | header toggles | e2e |
 | 16 | Go offline: downloads available, AI tutor paused | `/student/offline` | e2e |
 
-## Guardian, teacher, institution
+## Guardian and teacher
 
 | # | Journey | Path | Verified |
 | --- | --- | --- | --- |
 | 17 | Guardian links a child, views authorised progress; AI chats private | `/parent/*` | e2e |
 | 18 | Reviewer approves content → content manager publishes | `/teacher/review` → `/admin/content-review` | e2e |
 | 19 | Teacher creates a question (goes to review) | `/teacher/questions` | smoke |
-| 20 | Institution creates and schedules an exam | `/institution/exams` | e2e (opens form) + smoke |
 
 ## Admin
 

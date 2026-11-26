@@ -11,11 +11,12 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | Status | Count |
 | --- | --- |
-| ✅ Done | 1084 |
-| 🟨 Partial | 3 |
+| ✅ Done | 1062 |
+| 🟨 Partial | 0 |
 | ⬜ Todo | 0 |
 | ⛔ Blocked | 0 |
-| **Total** | **1087** |
+| 🚫 Removed | 37 |
+| **Total** | **1099** |
 
 ## §4 Design system & UI states (20/20)
 
@@ -71,7 +72,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | ROLE-13 | Per-role profile, settings & notifications | `src/lib/auth/permissions.ts` | ✅ Done | unit+e2e |
 | ROLE-14 | Demo role switcher (dev only, labeled) | `/login + user menu` | ✅ Done | unit+e2e |
 
-## §6 Authentication & onboarding (29/29)
+## §6 Authentication & onboarding (28/28)
 
 - **Roles:** Guest, Student, Parent
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -96,7 +97,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | AUTH-14 | Avatar upload | `/student/settings` | ✅ Done | smoke |
 | AUTH-15 | Language selection | `/welcome + settings` | ✅ Done | smoke |
 | AUTH-16 | Consent & privacy screens | `/consent` | ✅ Done | smoke |
-| AUTH-17 | Guardian consent workflow | `/consent/guardian` | ✅ Done | e2e |
+| AUTH-17 | Guardian consent workflow <br><sub>No guardian permission needed for under-18 users</sub> | `/consent/guardian` | 🚫 Removed | — |
 | AUTH-18 | Onboarding: name, class, SSC/HSC, board, group, version | `/onboarding` | ✅ Done | smoke |
 | AUTH-19 | Onboarding: academic year, curriculum version, exam year, institution | `/onboarding` | ✅ Done | smoke |
 | AUTH-20 | Onboarding: subjects, optional subjects, target GPA | `/onboarding` | ✅ Done | smoke |
@@ -480,7 +481,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | INQ-18 | Duplicate detection labels | `/student/institution-questions` | ✅ Done | smoke |
 | INQ-19 | Content report | `/student/institution-questions` | ✅ Done | smoke |
 
-## §16 Online examination system (45/45)
+## §16 Online examination system (44/44)
 
 - **Roles:** Student
 - **Flutter:** Student mobile app (separate Flutter repo)
@@ -498,7 +499,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | EXM-07 | Daily challenge | `/student/exams` | ✅ Done | smoke |
 | EXM-08 | Adaptive exam | `/student/exams` | ✅ Done | smoke |
 | EXM-09 | Custom exam | `/student/exams` | ✅ Done | smoke |
-| EXM-10 | Institution-created exam | `/student/exams` | ✅ Done | smoke |
+| EXM-10 | Institution-created exam <br><sub>Removed by product decision (2026-11-24)</sub> | `/student/exams` | 🚫 Removed | — |
 | EXM-11 | Teacher-assigned exam | `/student/exams` | ✅ Done | smoke |
 | EXM-12 | Mixed practice | `/student/exams` | ✅ Done | smoke |
 | EXM-13 | Oral practice assessment | `/student/exams` | ✅ Done | smoke |
@@ -850,7 +851,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | OFF-16 | PWA manifest + service worker caching <br><sub>Service worker registers only in production builds</sub> | `/student/offline` | ✅ Done | smoke |
 | OFF-17 | AI offline unavailable state | `/student/offline` | ✅ Done | e2e |
 
-## §27 Parent / guardian dashboard (21/21)
+## §27 Parent / guardian dashboard (20/20)
 
 - **Roles:** Parent
 - **Flutter:** Parent mobile access defined in role matrix
@@ -874,7 +875,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | PAR-13 | Learning goals | `/parent/goals` | ✅ Done | smoke |
 | PAR-14 | Notification preferences | `/parent/settings` | ✅ Done | smoke |
 | PAR-15 | Guardian reports | `/parent/reports` | ✅ Done | smoke |
-| PAR-16 | Consent management | `/parent/privacy` | ✅ Done | smoke |
+| PAR-16 | Consent management <br><sub>No guardian permission needed for under-18 users</sub> | `/parent/privacy` | 🚫 Removed | — |
 | PAR-17 | Subscription management | `/parent/subscription` | ✅ Done | smoke |
 | PAR-18 | Privacy controls | `/parent/privacy` | ✅ Done | smoke |
 | PAR-19 | Multiple linked students | `/parent/dashboard` | ✅ Done | smoke |
@@ -914,7 +915,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | TCH-22 | Status flow Draft→Submitted→In Review→Changes Requested→Approved→Published→Archived | `/teacher/dashboard` | ✅ Done | e2e |
 | TCH-23 | Role permissions simulated (reviewer vs teacher) | `/teacher/dashboard` | ✅ Done | smoke |
 
-## §29 School & college portal (26/26)
+## §29 School & college portal (1/1)
 
 - **Roles:** School Admin, College Admin
 - **Flutter:** Institution mobile access defined in role matrix
@@ -923,34 +924,34 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
-| INST-01 | Institution onboarding | `/institution/onboarding` | ✅ Done | smoke |
-| INST-02 | Institution profile | `/institution/profile` | ✅ Done | smoke |
-| INST-03 | Academic session setup | `/institution/sessions` | ✅ Done | smoke |
-| INST-04 | Class setup | `/institution/classes` | ✅ Done | smoke |
-| INST-05 | Subject setup | `/institution/subjects` | ✅ Done | smoke |
-| INST-06 | Teacher management | `/institution/teachers` | ✅ Done | smoke |
-| INST-07 | Student management | `/institution/students` | ✅ Done | smoke |
-| INST-08 | Class grouping | `/institution/classes` | ✅ Done | smoke |
-| INST-09 | Question paper upload | `/institution/question-papers` | ✅ Done | smoke |
-| INST-10 | Private question bank | `/institution/question-bank` | ✅ Done | smoke |
+| INST-01 | Institution onboarding <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/onboarding` | 🚫 Removed | — |
+| INST-02 | Institution profile <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/profile` | 🚫 Removed | — |
+| INST-03 | Academic session setup <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/sessions` | 🚫 Removed | — |
+| INST-04 | Class setup <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/classes` | 🚫 Removed | — |
+| INST-05 | Subject setup <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/subjects` | 🚫 Removed | — |
+| INST-06 | Teacher management <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/teachers` | 🚫 Removed | — |
+| INST-07 | Student management <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/students` | 🚫 Removed | — |
+| INST-08 | Class grouping <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/classes` | 🚫 Removed | — |
+| INST-09 | Question paper upload <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/question-papers` | 🚫 Removed | — |
+| INST-10 | Private question bank <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/question-bank` | 🚫 Removed | — |
 | INST-11 | Institution exam creation | `/institution/exams` | ✅ Done | e2e |
-| INST-12 | Assignment creation | `/institution/assignments` | ✅ Done | smoke |
-| INST-13 | Assignment distribution | `/institution/dashboard` | ✅ Done | smoke |
-| INST-14 | Student submissions | `/institution/dashboard` | ✅ Done | smoke |
-| INST-15 | Exam scheduling | `/institution/exams` | ✅ Done | smoke |
-| INST-16 | Performance analytics | `/institution/analytics` | ✅ Done | smoke |
-| INST-17 | Subject-level reports | `/institution/dashboard` | ✅ Done | smoke |
-| INST-18 | Teacher dashboard (institution view) | `/institution/teachers/[teacherId]` | ✅ Done | smoke |
-| INST-19 | Student dashboard (institution view) | `/institution/students/[studentId]` | ✅ Done | smoke |
-| INST-20 | Institution subscription | `/institution/billing` | ✅ Done | smoke |
-| INST-21 | Institution billing UI | `/institution/billing` | ✅ Done | smoke |
-| INST-22 | Resource management | `/institution/resources` | ✅ Done | smoke |
-| INST-23 | Announcements | `/institution/announcements` | ✅ Done | smoke |
-| INST-24 | Notification management | `/institution/notifications` | ✅ Done | smoke |
-| INST-25 | Institution privacy settings | `/institution/settings` | ✅ Done | smoke |
-| INST-26 | Institution-scoped navigation | `/institution/dashboard` | ✅ Done | smoke |
+| INST-12 | Assignment creation <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/assignments` | 🚫 Removed | — |
+| INST-13 | Assignment distribution <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/dashboard` | 🚫 Removed | — |
+| INST-14 | Student submissions <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/dashboard` | 🚫 Removed | — |
+| INST-15 | Exam scheduling <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/exams` | 🚫 Removed | — |
+| INST-16 | Performance analytics <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/analytics` | 🚫 Removed | — |
+| INST-17 | Subject-level reports <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/dashboard` | 🚫 Removed | — |
+| INST-18 | Teacher dashboard (institution view) <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/teachers/[teacherId]` | 🚫 Removed | — |
+| INST-19 | Student dashboard (institution view) <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/students/[studentId]` | 🚫 Removed | — |
+| INST-20 | Institution subscription <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/billing` | 🚫 Removed | — |
+| INST-21 | Institution billing UI <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/billing` | 🚫 Removed | — |
+| INST-22 | Resource management <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/resources` | 🚫 Removed | — |
+| INST-23 | Announcements <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/announcements` | 🚫 Removed | — |
+| INST-24 | Notification management <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/notifications` | 🚫 Removed | — |
+| INST-25 | Institution privacy settings <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/settings` | 🚫 Removed | — |
+| INST-26 | Institution-scoped navigation <br><sub>Institution portal removed by product decision (2026-11-24)</sub> | `/institution/dashboard` | 🚫 Removed | — |
 
-## §30 Admin global overview (19/19)
+## §30 Admin global overview (18/18)
 
 - **Roles:** Platform Admin, Super Admin (subsets for others)
 - **Flutter:** — (web management)
@@ -974,7 +975,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | ADM-13 | Failed ingestion jobs | `/admin/dashboard` | ✅ Done | smoke |
 | ADM-14 | Reported AI answers | `/admin/dashboard` | ✅ Done | smoke |
 | ADM-15 | System alerts | `/admin/dashboard` | ✅ Done | smoke |
-| ADM-16 | Institution growth | `/admin/dashboard` | ✅ Done | smoke |
+| ADM-16 | Institution growth <br><sub>Removed by product decision (2026-11-24)</sub> | `/admin/dashboard` | 🚫 Removed | — |
 | ADM-17 | Top subjects | `/admin/dashboard` | ✅ Done | smoke |
 | ADM-18 | Recent activities | `/admin/dashboard` | ✅ Done | smoke |
 | ADM-19 | Charts, filters, date selectors, drill-down | `/admin/dashboard` | ✅ Done | smoke |
@@ -1215,7 +1216,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | AEX-21 | Manual override | `/admin/exams` | ✅ Done | smoke |
 | AEX-22 | Result publication | `/admin/exams` | ✅ Done | smoke |
 
-## §38 Admin student & user management (17/17)
+## §38 Admin student & user management (16/16)
 
 - **Roles:** Support, Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1238,7 +1239,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | AUSR-12 | Institution links | `/admin/users` | ✅ Done | smoke |
 | AUSR-13 | Suspend / reactivate | `/admin/users` | ✅ Done | smoke |
 | AUSR-14 | Permission viewer | `/admin/users` | ✅ Done | smoke |
-| AUSR-15 | Consent status | `/admin/users` | ✅ Done | smoke |
+| AUSR-15 | Consent status <br><sub>No guardian permission needed for under-18 users</sub> | `/admin/users` | 🚫 Removed | — |
 | AUSR-16 | Account deletion workflow | `/admin/users` | ✅ Done | smoke |
 | AUSR-17 | Audit history | `/admin/users` | ✅ Done | smoke |
 
@@ -1263,7 +1264,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | ATCH-10 | Teacher invitations (simulated) | `/admin/teachers` | ✅ Done | smoke |
 | ATCH-11 | Access management | `/admin/teachers` | ✅ Done | smoke |
 
-## §40 Subscription & billing (25/25)
+## §40 Subscription & billing (24/24)
 
 - **Roles:** Platform/Super Admin (Support read); Student/Parent checkout
 - **Flutter:** Student checkout in mobile repo
@@ -1276,7 +1277,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | BILL-02 | Free plan | `/admin/subscriptions` | ✅ Done | unit |
 | BILL-03 | Student Pro plan | `/admin/subscriptions` | ✅ Done | unit |
 | BILL-04 | Family plan | `/admin/subscriptions` | ✅ Done | unit |
-| BILL-05 | Institution plan | `/admin/subscriptions` | ✅ Done | unit |
+| BILL-05 | Institution plan <br><sub>Removed by product decision (2026-11-24)</sub> | `/admin/subscriptions` | 🚫 Removed | — |
 | BILL-06 | Plan feature limits | `/admin/subscriptions` | ✅ Done | unit |
 | BILL-07 | AI credit quotas | `/admin/subscriptions` | ✅ Done | unit |
 | BILL-08 | Voice usage quotas | `/admin/subscriptions` | ✅ Done | unit |
@@ -1298,7 +1299,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | BILL-24 | Entitlement displays update on plan change | `/admin/subscriptions` | ✅ Done | unit |
 | BILL-25 | All financial numbers labeled demo | `/admin/subscriptions` | ✅ Done | unit |
 
-## §41 Admin analytics & BI (28/28)
+## §41 Admin analytics & BI (27/27)
 
 - **Roles:** Platform/Super Admin
 - **Flutter:** — (web management)
@@ -1326,7 +1327,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | BI-17 | User feedback <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
 | BI-18 | Voice usage <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
 | BI-19 | Moderation volume <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
-| BI-20 | Institution usage <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
+| BI-20 | Institution usage <br><sub>Removed by product decision (2026-11-24)</sub> | `/admin/analytics` | 🚫 Removed | — |
 | BI-21 | Content quality metrics <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
 | BI-22 | Date ranges <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
 | BI-23 | Chart filtering <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
@@ -1336,7 +1337,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | BI-27 | Empty states <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
 | BI-28 | Drill-down <br><sub>All figures deterministic mock data</sub> | `/admin/analytics` | ✅ Done | smoke |
 
-## §42 Security, moderation & audit (17/17)
+## §42 Security, moderation & audit (16/16)
 
 - **Roles:** Super Admin (Platform Admin, Support subsets)
 - **Flutter:** — (web management)
@@ -1356,7 +1357,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | SEC-09 | Sensitive content review | `/admin/moderation` | ✅ Done | smoke |
 | SEC-10 | Privacy requests | `/admin/moderation?tab=privacy` | ✅ Done | smoke |
 | SEC-11 | Data deletion requests | `/admin/moderation?tab=privacy` | ✅ Done | smoke |
-| SEC-12 | Guardian consent review | `/admin/moderation?tab=consent` | ✅ Done | smoke |
+| SEC-12 | Guardian consent review <br><sub>No guardian permission needed for under-18 users</sub> | `/admin/moderation?tab=consent` | 🚫 Removed | — |
 | SEC-13 | Security alerts | `/admin/security` | ✅ Done | smoke |
 | SEC-14 | Session management | `/admin/security` | ✅ Done | smoke |
 | SEC-15 | API key settings (masked placeholders) | `/admin/security` | ✅ Done | smoke |
@@ -1471,7 +1472,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | COV-14 | Drill-down into missing content | `/admin/coverage` | ✅ Done | smoke |
 | COV-15 | Simplified student coverage view | `/student/curriculum/[subjectId]` | ✅ Done | smoke |
 
-## §47 Marketing & public website (22/22)
+## §47 Marketing & public website (20/20)
 
 - **Roles:** Guest
 - **Flutter:** — (web management)
@@ -1491,8 +1492,8 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | MKT-09 | Pricing | `/pricing` | ✅ Done | e2e |
 | MKT-10 | For Parents | `/for-parents` | ✅ Done | e2e |
 | MKT-11 | For Teachers | `/for-teachers` | ✅ Done | e2e |
-| MKT-12 | For Schools | `/for-schools` | ✅ Done | e2e |
-| MKT-13 | For Colleges | `/for-colleges` | ✅ Done | e2e |
+| MKT-12 | For Schools <br><sub>Removed by product decision (2026-11-24)</sub> | `/for-schools` | 🚫 Removed | — |
+| MKT-13 | For Colleges <br><sub>Removed by product decision (2026-11-24)</sub> | `/for-colleges` | 🚫 Removed | — |
 | MKT-14 | FAQ | `/faq` | ✅ Done | e2e |
 | MKT-15 | Contact | `/contact` | ✅ Done | e2e |
 | MKT-16 | Help center | `/help` | ✅ Done | e2e |
@@ -1527,7 +1528,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | DATA-13 | Synthetic content clearly labeled | `src/mock-data, src/services` | ✅ Done | unit+e2e |
 | DATA-14 | Environment switch NEXT_PUBLIC_USE_MOCK_API | `src/mock-data, src/services` | ✅ Done | unit+e2e |
 
-## §52–53 Accessibility, i18n, privacy (17/19)
+## §52–53 Accessibility, i18n, privacy (18/18)
 
 - **Roles:** All
 - **Flutter:** Mirrored in mobile repo
@@ -1540,15 +1541,15 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | A11Y-02 | English UI | `global` | ✅ Done | smoke |
 | A11Y-03 | Persistent language preference | `global` | ✅ Done | smoke |
 | A11Y-04 | Bangla numerals | `global` | ✅ Done | smoke |
-| A11Y-05 | Keyboard navigation & focus states <br><sub>Keyboard paths built in; no formal WCAG 2.2 AA audit or screen-reader pass yet</sub> | `global` | 🟨 Partial | smoke |
-| A11Y-06 | Accessible forms & labels <br><sub>Labelled forms; no formal audit yet</sub> | `global` | 🟨 Partial | smoke |
+| A11Y-05 | Keyboard navigation & focus states <br><sub>Automated axe WCAG 2.2 A/AA audit (13 pages + palette) and keyboard e2e (skip link, focus ring, Ctrl+K/Esc). Manual screen-reader pass still recommended before launch</sub> | `global` | ✅ Done | e2e |
+| A11Y-06 | Accessible forms & labels <br><sub>Field/PasswordInput/SegmentedControl label + error wiring unit-tested; selects auto-labelled; axe form-label rules pass</sub> | `global` | ✅ Done | unit+e2e |
 | A11Y-07 | Reduced motion | `global` | ✅ Done | smoke |
 | A11Y-08 | Text scaling | `global` | ✅ Done | smoke |
 | A11Y-09 | Accessible exam navigation | `global` | ✅ Done | smoke |
 | A11Y-10 | Captions/transcripts | `global` | ✅ Done | smoke |
 | A11Y-11 | Diagram alt descriptions | `global` | ✅ Done | smoke |
 | A11Y-12 | Translation dictionaries | `global` | ✅ Done | smoke |
-| A11Y-13 | Guardian consent & withdrawal | `global` | ✅ Done | smoke |
+| A11Y-13 | Guardian consent & withdrawal <br><sub>No guardian permission needed for under-18 users</sub> | `global` | 🚫 Removed | — |
 | A11Y-14 | Data retention settings | `global` | ✅ Done | smoke |
 | A11Y-15 | Data export request | `global` | ✅ Done | smoke |
 | A11Y-16 | AI transparency labels | `global` | ✅ Done | smoke |
@@ -1556,7 +1557,29 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | A11Y-18 | Student-controlled sharing | `global` | ✅ Done | smoke |
 | A11Y-19 | Parent link permissions | `global` | ✅ Done | smoke |
 
-## §55 Testing (7/8)
+## Book avatar Per-book live 2D avatar teacher (11/11)
+
+- **Roles:** Student, Admin, Teacher, Parent
+- **Flutter:** Student mobile app (separate Flutter repo)
+- **Mock data source:** avatarService + book-avatar-engine (answers from the book's pages only)
+- **Loading/error/empty states:** Idle/listening/thinking/speaking, offline unavailable, no-voice fallback, mic denied, out-of-scope
+
+| ID | Feature | Web screen | Status | Tests |
+| --- | --- | --- | --- | --- |
+| AVT-01 | One avatar per book, auto-created on admin upload | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-02 | Animated 2D teacher (blink, breathe, lip-sync, state cues) | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-03 | Ask by text | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-04 | Ask by voice (push-to-talk + hands-free) <br><sub>Uses the browser's speech recognition; demo questions where unsupported</sub> | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | smoke |
+| AVT-05 | Spoken answer with captions (TTS, speed, mute) <br><sub>Device TTS; lip-syncs silently when no Bangla voice is installed</sub> | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | smoke |
+| AVT-06 | Answers grounded only in the book, with page citations | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-07 | Out-of-book questions declined with book-topic suggestions | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-08 | Session history, feedback and answer reports | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-09 | Admin editor: appearance, voice, persona, greeting, chapter scope, status | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-10 | Admin/teacher test chat and report resolution | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+| AVT-11 | Institution on/off per avatar <br><sub>Removed by product decision (2026-11-24)</sub> | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | 🚫 Removed | — |
+| AVT-12 | Parent usage counts (no transcripts) | `/student/avatar-tutor, /admin/book-avatars, /teacher/avatars, /parent/avatar-activity` | ✅ Done | unit+e2e |
+
+## §55 Testing (8/8)
 
 - **Roles:** —
 - **Flutter:** Flutter repo
@@ -1566,7 +1589,7 @@ loading/empty/error states, persistence). Screens that exist but miss parts of t
 | ID | Feature | Web screen | Status | Tests |
 | --- | --- | --- | --- | --- |
 | TEST-01 | Unit tests (services/algorithms) | `tests/**, e2e/**` | ✅ Done | unit+e2e |
-| TEST-02 | Component tests <br><sub>Component tests cover DataTable only; most UI is covered by e2e</sub> | `tests/**, e2e/**` | 🟨 Partial | unit |
+| TEST-02 | Component tests <br><sub>DataTable, QuestionInput (all answer types), form controls, ExamRunner, OnboardingWizard</sub> | `tests/**, e2e/**` | ✅ Done | unit |
 | TEST-03 | Form validation tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
 | TEST-04 | Role permission tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |
 | TEST-05 | Mock repository tests | `tests/**, e2e/**` | ✅ Done | unit+e2e |

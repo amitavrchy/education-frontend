@@ -94,8 +94,8 @@ function Footer() {
   const t = useT();
   const l = useL();
   const columns = [
-    { title: l("প্রোডাক্ট", "Product"), links: [...marketingNavigation.slice(0, 2), { titleKey: "marketingNav.schools" as const, href: "/for-colleges" }] },
-    { title: l("কাদের জন্য", "For"), links: marketingNavigation.slice(2, 5) },
+    { title: l("প্রোডাক্ট", "Product"), links: marketingNavigation.slice(0, 2) },
+    { title: l("কাদের জন্য", "For"), links: marketingNavigation.slice(2, 4) },
     { title: l("সহায়তা", "Support"), links: marketingFooterNavigation },
   ];
   return (

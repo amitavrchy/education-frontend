@@ -20,7 +20,7 @@ export const DEMO_OTP = "123456";
 /** Password that always fails — lets testers see the error state. */
 export const DEMO_WRONG_PASSWORD = "wrongpass";
 
-export type OtpPurpose = "login" | "register" | "reset" | "guardian_consent";
+export type OtpPurpose = "login" | "register" | "reset";
 
 export interface PendingOtp {
   purpose: OtpPurpose;
@@ -36,7 +36,6 @@ export interface RegisterPayload {
   identifier: string;
   channel: "email" | "phone";
   role: Extract<UserRole, "student" | "parent">;
-  under18: boolean;
 }
 
 const PENDING_KEY = "shikkhaai-pending-otp";
@@ -178,7 +177,6 @@ export const authService = {
         studentIds: [],
         planCode: "free",
         lastActiveAt: stamp,
-        consent: reg.role === "student" ? (reg.under18 ? "pending" : "not_required") : "not_required",
         supportTickets: [],
         onboarded: reg.role !== "student",
         demo: true,

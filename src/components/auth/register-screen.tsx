@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SegmentedControl } from "@/components/forms/segmented-control";
 import { useL, useT } from "@/i18n";
 import { ROUTES } from "@/lib/constants";
 import { errorText } from "@/lib/errors";
@@ -27,7 +27,7 @@ export function RegisterScreen() {
   const router = useRouter();
   const [role, setRole] = useState<"student" | "parent">("student");
   const [channel, setChannel] = useState<"email" | "phone">("phone");
-  const [form, setForm] = useState({ name: "", identifier: "", password: "", confirm: "", terms: false, under18: true });
+  const [form, setForm] = useState({ name: "", identifier: "", password: "", confirm: "", terms: false });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((f) => ({ ...f, [k]: v }));
@@ -51,7 +51,7 @@ export function RegisterScreen() {
     if (!validate()) return;
     setBusy(true);
     try {
-      await authService.register({ name: form.name.trim(), identifier: form.identifier.trim(), channel, role, under18: role === "student" && form.under18 });
+      await authService.register({ name: form.name.trim(), identifier: form.identifier.trim(), channel, role });
       router.push(ROUTES.verifyOtp);
     } catch (error) {
       setErrors({ form: errorText(error, l) });
@@ -101,7 +101,7 @@ export function RegisterScreen() {
             ))}
           </div>
           <p className="text-xs text-muted-foreground">
-            {l("শিক্ষক ও প্রতিষ্ঠানের অ্যাকাউন্ট আমন্ত্রণের মাধ্যমে তৈরি হয়।", "Teacher and institution accounts are created by invitation.")}
+            {l("শিক্ষকের অ্যাকাউন্ট আমন্ত্রণের মাধ্যমে তৈরি হয়।", "Teacher accounts are created by invitation.")}
           </p>
         </fieldset>
 
@@ -109,12 +109,15 @@ export function RegisterScreen() {
           <Input className="h-10" autoComplete="name" value={form.name} onChange={(e) => set("name", e.target.value)} />
         </Field>
 
-        <Tabs value={channel} onValueChange={(v) => setChannel(v as "email" | "phone")}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="phone">{t("auth.withPhone")}</TabsTrigger>
-            <TabsTrigger value="email">{t("auth.withEmail")}</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <SegmentedControl
+          label={l("যোগাযোগের মাধ্যম", "Contact method")}
+          value={channel}
+          onChange={setChannel}
+          options={[
+            { value: "phone", label: t("auth.withPhone") },
+            { value: "email", label: t("auth.withEmail") },
+          ]}
+        />
         <Field label={channel === "email" ? t("auth.identifierEmail") : t("auth.identifierPhone")} error={errors.identifier} required>
           <Input
             className="h-10"
@@ -143,14 +146,6 @@ export function RegisterScreen() {
             <span className="text-xs text-muted-foreground">
               {strength >= 3 ? l("শক্তিশালী", "Strong") : strength === 2 ? l("মাঝারি", "Fair") : l("দুর্বল", "Weak")}
             </span>
-          </div>
-        )}
-        {role === "student" && (
-          <div className="flex items-start gap-2">
-            <Checkbox id="under18" checked={form.under18} onCheckedChange={(v) => set("under18", v === true)} />
-            <Label htmlFor="under18" className="leading-snug font-normal">
-              {t("auth.under18")}
-            </Label>
           </div>
         )}
         <div className="space-y-1">

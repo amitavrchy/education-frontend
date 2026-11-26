@@ -21,9 +21,6 @@ export const PERMISSIONS = [
   "submission.review",
   "evaluation.review",
   "students.view",
-  // Institution
-  "institution.manage",
-  "institution.billing",
   // Admin
   "admin.access",
   "analytics.view",
@@ -66,7 +63,7 @@ const contentOps: Permission[] = [
   "kb.view",
 ];
 
-const allAdmin = PERMISSIONS.filter((p) => !["learn", "guardian.view", "institution.manage", "institution.billing"].includes(p));
+const allAdmin = PERMISSIONS.filter((p) => !["learn", "guardian.view"].includes(p));
 
 export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   student: ["learn"],
@@ -90,8 +87,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "evaluation.review",
   ],
   content_manager: ["admin.access", ...contentOps, "analytics.view"],
-  school_admin: ["institution.manage", "institution.billing"],
-  college_admin: ["institution.manage", "institution.billing"],
   support: ["admin.access", "users.view", "users.support", "billing.view", "moderation.handle", "notifications.manage"],
   platform_admin: allAdmin.filter((p) => p !== "security.manage" && p !== "roles.manage"),
   super_admin: allAdmin,
@@ -103,8 +98,6 @@ export const ROLE_PORTAL: Record<UserRole, PortalKey> = {
   teacher: "teacher",
   content_reviewer: "teacher",
   content_manager: "admin",
-  school_admin: "institution",
-  college_admin: "institution",
   support: "admin",
   platform_admin: "admin",
   super_admin: "admin",

@@ -6,8 +6,8 @@ import { canAccessPortal, hasPermission, portalForRole, ROLE_PERMISSIONS } from 
 import { PORTALS, USER_ROLES } from "@/types";
 
 describe("role permissions", () => {
-  it("maps each of the 10 roles to a portal", () => {
-    expect(USER_ROLES).toHaveLength(10);
+  it("maps each of the 8 roles to a portal", () => {
+    expect(USER_ROLES).toHaveLength(8);
     for (const r of USER_ROLES) expect(PORTALS).toContain(portalForRole(r));
   });
 
@@ -16,7 +16,6 @@ describe("role permissions", () => {
     expect(canAccessPortal("student", "admin")).toBe(false);
     expect(canAccessPortal("parent", "teacher")).toBe(false);
     expect(canAccessPortal("content_reviewer", "teacher")).toBe(true);
-    expect(canAccessPortal("college_admin", "institution")).toBe(true);
     expect(canAccessPortal(undefined, "student")).toBe(false);
   });
 
@@ -37,7 +36,7 @@ describe("role permissions", () => {
   });
 
   it("super admin has every permission another role has", () => {
-    const all = new Set(Object.values(ROLE_PERMISSIONS).flat().filter((p) => !["learn", "guardian.view", "institution.manage", "institution.billing", "teacher.dashboard", "content.create", "content.submit", "rubric.manage", "exam.create", "assignment.manage", "submission.review", "evaluation.review", "students.view", "content.approve", "content.publish", "content.review"].includes(p)));
+    const all = new Set(Object.values(ROLE_PERMISSIONS).flat().filter((p) => !["learn", "guardian.view", "teacher.dashboard", "content.create", "content.submit", "rubric.manage", "exam.create", "assignment.manage", "submission.review", "evaluation.review", "students.view", "content.approve", "content.publish", "content.review"].includes(p)));
     for (const p of all) expect(hasPermission("super_admin", p)).toBe(true);
   });
 });

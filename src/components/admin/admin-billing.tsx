@@ -32,7 +32,7 @@ import { billingService, couponsRepo, paymentsRepo, plansRepo, priceWithCoupon, 
 import { mockRequest, newId, nowIso } from "@/services/core/mock-runtime";
 import { ConfirmAction, DemoDataNote, KeyValue } from "./admin-shared";
 
-const PLAN_ORDER: PlanCode[] = ["free", "pro", "family", "institution"];
+const PLAN_ORDER: PlanCode[] = ["free", "pro", "family"];
 const METHOD_LABEL: Record<Payment["method"], string> = { bkash_mock: "bKash (mock)", nagad_mock: "Nagad (mock)", card_mock: "Card (mock)", bank_mock: "Bank (mock)" };
 
 export function AdminSubscriptions() {

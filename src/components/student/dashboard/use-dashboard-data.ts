@@ -94,7 +94,7 @@ export function useDashboardData() {
   const upcomingExams = useMemo(() => {
     const doneExamIds = new Set((attempts.data ?? []).filter((a) => a.status !== "in_progress").map((a) => a.examId));
     return (exams.data ?? [])
-      .filter((e) => (e.kind === "institution" || e.kind === "teacher_assigned") && e.status !== "archived" && !doneExamIds.has(e.id) && (!e.closesAt || new Date(e.closesAt).getTime() > now))
+      .filter((e) => e.kind === "teacher_assigned" && e.status !== "archived" && !doneExamIds.has(e.id) && (!e.closesAt || new Date(e.closesAt).getTime() > now))
       .sort((a, b) => (a.scheduledAt ?? "").localeCompare(b.scheduledAt ?? ""));
   }, [exams.data, attempts.data, now]);
 

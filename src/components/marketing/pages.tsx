@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ArrowRight, BarChart3, Bell, BookOpen, Bot, Building2, Calendar, Camera, CheckCircle2, ClipboardCheck, ClipboardList, Eye, EyeOff, FileQuestion, FlaskConical, GraduationCap, Headphones, Keyboard, Languages, Layers, Library, Loader2, Lock, Mail, MapPin, Mic, MonitorSmartphone, NotebookPen, PenLine, Phone, Search, ShieldCheck, Sparkles, Trophy, Upload, Users, WifiOff } from "lucide-react";
+import { ArrowRight, BarChart3, Bell, BookOpen, Bot, Calendar, Camera, CheckCircle2, ClipboardCheck, ClipboardList, Eye, EyeOff, FileQuestion, FlaskConical, GraduationCap, Headphones, Keyboard, Languages, Layers, Loader2, Lock, Mail, MapPin, Mic, MonitorSmartphone, NotebookPen, PenLine, Phone, Search, ShieldCheck, Sparkles, Trophy, Users, WifiOff } from "lucide-react";
 import Link from "next/link";
 import { useState, type ComponentType } from "react";
 import { useForm } from "react-hook-form";
@@ -100,7 +100,7 @@ export function PricingPage() {
   const f = useFormat();
   const [yearly, setYearly] = useState(false);
   const plans = useQuery({ queryKey: ["plans", "public"], queryFn: () => plansRepo.all() });
-  const order = ["free", "pro", "family", "institution"];
+  const order = ["free", "pro", "family"];
   const list = [...(plans.data ?? [])].filter((p) => p.active).sort((a, b) => order.indexOf(a.code) - order.indexOf(b.code));
   const limit = (p: Plan, k: keyof Plan["limits"]) => (p.limits[k] >= 9999 ? l("সীমাহীন", "Unlimited") : f.digits(p.limits[k]));
   return (
@@ -115,13 +115,13 @@ export function PricingPage() {
           </span>
         </div>
         {plans.isPending ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {[0, 1, 2, 3].map((i) => (
+          <div className="grid gap-4 md:grid-cols-3">
+            {[0, 1, 2].map((i) => (
               <Skeleton key={i} className="h-96 rounded-2xl" />
             ))}
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-3">
             {list.map((p) => (
               <Card key={p.id} className={p.highlighted ? "relative border-2 border-primary shadow-lg" : "relative"}>
                 <CardHeader>
@@ -151,7 +151,7 @@ export function PricingPage() {
                     </li>
                   </ul>
                   <Button className="w-full" variant={p.highlighted ? "default" : "outline"} asChild>
-                    <Link href={p.code === "institution" ? "/contact?topic=institution" : ROUTES.register}>{p.code === "free" ? l("বিনামূল্যে শুরু", "Start free") : p.code === "institution" ? l("যোগাযোগ করুন", "Contact us") : l("ট্রায়াল শুরু", "Start trial")}</Link>
+                    <Link href={ROUTES.register}>{p.code === "free" ? l("বিনামূল্যে শুরু", "Start free") : l("ট্রায়াল শুরু", "Start trial")}</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -183,7 +183,7 @@ interface AudienceDef {
   ctaHref: string;
 }
 
-const AUDIENCES: Record<"parents" | "teachers" | "schools" | "colleges", AudienceDef> = {
+const AUDIENCES: Record<"parents" | "teachers", AudienceDef> = {
   parents: {
     eyebrow: ["অভিভাবকদের জন্য", "For parents"],
     title: ["সন্তানের পড়াশোনার খোঁজ — গোপনীয়তা বজায় রেখে", "Follow your child's learning — with privacy respected"],
@@ -193,7 +193,7 @@ const AUDIENCES: Record<"parents" | "teachers" | "schools" | "colleges", Audienc
       { icon: BarChart3, title: ["অগ্রগতি ও ফল", "Progress & results"], text: ["বিষয়ভিত্তিক পারফরম্যান্স, পরীক্ষার স্কোর ও সম্পন্ন/মিস করা টাস্ক।", "Subject performance, test scores and completed/missed tasks."] },
       { icon: Calendar, title: ["স্টাডি ক্যালেন্ডার", "Study calendar"], text: ["আসন্ন পরীক্ষা ও পড়ার পরিকল্পনা এক নজরে।", "Upcoming exams and study plans at a glance."] },
       { icon: Bell, title: ["সময়মতো নোটিফিকেশন", "Timely notifications"], text: ["ফল প্রকাশ, শিক্ষকের মতামত বা লক্ষ্যপূরণে জানান পাবেন।", "Get notified about results, teacher feedback and goals."] },
-      { icon: Lock, title: ["সম্মতি ও গোপনীয়তা", "Consent & privacy"], text: ["কোন তথ্য দেখবেন তা শিক্ষার্থী ও নীতিমালা ঠিক করে; যেকোনো সময় সম্মতি প্রত্যাহার।", "The student and policy decide what you see; consent can be withdrawn any time."] },
+      { icon: Lock, title: ["গোপনীয়তা", "Privacy"], text: ["কোন তথ্য দেখবেন তা শিক্ষার্থী নিজে ঠিক করে।", "The student decides what you can see."] },
     ],
     checklist: [["একাধিক সন্তান সংযুক্ত করা যায়", "Link multiple children"], ["রিপোর্ট ডাউনলোড", "Download reports"], ["ফ্যামিলি প্ল্যানে সবাই", "Everyone on the family plan"], ["AI চ্যাট ডিফল্টভাবে দেখা যায় না", "AI chats hidden by default"]],
     demo: { role: ["অভিভাবক ডেমো", "Parent demo"], email: "parent@shikkha.ai" },
@@ -215,38 +215,6 @@ const AUDIENCES: Record<"parents" | "teachers" | "schools" | "colleges", Audienc
     demo: { role: ["শিক্ষক ডেমো", "Teacher demo"], email: "teacher@shikkha.ai" },
     cta: ["শিক্ষক হিসেবে যোগ দিন", "Join as a teacher"],
     ctaHref: "/contact?topic=teacher",
-  },
-  schools: {
-    eyebrow: ["স্কুলের জন্য", "For schools"],
-    title: ["পুরো প্রতিষ্ঠানের ডিজিটাল শিক্ষা প্ল্যাটফর্ম", "A digital learning platform for the whole school"],
-    description: ["শিক্ষাবর্ষ, শ্রেণি, শিক্ষক, শিক্ষার্থী, পরীক্ষা ও প্রাইভেট প্রশ্নব্যাংক — প্রতিষ্ঠান-নির্দিষ্ট নেভিগেশনে।", "Sessions, classes, teachers, students, exams and a private question bank — with institution-scoped navigation."],
-    icon: Building2,
-    blocks: [
-      { icon: Users, title: ["শিক্ষক ও শিক্ষার্থী ব্যবস্থাপনা", "Teacher & student management"], text: ["ক্লাস গ্রুপিং, রোল নম্বর ও বিষয় নির্ধারণ।", "Class grouping, roll numbers and subject assignment."] },
-      { icon: Upload, title: ["প্রশ্নপত্র আপলোড", "Question paper upload"], text: ["নিজস্ব পরীক্ষার প্রশ্নপত্র — পাবলিক বা প্রাইভেট।", "Your own exam papers — public or private."] },
-      { icon: ClipboardCheck, title: ["প্রতিষ্ঠানের পরীক্ষা", "Institution exams"], text: ["সময়সূচি, বিতরণ ও স্বয়ংক্রিয় ফল।", "Scheduling, distribution and automatic results."] },
-      { icon: BarChart3, title: ["বিষয়ভিত্তিক রিপোর্ট", "Subject-level reports"], text: ["শ্রেণি ও বিষয় অনুযায়ী পারফরম্যান্স বিশ্লেষণ।", "Performance analytics by class and subject."] },
-    ],
-    checklist: [["ঘোষণা ও নোটিফিকেশন", "Announcements and notifications"], ["রিসোর্স লাইব্রেরি", "Resource library"], ["প্রাতিষ্ঠানিক বিলিং", "Institution billing"], ["গোপনীয়তা সেটিংস", "Privacy settings"]],
-    demo: { role: ["স্কুল অ্যাডমিন ডেমো", "School admin demo"], email: "school@shikkha.ai" },
-    cta: ["ডেমোর জন্য যোগাযোগ", "Contact for a demo"],
-    ctaHref: "/contact?topic=institution",
-  },
-  colleges: {
-    eyebrow: ["কলেজের জন্য", "For colleges"],
-    title: ["HSC প্রস্তুতিতে প্রতিষ্ঠানের শক্তি", "Institution-grade HSC preparation"],
-    description: ["বিজ্ঞান, ব্যবসায় শিক্ষা ও মানবিক বিভাগের জন্য বিভাগভিত্তিক বিষয় পরিকল্পনা, মডেল টেস্ট ও টেস্ট পরীক্ষার বিশ্লেষণ।", "Group-wise subject planning, model tests and test-exam analytics for science, business and humanities."],
-    icon: GraduationCap,
-    blocks: [
-      { icon: Layers, title: ["বিভাগভিত্তিক সেটআপ", "Group-wise setup"], text: ["১ম ও ২য় পত্রসহ বিষয় কাঠামো।", "Subject structures with 1st and 2nd papers."] },
-      { icon: ClipboardList, title: ["টেস্ট ও নির্বাচনী পরীক্ষা", "Test & selection exams"], text: ["বোর্ড-ধাঁচের টেমপ্লেট থেকে দ্রুত পরীক্ষা তৈরি।", "Create exams fast from board-style templates."] },
-      { icon: Library, title: ["প্রাইভেট প্রশ্নব্যাংক", "Private question bank"], text: ["বিভাগের শিক্ষকদের যৌথ প্রশ্নভান্ডার।", "A shared question bank for department teachers."] },
-      { icon: BarChart3, title: ["ফল বিশ্লেষণ", "Result analytics"], text: ["দুর্বল অধ্যায় ও শিক্ষার্থীভিত্তিক সহায়তার তালিকা।", "Weak chapters and per-student support lists."] },
-    ],
-    checklist: [["অ্যাসাইনমেন্ট বিতরণ", "Assignment distribution"], ["শিক্ষার্থী জমা পর্যালোচনা", "Student submission review"], ["শিক্ষক ড্যাশবোর্ড", "Teacher dashboards"], ["প্রাতিষ্ঠানিক সাবস্ক্রিপশন", "Institution subscription"]],
-    demo: { role: ["কলেজ অ্যাডমিন ডেমো", "College admin demo"], email: "college@shikkha.ai" },
-    cta: ["ডেমোর জন্য যোগাযোগ", "Contact for a demo"],
-    ctaHref: "/contact?topic=institution",
   },
 };
 
@@ -306,7 +274,7 @@ export function AudiencePage({ audience }: { audience: keyof typeof AUDIENCES })
 // FAQ
 // =====================================================================================
 
-const FAQ_ITEMS: { topic: "general" | "ai" | "content" | "billing" | "privacy" | "institution"; q: [string, string]; a: [string, string] }[] = [
+const FAQ_ITEMS: { topic: "general" | "ai" | "content" | "billing" | "privacy"; q: [string, string]; a: [string, string] }[] = [
   { topic: "general", q: [`${siteConfig.name} কী?`, `What is ${siteConfig.name}?`], a: ["SSC ও HSC শিক্ষার্থীদের জন্য একটি AI-চালিত শেখার প্ল্যাটফর্ম — AI টিউটর, প্রশ্নব্যাংক, পরীক্ষা, স্টাডি প্ল্যানার ও বিশ্লেষণসহ।", "An AI-powered learning platform for SSC and HSC students — with an AI tutor, question bank, exams, planner and analytics."] },
   { topic: "general", q: ["কোন শ্রেণি ও বিভাগ সমর্থিত?", "Which classes and groups are supported?"], a: ["৯ম–১২শ শ্রেণি; বিজ্ঞান, ব্যবসায় শিক্ষা ও মানবিক; বাংলা ও ইংরেজি ভার্সন।", "Classes 9–12; science, business studies and humanities; Bangla and English versions."] },
   { topic: "general", q: ["মোবাইলে ব্যবহার করা যাবে?", "Can I use it on mobile?"], a: ["হ্যাঁ — ওয়েবসাইট মোবাইল ব্রাউজারে চলে, আর Android/iOS অ্যাপ শীঘ্রই আসছে।", "Yes — the website works in mobile browsers and Android/iOS apps are coming soon."] },
@@ -317,9 +285,8 @@ const FAQ_ITEMS: { topic: "general" | "ai" | "content" | "billing" | "privacy" |
   { topic: "billing", q: ["ফ্রি প্ল্যানে কী আছে?", "What's in the free plan?"], a: ["প্রতিদিন সীমিত AI বার্তা, প্রশ্নব্যাংক, দৈনিক কুইজ ও স্টাডি প্ল্যানার।", "Limited daily AI messages, the question bank, daily quiz and study planner."] },
   { topic: "billing", q: ["কীভাবে পেমেন্ট করব?", "How do I pay?"], a: ["bKash, Nagad, কার্ড বা ব্যাংক (ডেমোতে সব সিমুলেটেড — কোনো আসল টাকা কাটা হয় না)।", "bKash, Nagad, card or bank (all simulated in the demo — no real money is charged)."] },
   { topic: "billing", q: ["যেকোনো সময় বাতিল করা যাবে?", "Can I cancel any time?"], a: ["হ্যাঁ। মেয়াদ শেষ পর্যন্ত সব ফিচার থাকবে, তারপর ফ্রি প্ল্যানে ফিরবে।", "Yes. You keep features until the period ends, then return to the free plan."] },
-  { topic: "privacy", q: ["১৮ বছরের নিচে হলে?", "What if I'm under 18?"], a: ["অভিভাবকের সম্মতি প্রয়োজন; নিবন্ধনের সময় অভিভাবক যাচাই করেন।", "Guardian consent is required; a guardian verifies during sign-up."] },
+  { topic: "privacy", q: ["১৮ বছরের নিচে হলে?", "What if I'm under 18?"], a: ["অভিভাবকের অনুমতি লাগে না — যেকোনো বয়সের শিক্ষার্থী নিজেই অ্যাকাউন্ট খুলতে পারে।", "No guardian permission is needed — students of any age can sign up on their own."] },
   { topic: "privacy", q: ["অভিভাবক কি আমার চ্যাট দেখতে পান?", "Can my guardian see my chats?"], a: ["না, ডিফল্টে AI কথোপকথন প্রাইভেট। তুমি চাইলে শেয়ার করতে পারো।", "No — AI conversations are private by default. You can choose to share."] },
-  { topic: "institution", q: ["স্কুল কীভাবে যুক্ত হবে?", "How does a school join?"], a: ["যোগাযোগ ফর্মে 'প্রতিষ্ঠান' বেছে নিন; অনবোর্ডিং গাইড ধাপে ধাপে সেটআপ করে দেবে।", "Choose 'Institution' on the contact form; the onboarding guide walks you through setup."] },
 ];
 const FAQ_TOPICS: { id: (typeof FAQ_ITEMS)[number]["topic"]; label: [string, string] }[] = [
   { id: "general", label: ["সাধারণ", "General"] },
@@ -327,7 +294,6 @@ const FAQ_TOPICS: { id: (typeof FAQ_ITEMS)[number]["topic"]; label: [string, str
   { id: "content", label: ["কনটেন্ট", "Content"] },
   { id: "billing", label: ["মূল্য ও পেমেন্ট", "Pricing & payment"] },
   { id: "privacy", label: ["গোপনীয়তা", "Privacy"] },
-  { id: "institution", label: ["প্রতিষ্ঠান", "Institutions"] },
 ];
 
 function FaqList({ items }: { items: typeof FAQ_ITEMS }) {
@@ -392,7 +358,7 @@ const contactSchema = z.object({
   name: z.string().trim().min(2, "NAME"),
   email: z.string().trim().email("EMAIL"),
   phone: z.string().trim().regex(/^(\+?880|0)1[3-9]\d{8}$/, "PHONE").or(z.literal("")),
-  topic: z.enum(["student", "parent", "teacher", "institution", "billing", "other"]),
+  topic: z.enum(["student", "parent", "teacher", "billing", "other"]),
   message: z.string().trim().min(20, "MESSAGE").max(2000, "MESSAGE_LONG"),
 });
 type ContactForm = z.infer<typeof contactSchema>;
@@ -404,7 +370,6 @@ export function ContactPage({ initialTopic }: { initialTopic?: string }) {
     ["student", l("শিক্ষার্থী", "Student")],
     ["parent", l("অভিভাবক", "Parent")],
     ["teacher", l("শিক্ষক", "Teacher")],
-    ["institution", l("স্কুল/কলেজ", "School/college")],
     ["billing", l("পেমেন্ট", "Billing")],
     ["other", l("অন্যান্য", "Other")],
   ];
@@ -632,7 +597,7 @@ export function TermsPage() {
       updated="2026-11-01"
       sections={[
         { h: ["সেবার বিবরণ", "The service"], p: [["প্ল্যাটফর্মটি SSC ও HSC শিক্ষার্থীদের শেখার সহায়ক হিসেবে AI টিউটর, প্রশ্নব্যাংক, পরীক্ষা ও বিশ্লেষণ সরবরাহ করে।", "The platform provides an AI tutor, question bank, exams and analytics as learning aids for SSC and HSC students."]] },
-        { h: ["অ্যাকাউন্ট", "Accounts"], p: [["অ্যাকাউন্টের তথ্য সঠিক রাখা ও পাসওয়ার্ড গোপন রাখা আপনার দায়িত্ব।", "You are responsible for keeping account details accurate and your password secret."], ["১৮ বছরের নিচে হলে অভিভাবকের সম্মতি প্রয়োজন।", "Users under 18 need guardian consent."]] },
+        { h: ["অ্যাকাউন্ট", "Accounts"], p: [["অ্যাকাউন্টের তথ্য সঠিক রাখা ও পাসওয়ার্ড গোপন রাখা আপনার দায়িত্ব।", "You are responsible for keeping account details accurate and your password secret."]] },
         { h: ["AI-এর সীমাবদ্ধতা", "AI limitations"], p: [["AI উত্তর ভুল হতে পারে। এগুলো শিক্ষক, পাঠ্যবই বা দাপ্তরিক নির্দেশনার বিকল্প নয়।", "AI answers can be wrong. They do not replace teachers, textbooks or official guidance."], ["AI-আনুমানিক নম্বর দাপ্তরিক নম্বর নয়।", "AI-estimated marks are not official marks."]] },
         { h: ["গ্রহণযোগ্য ব্যবহার", "Acceptable use"], p: [["পরীক্ষায় অসদুপায়, হয়রানি, কপিরাইট লঙ্ঘন বা অন্যের অ্যাকাউন্ট ব্যবহার নিষিদ্ধ।", "Exam cheating, harassment, copyright infringement and using others' accounts are prohibited."]] },
         { h: ["কনটেন্ট ও মেধাস্বত্ব", "Content & intellectual property"], p: [["আপলোড করা কনটেন্টের প্রয়োজনীয় অধিকার আপনার থাকতে হবে। কপিরাইট অভিযোগ পর্যালোচনা করে প্রয়োজনে সরানো হয়।", "You must hold the rights to content you upload. Copyright complaints are reviewed and content removed where needed."]] },
@@ -652,8 +617,8 @@ export function PrivacyPage() {
       sections={[
         { h: ["আমরা কী তথ্য সংগ্রহ করি", "What we collect"], p: [["অ্যাকাউন্ট তথ্য (নাম, ইমেইল/মোবাইল), একাডেমিক প্রোফাইল, শেখার কার্যকলাপ ও আপনার আপলোড করা ফাইল।", "Account details (name, email/mobile), academic profile, learning activity and files you upload."]] },
         { h: ["কেন ব্যবহার করি", "Why we use it"], p: [["ব্যক্তিগত শেখার পরিকল্পনা, অগ্রগতি বিশ্লেষণ, সেবা উন্নয়ন ও নিরাপত্তার জন্য।", "For personalised study plans, progress analytics, improving the service and safety."], ["আমরা শিক্ষার্থীর তথ্য বিজ্ঞাপনের জন্য বিক্রি করি না।", "We do not sell student data for advertising."]] },
-        { h: ["শিশু ও কিশোরদের গোপনীয়তা", "Children's privacy"], p: [["১৮ বছরের নিচে ব্যবহারকারীর জন্য অভিভাবকের সম্মতি লাগে, যা যেকোনো সময় প্রত্যাহার করা যায়।", "Users under 18 need guardian consent, which can be withdrawn at any time."], ["AI কথোপকথন ডিফল্টভাবে প্রাইভেট — অভিভাবক বা প্রতিষ্ঠান অনুমতি ছাড়া দেখতে পান না।", "AI conversations are private by default — guardians or institutions cannot see them without permission."]] },
-        { h: ["কারা দেখতে পায়", "Who can see your data"], p: [["অভিভাবক ও প্রতিষ্ঠান শুধু শিক্ষার্থী ও নীতিমালা যতটুকু অনুমতি দেয় ততটুকু দেখতে পায় (যেমন অগ্রগতি ও ফল)।", "Guardians and institutions see only what the student and policy allow (e.g. progress and results)."]] },
+        { h: ["শিশু ও কিশোরদের গোপনীয়তা", "Children's privacy"], p: [["যেকোনো বয়সের শিক্ষার্থী অভিভাবকের অনুমতি ছাড়াই অ্যাকাউন্ট খুলতে পারে।", "Students of any age can sign up without guardian permission."], ["AI কথোপকথন ডিফল্টভাবে প্রাইভেট — অভিভাবক অনুমতি ছাড়া দেখতে পান না।", "AI conversations are private by default — guardians cannot see them without permission."]] },
+        { h: ["কারা দেখতে পায়", "Who can see your data"], p: [["অভিভাবক শুধু শিক্ষার্থী যতটুকু শেয়ার করে ততটুকু দেখতে পান (যেমন অগ্রগতি ও ফল)।", "Guardians see only what the student shares (e.g. progress and results)."]] },
         { h: ["সংরক্ষণ ও মুছে ফেলা", "Retention & deletion"], p: [["সেটিংস থেকে ডেটা রপ্তানি বা অ্যাকাউন্ট মুছে ফেলার অনুরোধ করা যায়; ৩০ দিনের মধ্যে বাতিলযোগ্য।", "Request a data export or account deletion from Settings; cancellable within 30 days."]] },
         { h: ["এই ডেমো সম্পর্কে", "About this demo"], p: [["এই প্রোটোটাইপে কোনো প্রকৃত আচরণগত ট্র্যাকিং বা সংবেদনশীল তথ্য স্থানান্তর হয় না; ডেটা আপনার ব্রাউজারেই থাকে। প্রোডাকশনে আইনি ও নিরাপত্তা সম্মতির জন্য ব্যাকএন্ড নিয়ন্ত্রণ ও স্বাধীন পর্যালোচনা প্রয়োজন।", "This prototype performs no real behavioural tracking or sensitive data transfer; data stays in your browser. Production compliance requires backend controls and independent review."]] },
       ]}
@@ -661,7 +626,7 @@ export function PrivacyPage() {
       <div className="grid gap-3 sm:grid-cols-3">
         {[
           [EyeOff, l("চ্যাট প্রাইভেট", "Chats private")],
-          [Lock, l("অভিভাবক সম্মতি", "Guardian consent")],
+          [Lock, l("তথ্য বিক্রি হয় না", "Data never sold")],
           [Eye, l("আপনি নিয়ন্ত্রণ করেন", "You're in control")],
         ].map(([I, t]) => {
           const IconC = I as Icon;

@@ -6,7 +6,6 @@ export const DEMO = {
   teacher: "teacher@shikkha.ai",
   reviewer: "reviewer@shikkha.ai",
   contentManager: "content@shikkha.ai",
-  school: "school@shikkha.ai",
   support: "support@shikkha.ai",
   platformAdmin: "admin@shikkha.ai",
   superAdmin: "super@shikkha.ai",

@@ -16,7 +16,7 @@ const pages = [];
 })(app);
 
 const route = (p) => "/" + relative(app, dirname(p)).split("/").filter((s) => !/^\(.*\)$/.test(s)).join("/");
-const portal = (r) => (r.split("/")[1] && ["student", "parent", "teacher", "institution", "admin"].includes(r.split("/")[1]) ? r.split("/")[1] : /\/(login|register|welcome|verify-otp|forgot-password|reset-password|onboarding|consent|session-expired)/.test(r) ? "auth" : "marketing");
+const portal = (r) => (r.split("/")[1] && ["student", "parent", "teacher", "admin"].includes(r.split("/")[1]) ? r.split("/")[1] : /\/(login|register|welcome|verify-otp|forgot-password|reset-password|onboarding|consent|session-expired)/.test(r) ? "auth" : "marketing");
 const rows = pages
   .map((p) => {
     const src = readFileSync(p, "utf8");
@@ -26,7 +26,7 @@ const rows = pages
   })
   .sort((a, b) => a.portal.localeCompare(b.portal) || a.r.localeCompare(b.r));
 
-const groups = ["marketing", "auth", "student", "parent", "teacher", "institution", "admin"];
+const groups = ["marketing", "auth", "student", "parent", "teacher", "admin"];
 const md = [
   "# Screen Inventory",
   "",

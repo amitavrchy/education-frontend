@@ -15,7 +15,7 @@ describe("pricing & coupons", () => {
 
   it("validates coupon state and plan applicability", async () => {
     await expect(billingService.validateCoupon("ssc2027", "pro")).resolves.toMatchObject({ code: "SSC2027" });
-    await expect(billingService.validateCoupon("SCHOOL30", "pro")).rejects.toThrow(/COUPON_NOT_APPLICABLE/);
+    await expect(billingService.validateCoupon("FAMILY30", "pro")).rejects.toThrow(/COUPON_NOT_APPLICABLE/);
     await expect(billingService.validateCoupon("EID2026", "pro")).rejects.toThrow(/COUPON_INVALID/);
     await expect(billingService.validateCoupon("NOPE", "pro")).rejects.toThrow(/COUPON_INVALID/);
   });
