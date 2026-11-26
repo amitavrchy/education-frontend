@@ -47,4 +47,26 @@ test.describe("API mode", () => {
     }
     expect(failures, failures.join("\n")).toEqual([]);
   });
+
+  // Every portal page: no API call may fail (catches screens still reading device-only or missing endpoints).
+  const PAGES: Record<string, string[]> = {
+    "student@shikkha.ai": ["achievements", "ai-tutor", "analytics", "answer-evaluation", "audio", "avatar-tutor", "board-questions", "bookmarks", "curriculum", "dashboard", "english-coach", "exams", "flashcards", "help", "institution-questions", "labs", "library", "notes", "notifications", "offline", "photo-solver", "practice", "questions", "results", "search", "settings", "study-planner", "subscription", "voice-tutor"].map((p) => `/student/${p}`),
+    "parent@shikkha.ai": ["avatar-activity", "calendar", "children", "dashboard", "feedback", "goals", "notifications", "privacy", "progress", "reports", "results", "settings", "subscription"].map((p) => `/parent/${p}`),
+    "teacher@shikkha.ai": ["analytics", "assignments", "avatars", "dashboard", "evaluations", "exams", "history", "notifications", "questions", "review", "rubrics", "settings", "students", "subjects", "submissions"].map((p) => `/teacher/${p}`),
+    "super@shikkha.ai": ["analytics", "board-questions", "book-avatars", "books", "content-review", "coverage", "curriculum", "dashboard", "exams", "institution-questions", "knowledge-base", "moderation", "notifications", "questions", "security", "settings", "subscriptions", "teachers", "users"].map((p) => `/admin/${p}`),
+  };
+  for (const [user, paths] of Object.entries(PAGES)) {
+    test(`every page loads without API errors: ${user}`, async ({ page }) => {
+      test.setTimeout(240_000);
+      const failures = watchApi(page);
+      await login(page, user);
+      for (const path of paths) {
+        const before = failures.length;
+        await page.goto(path);
+        await page.waitForLoadState("networkidle");
+        for (let i = before; i < failures.length; i++) failures[i] = `${path}: ${failures[i]}`;
+      }
+      expect(failures, failures.join("\n")).toEqual([]);
+    });
+  }
 });
