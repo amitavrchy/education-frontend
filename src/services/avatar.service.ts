@@ -3,6 +3,7 @@ import { books } from "@/mock-data/books";
 import { hashString } from "@/mock-data/utils";
 import { answerFromBook } from "./ai/book-avatar-engine";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { booksRepo } from "./library.service";
@@ -141,6 +142,8 @@ export const avatarService = {
     const found = (await avatarsRepo.raw()).find((a) => a.bookId === bookId);
     if (found) return found;
     const book = await booksRepo.get(bookId);
+    // API mode: the server creates the avatar on the first session; until then show the default.
+    if (isRemote()) return defaultAvatarFor(book);
     return avatarsRepo.create(defaultAvatarFor(book));
   },
 
@@ -168,6 +171,7 @@ export const avatarService = {
 
   /** Pure preview (admin/teacher "test chat") — nothing is stored. */
   async preview(avatar: BookAvatar, query: string) {
+    if (isRemote()) return remote.post<ReturnType<typeof answerFromBook>>("/avatar/preview", { avatar, query });
     await mockRequest(500);
     const book = await booksRepo.get(avatar.bookId);
     return answerFromBook({ book, avatar, query });
@@ -179,6 +183,7 @@ export const avatarService = {
   },
 
   async startSession(studentId: string, bookId: string): Promise<{ session: AvatarSession; greeting: AvatarMessage }> {
+    if (isRemote()) return remote.post(`/avatar/${studentId}/sessions`, { bookId });
     const avatar = await avatarService.forBook(bookId);
     const session = await avatarSessionsRepo(studentId).create({ id: newId("as"), bookId, avatarId: avatar.id, studentId, title: "নতুন সেশন", startedAt: nowIso(), lastAt: nowIso(), messageCount: 0, voiceTurns: 0, minutes: 0 });
     const lang = avatar.voice.language;
@@ -192,6 +197,8 @@ export const avatarService = {
   async ask(studentId: string, sessionId: string, text: string, inputMode: "text" | "voice") {
     const trimmed = text.trim();
     if (!trimmed) throw new Error("EMPTY_QUESTION");
+    // API mode: the server answers from the book and stores both messages and the counters.
+    if (isRemote()) return remote.post<{ question: AvatarMessage; reply: AvatarMessage }>(`/avatar/${studentId}/sessions/${sessionId}/messages`, { text: trimmed, inputMode });
     const sessions = avatarSessionsRepo(studentId);
     const session = await sessions.get(sessionId);
     const [avatar, book] = await Promise.all([avatarService.forBook(session.bookId), booksRepo.get(session.bookId)]);
@@ -207,6 +214,7 @@ export const avatarService = {
   },
 
   async feedback(studentId: string, messageId: string, value: "up" | "down") {
+    if (isRemote()) return remote.post<AvatarMessage>(`/avatar/${studentId}/messages/${messageId}/feedback`, { value });
     const m = await avatarMessagesRepo(studentId).update(messageId, { feedback: value });
     const session = await avatarSessionsRepo(studentId).get(m.sessionId);
     const avatar = await avatarsRepo.get(session.avatarId).catch(() => undefined);
@@ -216,6 +224,7 @@ export const avatarService = {
 
   async report(studentId: string, messageId: string, reason: string) {
     if (reason.trim().length < 3) throw new Error("REASON_REQUIRED");
+    if (isRemote()) return remote.post<AvatarReport>(`/avatar/${studentId}/messages/${messageId}/report`, { reason: reason.trim() });
     const msgs = avatarMessagesRepo(studentId);
     const m = await msgs.update(messageId, { flagged: true });
     const all = await msgs.raw();
@@ -231,6 +240,7 @@ export const avatarService = {
 
   /** Guardian view: counts only, never message content (privacy). */
   async usageSummary(studentId: string) {
+    if (isRemote()) return remote.get<{ bookId: string; sessions: number; questions: number; minutes: number; lastAt: string }[]>(`/avatar/${studentId}/usage`);
     const sessions = await avatarSessionsRepo(studentId).raw();
     const byBook = new Map<string, { bookId: string; sessions: number; questions: number; minutes: number; lastAt: string }>();
     for (const s of sessions) {

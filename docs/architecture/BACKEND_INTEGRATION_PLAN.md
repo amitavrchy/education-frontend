@@ -59,6 +59,11 @@ Run the backend (`education-backend`, demo mode) and set `NEXT_PUBLIC_USE_MOCK_A
 - Composite operations call dedicated endpoints through `services/core/remote.ts`: progress, exams (incl. the
   runner's answer-key-free questions), tutor, billing, usage, review, guardian, notifications read-all, search,
   assignment distribution (`POST /submissions/batch`).
+- Book avatar: avatars and reports through the generic `/book-avatars`, `/avatar-reports`; sessions, answers
+  (from the book, on the server), feedback, reports, guardian usage and the staff preview through `/avatar/*`.
+- Still simulated in the browser, results stored on the server: OCR / photo solver, handwriting AI marks,
+  voice tutor replies and audio-lesson generation. The backend has no OCR, speech or evaluator provider
+  configured yet (`integrations/ocr-services`, `speech-services`, `answer-evaluation` are stubs).
 
 ## Suggested order
 
