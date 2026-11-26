@@ -18,7 +18,7 @@ export function SettingsPage({ portal }: { portal: PortalKey }) {
   const params = useSearchParams();
   const router = useRouter();
   const student = portal === "student";
-  const profile = useStudentProfile();
+  const profile = useStudentProfile(undefined, { enabled: student });
   const tabs: { id: Tab; label: string; icon: typeof UserRound; student?: boolean }[] = [
     { id: "profile", label: l("প্রোফাইল", "Profile"), icon: UserRound },
     { id: "academic", label: l("একাডেমিক", "Academic"), icon: GraduationCap, student: true },

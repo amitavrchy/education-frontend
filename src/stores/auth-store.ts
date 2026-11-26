@@ -8,6 +8,8 @@ const SESSION_MARKER = "shikkhaai-session-alive";
 interface AuthState {
   user: User | null;
   accessToken: string | null;
+  /** API mode only: rotated through POST /auth/refresh. */
+  refreshToken: string | null;
   expiresAt: string | null;
   remember: boolean;
   /** Real role of the signed-in account while the demo role switcher impersonates another role. */
@@ -32,6 +34,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       accessToken: null,
+      refreshToken: null,
       expiresAt: null,
       remember: false,
       originalRole: null,
@@ -43,6 +46,7 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: session.user,
           accessToken: session.accessToken,
+          refreshToken: session.refreshToken ?? null,
           expiresAt: session.expiresAt,
           remember: !!session.remember,
         });
@@ -51,7 +55,7 @@ export const useAuthStore = create<AuthState>()(
         const user = get().user;
         if (user) set({ user: { ...user, ...patch } });
       },
-      clearSession: () => set({ user: null, accessToken: null, expiresAt: null, originalRole: null }),
+      clearSession: () => set({ user: null, accessToken: null, refreshToken: null, expiresAt: null, originalRole: null }),
       extendSession: () => {
         const ttl = get().remember ? REMEMBER_TTL_MS : SESSION_TTL_MS;
         set({ expiresAt: new Date(Date.now() + ttl).toISOString() });
@@ -61,9 +65,10 @@ export const useAuthStore = create<AuthState>()(
       name: STORAGE_KEYS.auth,
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
-      partialize: ({ user, accessToken, expiresAt, remember, originalRole }) => ({
+      partialize: ({ user, accessToken, refreshToken, expiresAt, remember, originalRole }) => ({
         user,
         accessToken,
+        refreshToken,
         expiresAt,
         remember,
         originalRole,

@@ -2,6 +2,7 @@ import type { AcademicSession, Announcement, Assignment, ClassGroup, Institution
 import { daysFromNow, rng, SEED_EPOCH } from "@/mock-data/utils";
 import { institutionMembers } from "@/mock-data/users";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { notificationService } from "./notification.service";
 import { institutionsRepo, membersRepo, teacherFeedbackRepo } from "./people.service";
@@ -105,7 +106,9 @@ export const schoolService = {
       const members = (await membersRepo.raw()).filter((m) => studentIds.includes(m.id));
       const existing = await submissionsRepo.raw();
       const fresh = members.filter((m) => !existing.some((s) => s.assignmentId === saved.id && (s.studentId === (m.userId ?? m.id)))).map((m) => ({ id: newId("sub"), assignmentId: saved.id, studentId: m.userId ?? m.id, studentName: m.name, status: "pending" as const, content: "", attachments: [], createdAt: nowIso(), updatedAt: nowIso() }));
-      await submissionsRepo.replaceAll([...fresh, ...existing]);
+      // API mode: create only the new rows (POST /submissions/batch); the mock rewrites the list.
+      if (isRemote()) await remote.post("/submissions/batch", { items: fresh });
+      else await submissionsRepo.replaceAll([...fresh, ...existing]);
       await notificationService.push({ portal: "student", type: "new_assignment", title: `নতুন অ্যাসাইনমেন্ট: ${saved.title}`, body: `জমার শেষ সময়: ${new Date(saved.dueAt).toLocaleDateString("bn-BD")}`, href: "/student/study-planner", priority: "normal" });
     }
     return saved;

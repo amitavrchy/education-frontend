@@ -4,6 +4,7 @@ import { chapters, subjects } from "@/mock-data/curriculum";
 import { bi, daysFromNow, dateKey, rng, SEED_EPOCH } from "@/mock-data/utils";
 import { seededSubjects } from "@/mock-data/progress";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { notificationService } from "./notification.service";
 import { progressService } from "./progress.service";
@@ -278,6 +279,10 @@ export const examService = {
 
   /** Creates a personal exam from the setup form (EXM-14…16) and returns the new attempt id. */
   async createAndStart(studentId: string, setup: ExamSetup): Promise<string> {
+    if (isRemote()) {
+      const { kind, title, subjectId, chapterIds, topicIds, types, count, difficulty, durationMinutes, negativeMarking, mode, randomize, reviewPolicy, levelCode } = setup;
+      return (await remote.post<{ attemptId: string }>("/exams/custom", { kind, title: title || undefined, subjectId, chapterIds, topicIds, types, count, difficulty, durationMinutes, negativeMarking, mode, randomize, reviewPolicy, levelCode })).attemptId;
+    }
     await mockRequest(400);
     let prefer: string[] | undefined;
     if (setup.kind === "adaptive") {
@@ -313,6 +318,7 @@ export const examService = {
 
   /** Daily challenge: same 10 questions for everyone today (seeded by date). */
   async startDailyChallenge(studentId: string, levelCode: "SSC" | "HSC" = "SSC") {
+    if (isRemote()) return (await remote.post<{ attemptId: string }>("/exams/daily-challenge", { levelCode })).attemptId;
     const id = `ex-daily-${dateKey(0)}-${levelCode}`;
     if (!(await examsRepo.find(id))) {
       const picked = await pickQuestions({ chapterIds: [], topicIds: [], types: ["mcq", "true_false"], difficulty: "mixed", levelCode }, 10, `daily-${dateKey(0)}`);
@@ -323,6 +329,7 @@ export const examService = {
 
   /** Starts (or resumes) an attempt for an exam. */
   async start(studentId: string, examId: string): Promise<string> {
+    if (isRemote()) return (await remote.post<{ attemptId: string }>(`/exams/${examId}/attempts`)).attemptId;
     await mockRequest(250);
     const repo = examAttemptsRepo(studentId);
     const existing = (await repo.raw()).find((a) => a.examId === examId && a.status === "in_progress");
@@ -356,6 +363,7 @@ export const examService = {
 
   /** Autosave (EXM-25). Uses no artificial latency so it never blocks typing. */
   async save(studentId: string, attemptId: string, patch: Partial<Pick<ExamAttempt, "answers" | "markedForReview" | "currentIndex" | "remainingSec" | "timePerQuestion">>) {
+    if (isRemote()) return remote.patch<ExamAttempt>(`/exam-attempts/${studentId}/${attemptId}`, patch);
     const repo = examAttemptsRepo(studentId);
     const items = await repo.raw();
     const i = items.findIndex((a) => a.id === attemptId);
@@ -367,6 +375,8 @@ export const examService = {
   },
 
   async submit(studentId: string, attemptId: string, reason: "manual" | "time_expired" = "manual") {
+    // Scoring, progress, badges and the result notification happen on the server.
+    if (isRemote()) return remote.post<ExamAttempt>(`/exam-attempts/${studentId}/${attemptId}/submit`, { reason });
     await mockRequest(500);
     const repo = examAttemptsRepo(studentId);
     const attempt = await repo.get(attemptId);
@@ -390,6 +400,12 @@ export const examService = {
 
   async discard(studentId: string, attemptId: string) {
     await examAttemptsRepo(studentId).remove(attemptId);
+  },
+
+  /** Questions of an attempt. API mode hides answer keys while the attempt is in progress. */
+  async attemptQuestions(studentId: string, attempt: ExamAttempt): Promise<Question[]> {
+    if (isRemote()) return remote.get<Question[]>(`/exam-attempts/${studentId}/${attempt.id}/questions`);
+    return questionsRepoMany(attempt.questionOrder);
   },
 };
 

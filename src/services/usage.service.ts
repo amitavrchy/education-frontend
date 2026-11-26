@@ -3,6 +3,7 @@ import { getDocument, saveDocument } from "@/lib/mock-db";
 import { dateKey } from "@/mock-data/utils";
 import { invalid } from "./core/mock-runtime";
 import { usersRepo } from "./auth.service";
+import { isRemote, remote } from "./core/remote";
 
 export const PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   free: { aiMessagesPerDay: 20, voiceMinutesPerMonth: 15, photoSolvesPerDay: 5, offlineDownloads: 3, members: 1, handwritingEvaluationsPerMonth: 3 },
@@ -25,12 +26,17 @@ async function load(userId: string): Promise<UsageMeter> {
 
 export const usageService = {
   async get(userId: string) {
+    if (isRemote()) return remote.get<{ meter: UsageMeter; plan: PlanCode; limits: (typeof PLAN_LIMITS)[PlanCode] }>(`/usage/${userId}`);
     const meter = await load(userId);
     const plan = ((await usersRepo.find(userId))?.planCode ?? "free") as PlanCode;
     return { meter, plan, limits: PLAN_LIMITS[plan] ?? PLAN_LIMITS.free };
   },
   /** Throws QUOTA_EXCEEDED when the plan limit is reached; otherwise increments. */
   async consume(userId: string, kind: UsageKind, amount = 1) {
+    if (isRemote()) {
+      await remote.post(`/usage/${userId}/consume`, { kind, amount });
+      return;
+    }
     const { meter, limits } = await usageService.get(userId);
     const map = { ai: ["aiMessagesToday", "aiMessagesPerDay"], voice: ["voiceMinutesThisMonth", "voiceMinutesPerMonth"], photo: ["photoSolvesToday", "photoSolvesPerDay"], handwriting: ["handwritingThisMonth", "handwritingEvaluationsPerMonth"] } as const;
     const [field, limit] = map[kind];

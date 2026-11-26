@@ -9,7 +9,22 @@
  * Nothing outside src/services should import this module.
  */
 
+import { env } from "@/config/env";
+import { apiClient } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/api-error";
+
 export const MOCK_SEED_VERSION = 8;
+
+/**
+ * Singleton documents the backend stores (`GET|PUT /documents/:key`). Everything else stays
+ * device-local (preferences, caches) even in API mode. Prefixed keys look like `english:u-1`.
+ */
+const SERVER_DOCUMENTS = new Set(["systemConfig", "permissionMatrix", "aiSettings"]);
+const SERVER_DOCUMENT_PREFIXES = ["gamification:", "usage:", "planSettings:", "english:", "guardianGoals:"];
+
+export function isServerDocument(name: string): boolean {
+  return !env.NEXT_PUBLIC_USE_MOCK_API && (SERVER_DOCUMENTS.has(name) || SERVER_DOCUMENT_PREFIXES.some((p) => name.startsWith(p)));
+}
 
 const DB_NAME = "shikkhaai-mock-db";
 const STORE = "collections";
@@ -98,13 +113,27 @@ export async function saveCollection<T>(name: string, items: T[]): Promise<void>
   await idbSet(name, items);
 }
 
-/** Single-document collections (settings objects, singletons). */
+/** Single-document collections (settings objects, singletons). Server-backed in API mode. */
 export async function getDocument<T>(name: string, seed: () => T): Promise<T> {
+  if (isServerDocument(name)) {
+    try {
+      const res = await apiClient.get<{ data: T | null }>(`/documents/${encodeURIComponent(name)}`);
+      return res.data ?? seed();
+    } catch (e) {
+      // A document nobody saved yet: start from the default.
+      if (e instanceof ApiError && e.status === 404) return seed();
+      throw e;
+    }
+  }
   const [doc] = await getCollection<T>(name, () => [seed()]);
   return doc;
 }
 
 export async function saveDocument<T>(name: string, doc: T): Promise<void> {
+  if (isServerDocument(name)) {
+    await apiClient.put(`/documents/${encodeURIComponent(name)}`, doc);
+    return;
+  }
   await saveCollection(name, [doc]);
 }
 

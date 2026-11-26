@@ -5,6 +5,7 @@ import { topics } from "@/mock-data/curriculum";
 import { dateKey } from "@/mock-data/utils";
 import { createMockRepository } from "./core/repository";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
+import { isRemote, remote } from "./core/remote";
 import { notificationService } from "./notification.service";
 
 /**
@@ -61,6 +62,7 @@ async function awardXp(studentId: string, xp: number, label: string) {
 }
 
 async function grantBadge(studentId: string, badgeId: string) {
+  if (isRemote()) return; // Badges are awarded by the server.
   const g = await getDocument<GamificationState>(gamKey(studentId), () => seedGamification(studentId));
   if (g.badges.some((b) => b.id === badgeId)) return;
   await saveDocument(gamKey(studentId), { ...g, badges: [...g.badges, { id: badgeId, earnedAt: nowIso() }] });
@@ -75,6 +77,7 @@ export const progressService = {
   chapterProgress: (studentId: string) => progressRepos(studentId).chapters.all(),
   activity: (studentId: string) => progressRepos(studentId).activity.all(),
   async gamification(studentId: string) {
+    if (isRemote()) return remote.get<GamificationState>(`/progress/${studentId}/gamification`);
     await mockRequest(100);
     return getDocument<GamificationState>(gamKey(studentId), () => seedGamification(studentId));
   },
@@ -82,6 +85,15 @@ export const progressService = {
   /** Records answers from practice/exams/quizzes and updates mastery (ADP-24). */
   async recordAttempts(studentId: string, inputs: AttemptInput[], opts: { minutes?: number; label?: string } = {}) {
     if (!inputs.length) return;
+    if (isRemote()) {
+      // Mastery, XP, streak and badges are computed on the server.
+      await remote.post(`/progress/${studentId}/attempts`, {
+        attempts: inputs.map((a) => ({ questionId: a.questionId, correct: a.correct, source: a.source, timeSpentSec: a.timeSpentSec })),
+        minutes: opts.minutes,
+        label: opts.label,
+      });
+      return;
+    }
     const repos = progressRepos(studentId);
     const stamp = nowIso();
     const attempts = inputs.map((a) => ({ ...a, id: newId("att"), answeredAt: a.answeredAt ?? stamp }));
@@ -116,6 +128,10 @@ export const progressService = {
   },
 
   async logActivity(studentId: string, entry: { kind: ActivityEntry["kind"]; minutes: number; label: string; xp?: number }) {
+    if (isRemote()) {
+      await remote.post(`/progress/${studentId}/activity`, { kind: entry.kind, minutes: entry.minutes, label: entry.label });
+      return;
+    }
     const repos = progressRepos(studentId);
     const xp = entry.xp ?? Math.round(entry.minutes * 1.5);
     await repos.activity.replaceAll([{ id: newId("act"), date: dateKey(0), at: nowIso(), ...entry, xp }, ...(await repos.activity.raw())]);
@@ -126,6 +142,7 @@ export const progressService = {
   },
 
   async setChapterStatus(studentId: string, chapterId: string, subjectId: string, action: "start" | "complete" | "reset" | { topicDone: string; totalTopics: number }) {
+    if (isRemote()) return remote.post<ChapterProgress>(`/progress/${studentId}/chapters/${chapterId}`, { action });
     await mockRequest(150);
     const repos = progressRepos(studentId);
     const list = await repos.chapters.raw();
@@ -152,6 +169,7 @@ export const progressService = {
   },
 
   async claimMission(studentId: string, missionId: string, xp: number) {
+    if (isRemote()) return remote.post<GamificationState>(`/progress/${studentId}/missions/${missionId}/claim`);
     await mockRequest(200);
     const g = await getDocument<GamificationState>(gamKey(studentId), () => seedGamification(studentId));
     if (g.claimedMissions.includes(missionId)) return g;
@@ -160,6 +178,7 @@ export const progressService = {
   },
 
   async useStreakFreeze(studentId: string) {
+    if (isRemote()) return remote.post<GamificationState>(`/progress/${studentId}/streak-freeze`);
     await mockRequest(200);
     const g = await getDocument<GamificationState>(gamKey(studentId), () => seedGamification(studentId));
     if (g.streak.freezeAvailable < 1) return g;
@@ -169,6 +188,10 @@ export const progressService = {
   },
 
   async updateChallenge(studentId: string, challenges: GamificationState["friendChallenges"]) {
+    if (isRemote()) {
+      await remote.put(`/progress/${studentId}/challenges`, { challenges });
+      return;
+    }
     const g = await getDocument<GamificationState>(gamKey(studentId), () => seedGamification(studentId));
     await saveDocument(gamKey(studentId), { ...g, friendChallenges: challenges });
   },

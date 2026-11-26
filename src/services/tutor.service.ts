@@ -3,6 +3,7 @@ import { ARCHIVED_VERSION_ID, CURRENT_VERSION_ID } from "@/mock-data/curriculum"
 import { daysFromNow } from "@/mock-data/utils";
 import { runEngine, titleFrom } from "./ai/tutor-engine";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { passagesRepo } from "./kb.service";
 import { progressService } from "./progress.service";
@@ -101,6 +102,7 @@ export const tutorService = {
   conversations: (studentId: string) => r(studentId).conversations.all(),
   folders: (studentId: string) => r(studentId).folders.all(),
   async messages(studentId: string, conversationId: string) {
+    if (isRemote()) return r(studentId).messages.all({ conversationId });
     await ensureReplies(studentId, conversationId);
     return (await r(studentId).messages.all()).filter((m) => m.conversationId === conversationId);
   },
@@ -110,6 +112,7 @@ export const tutorService = {
   },
   update: (studentId: string, id: string, patch: Partial<Conversation>) => r(studentId).conversations.update(id, patch),
   async remove(studentId: string, id: string) {
+    if (isRemote()) return r(studentId).conversations.remove(id);
     const m = r(studentId).messages;
     await m.replaceAll((await m.raw()).filter((x) => x.conversationId !== id));
     await r(studentId).conversations.remove(id);
@@ -120,6 +123,8 @@ export const tutorService = {
    * Requires connectivity (AI is online-only) and respects the plan's daily AI quota.
    */
   async send(studentId: string, conversationId: string, content: string, opts: { replaceFromMessageId?: string } = {}) {
+    // Quota, retrieval, answer, conversation summary and XP are handled by the server.
+    if (isRemote()) return remote.post<{ user: ChatMessage; assistant: ChatMessage }>(`/tutor/${studentId}/conversations/${conversationId}/messages`, { content, replaceFromMessageId: opts.replaceFromMessageId });
     await mockRequest(150, { requiresNetwork: true });
     await usageService.consume(studentId, "ai");
     const repo = r(studentId);
@@ -148,6 +153,7 @@ export const tutorService = {
   },
 
   async regenerate(studentId: string, conversationId: string, assistantId: string) {
+    if (isRemote()) return remote.post<ChatMessage>(`/tutor/${studentId}/messages/${assistantId}/regenerate`);
     await mockRequest(800, { requiresNetwork: true });
     await usageService.consume(studentId, "ai");
     const repo = r(studentId);
@@ -164,6 +170,7 @@ export const tutorService = {
   updateMessage: (studentId: string, id: string, patch: Partial<ChatMessage>) => r(studentId).messages.update(id, patch),
 
   async report(studentId: string, message: ChatMessage, reason: string) {
+    if (isRemote()) return remote.post<ChatMessage>(`/tutor/${studentId}/messages/${message.id}/report`, { reason });
     await reportsRepo.create({ id: newId("rep"), kind: "ai_answer", refId: message.id, reason, details: message.content.slice(0, 200), reporterId: studentId, status: "open", createdAt: nowIso() });
     return r(studentId).messages.update(message.id, { reported: true });
   },

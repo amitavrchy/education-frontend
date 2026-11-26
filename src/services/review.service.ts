@@ -3,6 +3,7 @@ import { questions as seedQuestions } from "@/mock-data/questions";
 import { daysFromNow, rng, SEED_EPOCH } from "@/mock-data/utils";
 import { createMockRepository } from "./core/repository";
 import { forbidden, invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
+import { isRemote, remote } from "./core/remote";
 import { notificationService } from "./notification.service";
 import { questionsRepo } from "./question.service";
 
@@ -81,6 +82,8 @@ export const reviewService = {
   list: () => reviewItemsRepo.all(),
   get: (id: string) => reviewItemsRepo.get(id),
   async transition(id: string, to: ContentStatus, actor: Actor, note?: string) {
+    // The server enforces the state machine and the acting user's role.
+    if (isRemote()) return remote.post<ReviewItem>(`/review-items/${id}/transition`, { to, note });
     await mockRequest(300);
     const item = await reviewItemsRepo.get(id);
     if (!CONTENT_TRANSITIONS[item.status].includes(to)) invalid("INVALID_TRANSITION");
@@ -94,14 +97,17 @@ export const reviewService = {
     return updated;
   },
   async comment(id: string, actor: Actor, text: string) {
+    if (isRemote()) return remote.post<ReviewItem>(`/review-items/${id}/comments`, { text });
     const item = await reviewItemsRepo.get(id);
     return reviewItemsRepo.update(id, { comments: [...item.comments, { id: newId("c"), author: actor, text, at: nowIso() }] });
   },
   async suggest(id: string, actor: Actor, field: string, from: string, to: string) {
+    if (isRemote()) return remote.post<ReviewItem>(`/review-items/${id}/suggestions`, { field, from, to });
     const item = await reviewItemsRepo.get(id);
     return reviewItemsRepo.update(id, { suggestions: [...item.suggestions, { id: newId("s"), field, from, to, by: actor, at: nowIso(), state: "open" }] });
   },
   async resolveSuggestion(id: string, suggestionId: string, accept: boolean) {
+    if (isRemote()) return remote.post<ReviewItem>(`/review-items/${id}/suggestions/${suggestionId}/resolve`, { accept });
     const item = await reviewItemsRepo.get(id);
     const s = item.suggestions.find((x) => x.id === suggestionId);
     let preview = item.preview;
@@ -110,6 +116,7 @@ export const reviewService = {
   },
   /** Teacher authoring: creates/updates a question as a draft and its review item. */
   async saveQuestion(actor: Actor, q: Question, submit: boolean) {
+    if (isRemote()) return remote.post<Question>("/review-items/questions", { question: q, submit });
     await mockRequest(400);
     const exists = await questionsRepo.find(q.id);
     const saved = exists ? await questionsRepo.update(q.id, { ...q, status: submit ? "submitted" : "draft", version: exists.version + 1, versions: [...(exists.versions ?? []), { version: exists.version, at: nowIso(), by: actor.name, summary: "সম্পাদনা" }] }) : await questionsRepo.create({ ...q, status: submit ? "submitted" : "draft" });

@@ -2,6 +2,7 @@ import type { Bilingual } from "@/contracts";
 import { matchesSearch, normalizeSearch } from "./core/repository";
 import { mockRequest } from "./core/mock-runtime";
 import { curriculumRepos } from "./curriculum.service";
+import { isRemote, remote } from "./core/remote";
 
 export type SearchKind =
   | "subject"
@@ -81,6 +82,7 @@ export const searchService = {
 
   async all(q: string, kinds?: SearchKind[]): Promise<SearchHit[]> {
     if (q.trim().length < 2) return [];
+    if (isRemote()) return remote.get<SearchHit[]>("/search", { q: q.trim(), kinds: kinds?.length ? kinds.join(",") : undefined });
     await mockRequest(150);
     const lists = await Promise.all(
       [...providers.entries()].filter(([kind]) => !kinds?.length || kinds.includes(kind)).map(([, p]) => p(q).catch(() => [])),

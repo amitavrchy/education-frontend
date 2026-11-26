@@ -169,11 +169,15 @@ export function createMockRepository<T extends Entity>(options: MockRepositoryOp
   // the same interface, so services and UI need no changes.
   if (!env.NEXT_PUBLIC_USE_MOCK_API) {
     const api = createApiRepository<T>(options.apiPath ?? defaultApiPath(collection));
+    const path = options.apiPath ?? defaultApiPath(collection);
     return {
       ...api,
       raw: () => api.all(),
-      replaceAll: async () => {
-        throw new Error(`replaceAll(${collection}) is mock-only — implement a dedicated server endpoint`);
+      // Owner-only study data (planner, flashcards, notes, …) is replaced as a whole:
+      // `PUT /<path>/<studentId> {items}`. Server-owned collections reject this with 403, so
+      // their services call dedicated endpoints instead.
+      replaceAll: async (items: T[]) => {
+        await apiClient.put(path, { items });
       },
     };
   }
