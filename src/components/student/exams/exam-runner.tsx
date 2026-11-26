@@ -19,7 +19,7 @@ import { useFormat, useL } from "@/i18n";
 import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { examService } from "@/services/exam.service";
-import { gradeObjective, isAnswered, questionService } from "@/services/question.service";
+import { gradeObjective, isAnswered } from "@/services/question.service";
 import { QuestionBody, QuestionMeta, QuestionSolution } from "../questions/question-card";
 import { QuestionInput } from "../questions/question-input";
 
@@ -38,7 +38,7 @@ export function ExamRunner({ attemptId }: { attemptId: string }) {
     queryFn: async (): Promise<Loaded> => {
       const attempt = await examService.attempt(studentId, attemptId);
       const exam = await examService.get(attempt.examId);
-      const questions = await questionService.many(attempt.questionOrder);
+      const questions = await examService.attemptQuestions(studentId, attempt);
       return { attempt, exam, questions };
     },
     staleTime: Infinity,

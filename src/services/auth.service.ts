@@ -1,7 +1,9 @@
+import { env } from "@/config/env";
 import type { UserAccount } from "@/contracts";
+import { apiClient } from "@/lib/api/client";
 import { demoUsers, userAccounts } from "@/mock-data/users";
 import { REMEMBER_TTL_MS, SESSION_TTL_MS } from "@/stores/auth-store";
-import type { AuthSession, User, UserRole } from "@/types";
+import type { ApiResponse, AuthSession, User, UserRole } from "@/types";
 import { createMockRepository } from "./core/repository";
 import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
 
@@ -23,6 +25,8 @@ export const DEMO_WRONG_PASSWORD = "wrongpass";
 export type OtpPurpose = "login" | "register" | "reset";
 
 export interface PendingOtp {
+  /** API mode: the server's challenge id, sent back with the code. */
+  challengeId?: string;
   purpose: OtpPurpose;
   target: string;
   /** Registration payload waiting for verification. */
@@ -104,7 +108,7 @@ function assertUsable(account: UserAccount) {
  * Mock authentication. Never contacts a server. Any password works for demo accounts except
  * DEMO_WRONG_PASSWORD; the only valid OTP is DEMO_OTP.
  */
-export const authService = {
+const mockAuthService = {
   async loginWithPassword(input: { identifier: string; password: string; remember?: boolean }): Promise<AuthSession> {
     await mockRequest(500);
     const account = await findAccount(input.identifier);
@@ -213,7 +217,79 @@ export const authService = {
   async logout(): Promise<void> {
     await mockRequest(150);
   },
+
+  /** Mock sessions never expire server-side; kept for interface parity. */
+  async refresh(_refreshToken: string): Promise<AuthSession> {
+    invalid("SESSION_EXPIRED");
+  },
 };
+
+/** Server session as returned by /auth/login, /auth/otp/verify, /auth/refresh, /auth/switch-role. */
+interface ServerSession {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: string;
+  remember?: boolean;
+}
+
+const toSession = (s: ServerSession): AuthSession => ({ user: s.user, accessToken: s.accessToken, refreshToken: s.refreshToken, expiresAt: s.expiresAt, remember: s.remember });
+
+const post = async <T>(path: string, body?: unknown, skipAuth = true) => (await apiClient.post<ApiResponse<T>>(path, body, { skipAuth })).data;
+
+/** Real authentication against the backend (`/auth/*`). Same interface as the mock. */
+const apiAuthService: typeof mockAuthService = {
+  async loginWithPassword(input) {
+    return toSession(await post<ServerSession>("/auth/login", input));
+  },
+  async requestLoginOtp(identifier, remember = false) {
+    const pending = await post<PendingOtp>("/auth/otp/request", { identifier: identifier.trim(), remember });
+    savePending(pending);
+    return pending;
+  },
+  async register(payload) {
+    // Any age signs up alone (no guardian consent); the API still records the flag.
+    const pending = await post<PendingOtp>("/auth/register", { ...payload, identifier: payload.identifier.trim(), under18: false });
+    savePending({ ...pending, registration: payload });
+    return pending;
+  },
+  async requestPasswordReset(identifier) {
+    const pending = await post<PendingOtp>("/auth/forgot-password", { identifier: identifier.trim() });
+    savePending(pending);
+    return pending;
+  },
+  async resendOtp() {
+    const pending = getPendingOtp();
+    if (!pending?.challengeId) invalid("NO_PENDING_OTP");
+    const next = await post<PendingOtp>("/auth/otp/resend", { challengeId: pending.challengeId });
+    savePending({ ...pending, ...next });
+    return next;
+  },
+  async verifyOtp(code) {
+    const pending = getPendingOtp();
+    if (!pending?.challengeId) invalid("NO_PENDING_OTP");
+    const res = await post<{ purpose: OtpPurpose; session?: ServerSession; resetToken?: string }>("/auth/otp/verify", { challengeId: pending.challengeId, code: code.trim() });
+    clearPendingOtp();
+    return { purpose: res.purpose, resetToken: res.resetToken, session: res.session ? toSession(res.session) : undefined };
+  },
+  async resetPassword(token, password) {
+    await apiClient.post<void>("/auth/reset-password", { token, password }, { skipAuth: true });
+  },
+  async switchRole(role) {
+    return toSession(await post<ServerSession>("/auth/switch-role", { role }));
+  },
+  async markOnboarded() {
+    await apiClient.post("/auth/onboarded");
+  },
+  async logout() {
+    await apiClient.post<void>("/auth/logout").catch(() => undefined);
+  },
+  async refresh(refreshToken) {
+    return toSession(await post<ServerSession>("/auth/refresh", { refreshToken }));
+  },
+};
+
+export const authService = env.NEXT_PUBLIC_USE_MOCK_API ? mockAuthService : apiAuthService;
 
 export const demoAccountList = (Object.keys(demoUsers) as UserRole[]).map((role) => ({
   role,

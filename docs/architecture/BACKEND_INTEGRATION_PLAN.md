@@ -46,6 +46,20 @@ Errors: `{ message, code, errors?: Record<field, string[]> }` with HTTP status. 
 5. **Realtime**: voice (WebRTC/WebSocket), notifications (SSE/WebSocket), ingestion progress.
 6. **Search**: replace in-memory providers in `search-registry.ts` with a search endpoint.
 
+## Status (API mode wired, 2026-11-26)
+
+Run the backend (`education-backend`, demo mode) and set `NEXT_PUBLIC_USE_MOCK_API=false`,
+`NEXT_PUBLIC_API_URL=http://localhost:4000/api/v1` in `.env.local`.
+
+- Generic repositories → REST (unchanged). In API mode `replaceAll(items)` is `PUT /<path>/<studentId> {items}`
+  (owner study data only; the server rejects it for server-owned collections).
+- `getDocument/saveDocument` → `GET|PUT /documents/:key` for server documents (`systemConfig`, `permissionMatrix`,
+  `aiSettings`, `gamification:`, `usage:`, `planSettings:`, `english:`, `guardianGoals:`); other documents stay on the device.
+- Auth: real `/auth/*` with OTP `challengeId`, refresh token stored and rotated automatically on a 401.
+- Composite operations call dedicated endpoints through `services/core/remote.ts`: progress, exams (incl. the
+  runner's answer-key-free questions), tutor, billing, usage, review, guardian, notifications read-all, search,
+  assignment distribution (`POST /submissions/batch`).
+
 ## Suggested order
 
 Auth → curriculum (read) → questions/bank → exams + scoring → progress → tutor streaming → notifications →

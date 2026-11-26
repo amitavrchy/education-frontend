@@ -3,6 +3,10 @@ import { getDocument, saveDocument } from "@/lib/mock-db";
 import { dateKey, daysFromNow } from "@/mock-data/utils";
 import { examService } from "./exam.service";
 import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
+import { isRemote, remote } from "./core/remote";
+
+/** API mode: OTP challenge of each pending link (from POST /guardian/links). */
+const linkChallenges = new Map<string, string>();
 import { notificationService } from "./notification.service";
 import { guardianLinksRepo, profileService, teacherFeedbackRepo } from "./people.service";
 import { progressService } from "./progress.service";
@@ -34,10 +38,16 @@ export interface ChildSummary {
 }
 
 export const guardianService = {
-  links: async (guardianId: string) => (await guardianLinksRepo.all()).filter((l) => l.guardianId === guardianId && l.status !== "revoked"),
+  links: async (guardianId: string) =>
+    isRemote() ? (await remote.get<GuardianLink[]>("/guardian/links")).filter((l) => l.status !== "revoked") : (await guardianLinksRepo.all()).filter((l) => l.guardianId === guardianId && l.status !== "revoked"),
 
   /** Link flow: student shares a code from their settings → OTP to guardian → active. */
   async requestLink(guardianId: string, input: { code: string; relation: string }) {
+    if (isRemote()) {
+      const res = await remote.post<{ link: GuardianLink; pending: { challengeId: string } }>("/guardian/links", { code: input.code.trim().toUpperCase(), relation: input.relation });
+      linkChallenges.set(res.link.id, res.pending.challengeId);
+      return res.link;
+    }
     await mockRequest(600);
     if (input.code.trim().toUpperCase() !== DEMO_LINK_CODE) invalid("LINK_CODE_INVALID");
     const existing = (await guardianLinksRepo.raw()).find((l) => l.guardianId === guardianId && l.studentId === "u-student-3");
@@ -46,11 +56,19 @@ export const guardianService = {
     return guardianLinksRepo.create({ id: newId("gl"), guardianId, studentId: "u-student-3", studentName: "তাহসিন রহমান", relation: input.relation, status: "pending", permissions: { progress: true, scores: true, studyTime: true, calendar: false, teacherFeedback: true, aiConversations: false }, code: input.code.trim().toUpperCase() });
   },
   async confirmLink(linkId: string, otp: string) {
+    if (isRemote()) {
+      const challengeId = linkChallenges.get(linkId);
+      if (!challengeId) invalid("NO_PENDING_OTP");
+      const link = await remote.post<GuardianLink>(`/guardian/links/${linkId}/confirm`, { challengeId, code: otp.trim() });
+      linkChallenges.delete(linkId);
+      return link;
+    }
     await mockRequest(500);
     if (otp !== "123456") invalid("OTP_INVALID");
     return guardianLinksRepo.update(linkId, { status: "active", linkedAt: nowIso() });
   },
   async unlink(linkId: string) {
+    if (isRemote()) return remote.post<GuardianLink>(`/guardian/links/${linkId}/unlink`);
     await mockRequest(300);
     return guardianLinksRepo.update(linkId, { status: "revoked" });
   },
@@ -63,6 +81,11 @@ export const guardianService = {
   },
 
   async summary(link: GuardianLink): Promise<ChildSummary> {
+    if (isRemote()) {
+      const all = await remote.get<ChildSummary[]>("/guardian/children");
+      const found = all.find((x) => x.link.id === link.id);
+      if (found) return found;
+    }
     const id = link.studentId;
     const [activity, tasks, attempts, gam, mastery] = await Promise.all([progressService.activity(id), studyPlannerService.tasks(id), examService.attempts(id), progressService.gamification(id), progressService.mastery(id)]);
     const wk = dateKey(-6);
@@ -92,6 +115,7 @@ export const guardianService = {
   feedback: async (studentId: string) => (await teacherFeedbackRepo.all()).filter((f) => f.studentId === studentId).sort((a, b) => b.at.localeCompare(a.at)),
   acknowledge: (id: string) => teacherFeedbackRepo.update(id, { acknowledged: true }),
   async replyToTeacher(feedback: TeacherFeedback, guardianName: string, message: string) {
+    if (isRemote()) return remote.post<TeacherFeedback>(`/guardian/feedback/${feedback.id}/reply`, { message });
     await mockRequest(400);
     await notificationService.push({ portal: "teacher", type: "teacher_feedback", title: `অভিভাবকের বার্তা: ${guardianName}`, body: message.slice(0, 120), href: "/teacher/students", priority: "normal" });
     return teacherFeedbackRepo.update(feedback.id, { acknowledged: true });

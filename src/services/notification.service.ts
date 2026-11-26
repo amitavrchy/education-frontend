@@ -3,6 +3,7 @@ import { noticeSeed, notificationSeed } from "@/mock-data/notifications";
 import type { PortalKey } from "@/types";
 import { createMockRepository, selectRepository } from "./core/repository";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
+import { isRemote, remote } from "./core/remote";
 
 const mockNotifications = createMockRepository<AppNotification>({
   collection: "notifications",
@@ -33,6 +34,10 @@ export const notificationService = {
   archive: (id: string, archived = true) => notificationsRepo.update(id, { archived }),
   remove: (id: string) => notificationsRepo.remove(id),
   async markAllRead(portal: PortalKey) {
+    if (isRemote()) {
+      await remote.post("/notifications/read-all", { portal });
+      return;
+    }
     const ids = (await mockNotifications.raw()).filter((n) => n.portal === portal && !n.read).map((n) => n.id);
     await notificationsRepo.bulkUpdate(ids, { read: true });
   },

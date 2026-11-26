@@ -3,6 +3,7 @@ import { userAccounts } from "@/mock-data/users";
 import { bi, daysFromNow, rng, SEED_EPOCH } from "@/mock-data/utils";
 import { usersRepo } from "./auth.service";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { notificationService } from "./notification.service";
 import { PLAN_LIMITS } from "./usage.service";
@@ -113,11 +114,16 @@ export function priceWithCoupon(base: number, coupon?: Coupon | null) {
 export const billingService = {
   plans: () => plansRepo.all(),
   async mySubscription(userId: string) {
+    if (isRemote()) return (await remote.get<{ subscription: Subscription | null }>("/billing/me")).subscription ?? null;
     await mockRequest(120);
     return (await subscriptionsRepo.raw()).find((s) => s.userId === userId && s.status !== "cancelled") ?? null;
   },
-  myPayments: async (userId: string) => (await paymentsRepo.all()).filter((p) => p.userId === userId),
+  myPayments: async (userId: string) => (isRemote() ? (await remote.get<{ payments: Payment[] }>("/billing/me")).payments : (await paymentsRepo.all()).filter((p) => p.userId === userId)),
   async validateCoupon(code: string, planCode: PlanCode) {
+    if (isRemote()) {
+      const q = await remote.post<{ coupon: Coupon | null }>("/billing/quote", { couponCode: code.trim(), planCode });
+      return q.coupon as Coupon;
+    }
     await mockRequest(300);
     const c = (await couponsRepo.raw()).find((x) => x.code.toLowerCase() === code.trim().toLowerCase());
     if (!c || !c.active || new Date(c.validUntil).getTime() < Date.now()) invalid("COUPON_INVALID");
@@ -128,6 +134,10 @@ export const billingService = {
 
   /** Checkout simulator: returns the payment (success / failed / pending) and updates the subscription. */
   async checkout(input: CheckoutInput) {
+    if (isRemote()) {
+      const { planCode, cycle, method, account, couponCode, startTrial } = input;
+      return remote.post<Payment>("/billing/checkout", { planCode, cycle, method, account, couponCode: couponCode || undefined, startTrial });
+    }
     await mockRequest(1400, { requiresNetwork: true });
     const plan = (await plansRepo.raw()).find((p) => p.code === input.planCode)!;
     const coupon = input.couponCode ? await billingService.validateCoupon(input.couponCode, input.planCode) : null;
@@ -177,6 +187,7 @@ export const billingService = {
 
   /** Confirms a pending mobile-wallet payment (simulates the gateway callback). */
   async confirmPending(paymentId: string) {
+    if (isRemote()) return remote.post<Payment>(`/billing/payments/${paymentId}/confirm`);
     await mockRequest(800);
     const p = await paymentsRepo.update(paymentId, { status: "success" });
     const sub = (await subscriptionsRepo.raw()).find((s) => s.userId === p.userId && s.status === "pending_payment");
@@ -186,6 +197,7 @@ export const billingService = {
   },
 
   async cancel(userId: string, reason: string) {
+    if (isRemote()) return remote.post<Subscription>("/billing/cancel", { reason });
     await mockRequest(500);
     const sub = (await subscriptionsRepo.raw()).find((s) => s.userId === userId && s.status !== "cancelled");
     if (!sub) invalid("NO_SUBSCRIPTION");
@@ -194,21 +206,27 @@ export const billingService = {
     return subscriptionsRepo.update(sub.id, { cancelAt: sub.renewsAt });
   },
   async resume(userId: string) {
+    if (isRemote()) return remote.post<Subscription>("/billing/resume");
     await mockRequest(300);
     const sub = (await subscriptionsRepo.raw()).find((s) => s.userId === userId && s.status !== "cancelled");
     if (sub) return subscriptionsRepo.update(sub.id, { cancelAt: undefined });
   },
   async downgradeToFree(userId: string) {
+    if (isRemote()) {
+      await remote.post("/billing/downgrade");
+      return;
+    }
     await mockRequest(500);
     const sub = (await subscriptionsRepo.raw()).find((s) => s.userId === userId && s.status !== "cancelled");
     if (sub) await subscriptionsRepo.update(sub.id, { status: "cancelled", cancelAt: nowIso() });
     await usersRepo.update(userId, { planCode: "free" }).catch(() => undefined);
   },
   async requestRefund(userId: string, userName: string, paymentId: string, reason: string) {
+    if (isRemote()) return remote.post<RefundRequest>("/billing/refunds", { paymentId, reason });
     await mockRequest(400);
     const p = await paymentsRepo.get(paymentId);
     if ((await refundsRepo.raw()).some((r) => r.paymentId === paymentId && r.status !== "rejected")) invalid("REFUND_EXISTS");
     return refundsRepo.create({ id: newId("rf"), paymentId, userId, userName, amount: p.amount, reason, status: "requested", createdAt: nowIso(), updatedAt: nowIso() });
   },
-  myRefunds: async (userId: string) => (await refundsRepo.raw()).filter((r) => r.userId === userId),
+  myRefunds: async (userId: string) => (isRemote() ? (await remote.get<{ refunds: RefundRequest[] }>("/billing/me")).refunds : (await refundsRepo.raw()).filter((r) => r.userId === userId)),
 };
