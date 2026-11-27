@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { speechService } from "@/services/speech.service";
 
 /**
- * Speaks text with the device's speech synthesis (if available) and produces a `mouth` level (0–1)
- * for lip-sync. Word-boundary events add emphasis; a jittered envelope keeps the mouth moving between
- * words. Without TTS (or when muted) it simulates speaking time so the avatar still animates.
+ * Speaks text and produces a `mouth` level (0–1) for lip-sync. Bangla (and any language the device
+ * has no voice for) is played from server-made speech in API mode; otherwise the device voice is
+ * used. Word-boundary events add emphasis; a jittered envelope keeps the mouth moving between words. Without TTS (or when muted) it simulates speaking time so the avatar still animates.
  */
 export function useAvatarSpeech() {
   const supported = typeof window !== "undefined" && "speechSynthesis" in window;
@@ -17,6 +18,8 @@ export function useAvatarSpeech() {
   const timer = useRef<number | undefined>(undefined);
   const boost = useRef(0);
   const onDone = useRef<(() => void) | undefined>(undefined);
+  const audio = useRef<HTMLAudioElement | null>(null);
+  const turn = useRef(0);
 
   useEffect(() => {
     if (!supported) return;
@@ -41,6 +44,8 @@ export function useAvatarSpeech() {
   }, []);
 
   const finish = useCallback(() => {
+    audio.current?.pause();
+    audio.current = null;
     window.clearInterval(raf.current);
     window.clearTimeout(timer.current);
     setSpeaking(false);
@@ -52,9 +57,10 @@ export function useAvatarSpeech() {
   }, []);
 
   const speak = useCallback(
-    (text: string, opts: { lang: "bn" | "en"; rate: number; pitch: number; voiceURI?: string; muted?: boolean }, done?: () => void) => {
+    (text: string, opts: { lang: "bn" | "en"; rate: number; pitch: number; voiceURI?: string; muted?: boolean; gender?: "female" | "male" }, done?: () => void) => {
       if (supported) window.speechSynthesis.cancel();
       finish();
+      const myTurn = ++turn.current;
       if (!text.trim()) return done?.();
       onDone.current = done;
       setSpeaking(true);
@@ -65,8 +71,27 @@ export function useAvatarSpeech() {
       };
       const lang = opts.lang === "bn" ? "bn-BD" : "en-US";
       const voice = voices.find((v) => v.voiceURI === opts.voiceURI) ?? voices.find((v) => v.lang.toLowerCase().startsWith(opts.lang));
+      if (opts.muted) return simulate();
+      // Bangla, or no device voice for the language: play the server's speech.
+      if (speechService.available() && (opts.lang === "bn" || !voice)) {
+        void speechService
+          .audioUrl(text, opts.lang, opts.gender ?? "female")
+          .then((url) => {
+            if (myTurn !== turn.current) return;
+            const a = speechService.player();
+            a.pause();
+            a.src = url;
+            a.playbackRate = opts.rate;
+            a.onended = finish;
+            a.onerror = simulate;
+            audio.current = a;
+            return a.play();
+          })
+          .catch(() => myTurn === turn.current && simulate());
+        return;
+      }
       // No voice for the language (common for Bangla) → animate without audio rather than mispronounce.
-      if (!supported || opts.muted || (!voice && opts.lang === "bn")) return simulate();
+      if (!supported || (!voice && opts.lang === "bn")) return simulate();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = lang;
       u.rate = opts.rate;
@@ -81,6 +106,7 @@ export function useAvatarSpeech() {
   );
 
   const stop = useCallback(() => {
+    turn.current += 1;
     onDone.current = undefined;
     if (supported) window.speechSynthesis.cancel();
     finish();
@@ -88,7 +114,7 @@ export function useAvatarSpeech() {
 
   useEffect(() => () => stop(), [stop]);
 
-  const hasVoiceFor = useCallback((lang: "bn" | "en") => voices.some((v) => v.lang.toLowerCase().startsWith(lang)), [voices]);
+  const hasVoiceFor = useCallback((lang: "bn" | "en") => speechService.available() || voices.some((v) => v.lang.toLowerCase().startsWith(lang)), [voices]);
 
   return { supported, speaking, mouth, caption, voices, speak, stop, hasVoiceFor };
 }

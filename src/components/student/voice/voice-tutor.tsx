@@ -143,7 +143,7 @@ export function VoiceTutor() {
   const speakReply = useCallback(
     (text: string) => {
       setPhase("speaking");
-      tts.speak(text, { lang: LANG_CODE[language === "mixed" ? "bn" : language], rate, voiceURI: voiceURI === "auto" ? undefined : voiceURI, muted }, () => {
+      tts.speak(text, { lang: LANG_CODE[language === "mixed" ? "bn" : language], rate, voiceURI: voiceURI === "auto" ? undefined : voiceURI, muted, gender: prefs?.voiceId?.includes("male") && !prefs.voiceId.includes("female") ? "male" : "female" }, () => {
         setPhase((p) => (p === "speaking" ? "idle" : p));
         if (handsFree) window.setTimeout(listen, 300);
       });

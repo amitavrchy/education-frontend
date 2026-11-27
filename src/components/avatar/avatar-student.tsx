@@ -168,7 +168,7 @@ export function AvatarClassroom({ bookId }: { bookId: string }) {
 
   const a = avatar.data;
   const lang = a?.voice.language ?? "bn";
-  const say = (text: string) => a && speech.speak(text, { lang: /[ঀ-৿]/.test(text) ? "bn" : "en", rate: a.voice.rate * rate, pitch: a.voice.pitch, voiceURI: a.voice.voiceURI, muted }, handsFree ? () => startListening() : undefined);
+  const say = (text: string) => a && speech.speak(text, { lang: /[ঀ-৿]/.test(text) ? "bn" : "en", rate: a.voice.rate * rate, pitch: a.voice.pitch, voiceURI: a.voice.voiceURI, muted, gender: a.appearance.gender }, handsFree ? () => startListening() : undefined);
 
   const start = useMutation({
     mutationFn: () => avatarService.startSession(studentId, bookId),

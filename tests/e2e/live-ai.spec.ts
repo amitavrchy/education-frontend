@@ -58,6 +58,36 @@ test.describe("live AI", () => {
   });
 });
 
+test.describe("book avatar voice", () => {
+  test.setTimeout(240_000);
+
+  test("the avatar speaks Bangla with server speech", async ({ page }) => {
+    const failures = watchApi(page);
+    // Record what the page asks the browser to play.
+    await page.addInitScript(() => {
+      const played: string[] = [];
+      (window as unknown as { __played: string[] }).__played = played;
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function (this: HTMLMediaElement) {
+        played.push(this.src);
+        return play.call(this).catch(() => undefined) as Promise<void>;
+      };
+    });
+    await login(page, "student@shikkha.ai");
+    await page.goto("/student/avatar-tutor/book-ssc-physics-bn");
+    const speech = page.waitForResponse((r) => r.url().endsWith("/api/v1/speech") && r.request().method() === "POST", { timeout: 90_000 });
+    await page.getByRole("button", { name: /ক্লাস শুরু করো|Start class/ }).click();
+    const res = await speech;
+    expect(res.status()).toBe(200);
+    const body = (await res.json()) as { data: { mediaType: string; data: string } };
+    expect(body.data.mediaType).toBe("audio/wav");
+    expect(Buffer.from(body.data.data, "base64").subarray(0, 4).toString()).toBe("RIFF");
+    // The greeting's server audio is played (a blob: URL), not the device voice.
+    await expect.poll(() => page.evaluate(() => (window as unknown as { __played: string[] }).__played.some((u) => u.startsWith("blob:"))), { timeout: 15_000 }).toBe(true);
+    expect(failures, failures.join("\n")).toEqual([]);
+  });
+});
+
 test.describe("manual payment", () => {
   test.setTimeout(240_000);
 

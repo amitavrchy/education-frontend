@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { speechService } from "@/services/speech.service";
 
 /* Browser speech APIs are not in the TS DOM lib everywhere; keep a minimal local typing. */
 interface SpeechRecognitionLike {
@@ -131,14 +132,20 @@ export function useDeviceRecognition() {
   return { supported, start, stop, abort, interim };
 }
 
-/** Device text-to-speech with voice choice and speed. Falls back to a timed "speaking" state. */
+/**
+ * Text-to-speech with voice choice and speed. Bangla (and any language without a device voice) is
+ * played from server-made speech in API mode; otherwise the device voice. Falls back to a timed
+ * "speaking" state.
+ */
 export function useDeviceSpeech() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const supported = typeof window !== "undefined" && "speechSynthesis" in window;
+  const supported = (typeof window !== "undefined" && "speechSynthesis" in window) || speechService.available();
   const timer = useRef<number | undefined>(undefined);
+  const audio = useRef<HTMLAudioElement | null>(null);
+  const turn = useRef(0);
 
   useEffect(() => {
-    if (!supported) return;
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const load = () => setVoices(window.speechSynthesis.getVoices());
     load();
     window.speechSynthesis.addEventListener("voiceschanged", load);
@@ -146,20 +153,42 @@ export function useDeviceSpeech() {
       window.speechSynthesis.removeEventListener("voiceschanged", load);
       window.speechSynthesis.cancel();
     };
-  }, [supported]);
+  }, []);
 
   const speak = useCallback(
-    (text: string, opts: { lang: string; rate: number; voiceURI?: string; muted?: boolean }, onEnd: () => void) => {
+    (text: string, opts: { lang: string; rate: number; voiceURI?: string; muted?: boolean; gender?: "female" | "male" }, onEnd: () => void) => {
       window.clearTimeout(timer.current);
+      audio.current?.pause();
+      const myTurn = ++turn.current;
       const fallback = () => {
         // Simulated speaking duration (~14 chars/sec at 1x) when TTS is unavailable or muted.
         timer.current = window.setTimeout(onEnd, Math.min(9000, Math.max(1200, (text.length / 14 / opts.rate) * 1000)));
       };
       if (!supported || opts.muted) return fallback();
+      const short = opts.lang.slice(0, 2) === "en" ? "en" : "bn";
+      const v = voices.find((x) => x.voiceURI === opts.voiceURI) ?? voices.find((x) => x.lang.startsWith(opts.lang.slice(0, 2)));
+      if (speechService.available() && (short === "bn" || !v)) {
+        if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+        void speechService
+          .audioUrl(text, short, opts.gender ?? "female")
+          .then((url) => {
+            if (myTurn !== turn.current) return;
+            const a = speechService.player();
+            a.pause();
+            a.src = url;
+            a.playbackRate = opts.rate;
+            a.onended = onEnd;
+            a.onerror = fallback;
+            audio.current = a;
+            return a.play();
+          })
+          .catch(() => myTurn === turn.current && fallback());
+        return;
+      }
+      if (!("speechSynthesis" in window)) return fallback();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = opts.lang;
       u.rate = opts.rate;
-      const v = voices.find((x) => x.voiceURI === opts.voiceURI) ?? voices.find((x) => x.lang.startsWith(opts.lang.slice(0, 2)));
       if (v) u.voice = v;
       u.onend = onEnd;
       u.onerror = () => fallback();
@@ -170,9 +199,12 @@ export function useDeviceSpeech() {
   );
 
   const cancel = useCallback(() => {
+    turn.current += 1;
     window.clearTimeout(timer.current);
-    if (supported) window.speechSynthesis.cancel();
-  }, [supported]);
+    audio.current?.pause();
+    audio.current = null;
+    if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+  }, []);
 
   return { supported, voices, speak, cancel };
 }
