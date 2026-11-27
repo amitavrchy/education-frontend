@@ -194,7 +194,7 @@ async function evaluateRemote(studentId: string, input: EvaluateInput): Promise<
     createdAt: nowIso(),
     updatedAt: nowIso(),
   } as HandwritingEvaluation);
-  const ev = await remote.post<HandwritingEvaluation>(`/evaluations/${studentId}/${draft.id}/evaluate`);
+  const { evaluation: ev } = await remote.post<{ evaluation: HandwritingEvaluation }>(`/evaluations/${studentId}/${draft.id}/evaluate`);
   await progressService.logActivity(studentId, { kind: "practice", minutes: 10, label: "হাতের লেখা উত্তর মূল্যায়ন", xp: 20 });
   return ev;
 }
