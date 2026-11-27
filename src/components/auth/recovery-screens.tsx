@@ -22,7 +22,8 @@ export function ForgotPasswordScreen() {
   const t = useT();
   const l = useL();
   const router = useRouter();
-  const [identifier, setIdentifier] = useState("");
+  // Invitation emails link here with the invitee's address filled in.
+  const [identifier, setIdentifier] = useState(useSearchParams().get("identifier") ?? "");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const submit = async (e: FormEvent) => {

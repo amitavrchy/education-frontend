@@ -4,6 +4,8 @@ import type { AccountStatus, UserRole } from "@/types/user";
 // ---------------------------------------------------------------- Accounts
 
 export interface UserAccount extends Timestamps {
+  /** Two-step verification: a one-time code after the password. */
+  twoFactor?: boolean;
   id: string;
   name: string;
   email: string;
@@ -16,10 +18,10 @@ export interface UserAccount extends Timestamps {
   studentIds: string[];
   planCode?: string;
   lastActiveAt?: string;
-  supportTickets: { id: string; subject: string; status: "open" | "resolved"; at: string }[];
+  supportTickets: { id: string; subject: string; status: "open" | "resolved"; at: string; category?: string; message?: string }[];
   onboarded: boolean;
-  /** Synthetic demo records only. */
-  demo: true;
+  /** Seeded demo accounts. */
+  demo?: true;
 }
 
 /** Student academic profile collected by onboarding (§6). */

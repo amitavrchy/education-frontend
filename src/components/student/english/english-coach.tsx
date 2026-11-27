@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BookA, BookOpenText, CheckCircle2, Ear, GalleryVerticalEnd, Headphones, Mic, MicOff, PenLine, Play, RotateCcw, Sparkles, SpellCheck, Square, Timer, Volume2, XCircle } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { errorText } from "@/lib/errors";
 import { RadarSkill } from "@/components/charts/kit";
@@ -20,9 +20,45 @@ import { Textarea } from "@/components/ui/textarea";
 import { useStudentId } from "@/hooks/use-student";
 import { useFormat, useL } from "@/i18n";
 import { cn } from "@/lib/utils";
-import { CORRECTIONS, englishService, GRAMMAR_QUIZ, LISTENING, PRONUNCIATION, pronunciationScore, READING, SPEAKING_PROMPTS, VOCAB, WRITING_TASKS, type EnglishSkill, type McqItem, type WritingFeedback } from "@/services/english.service";
+import { CORRECTIONS, englishService, GRAMMAR_QUIZ, LISTENING, PRONUNCIATION, READING, SPEAKING_PROMPTS, VOCAB, WRITING_TASKS, type EnglishSkill, type McqItem, type PronunciationResult, type WritingFeedback } from "@/services/english.service";
 import { useDeviceRecognition, useDeviceSpeech } from "../voice/use-voice-io";
 import { isRemote } from "@/services/core/remote";
+
+/** Records the microphone (MediaRecorder) → a `data:audio/...;base64` URL for the AI to score. */
+function useMicRecorder() {
+  const ref = useRef({ rec: null as MediaRecorder | null, chunks: [] as Blob[], stream: null as MediaStream | null });
+  const supported = typeof window !== "undefined" && typeof MediaRecorder !== "undefined" && !!navigator.mediaDevices?.getUserMedia;
+  return {
+    supported,
+    async start() {
+      const state = ref.current;
+      state.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const type = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg", "audio/mp4"].find((t) => MediaRecorder.isTypeSupported(t));
+      state.chunks = [];
+      state.rec = new MediaRecorder(state.stream, type ? { mimeType: type } : undefined);
+      state.rec.ondataavailable = (e) => e.data.size && state.chunks.push(e.data);
+      state.rec.start();
+    },
+    stop(): Promise<string | null> {
+      const state = ref.current;
+      const rec = state.rec;
+      if (!rec) return Promise.resolve(null);
+      return new Promise((resolve) => {
+        rec.onstop = () => {
+          state.stream?.getTracks().forEach((t) => t.stop());
+          state.rec = null;
+          const blob = new Blob(state.chunks, { type: rec.mimeType || "audio/webm" });
+          if (blob.size < 1000) return resolve(null);
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result).replace(/^data:audio\/([a-z0-9]+);[^,]*,/i, "data:audio/$1;base64,"));
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(blob);
+        };
+        rec.stop();
+      });
+    },
+  };
+}
 
 function useRecord() {
   const studentId = useStudentId();
@@ -519,10 +555,12 @@ function Speaking() {
   const stt = useDeviceRecognition();
   const tts = useDeviceSpeech();
   const record = useRecord();
+  const studentId = useStudentId();
+  const mic = useMicRecorder();
   const [target, setTarget] = useState(PRONUNCIATION[0]);
   const [heard, setHeard] = useState("");
   const [listening, setListening] = useState(false);
-  const [result, setResult] = useState<ReturnType<typeof pronunciationScore> | null>(null);
+  const [result, setResult] = useState<PronunciationResult | null>(null);
   const [exam, setExam] = useState<{ index: number; remaining: number; answers: string[] } | null>(null);
 
   useEffect(() => {
@@ -531,19 +569,53 @@ function Speaking() {
     return () => window.clearInterval(t);
   }, [exam]);
 
-  const check = (text: string) => {
-    const r = pronunciationScore(target, text);
-    setResult(r);
-    record.mutate({ skill: "speaking", score: r.score });
+  const score = useMutation({
+    mutationFn: (input: { audio?: string; transcript?: string }) => englishService.pronunciation(studentId, target, input),
+    onSuccess: (r) => {
+      setResult(r);
+      if (r.transcript && !heard) setHeard(r.transcript);
+      record.mutate({ skill: "speaking", score: r.score });
+    },
+    onError: (e) => toast.error(errorText(e, l)),
+  });
+  const check = (text: string) => score.mutate({ transcript: text });
+  const startSpeaking = async () => {
+    setListening(true);
+    setResult(null);
+    // The recording goes to the AI (API mode); the device's recogniser shows live text meanwhile.
+    if (isRemote() && mic.supported) await mic.start().catch(() => undefined);
+    if (stt.supported)
+      stt.start(
+        "en-US",
+        (text) => {
+          setHeard(text);
+          void stopSpeaking(text);
+        },
+        () => void stopSpeaking(""),
+      );
   };
+  const stopSpeaking = async (text: string) => {
+    setListening(false);
+    stt.stop();
+    const audio = isRemote() ? await mic.stop() : null;
+    if (audio || text.trim()) score.mutate({ audio: audio ?? undefined, transcript: text || undefined });
+  };
+  const examScore = useMutation({
+    mutationFn: (answers: string[]) =>
+      englishService.writing(studentId, SPEAKING_PROMPTS.map((p, i) => `Q${i + 1}: ${p}\nA: ${answers[i] || "(no answer)"}`).join("\n\n"), { minWords: 8 * SPEAKING_PROMPTS.length, maxWords: 600, kind: "speaking exam answers", title: "Mock speaking exam — judge each answer's relevance, fluency, grammar and vocabulary" }),
+  });
   const examDone = exam && exam.index >= SPEAKING_PROMPTS.length;
-  const examScore = exam ? Math.round((exam.answers.filter((a) => a.trim().split(/\s+/).length >= 8).length / SPEAKING_PROMPTS.length) * 100) : 0;
+  const fallbackExamScore = exam ? Math.round((exam.answers.filter((a) => a.trim().split(/\s+/).length >= 8).length / SPEAKING_PROMPTS.length) * 100) : 0;
+  const finalExamScore = examScore.data?.overall ?? fallbackExamScore;
+  useEffect(() => {
+    if (examDone && isRemote() && exam && !examScore.data && !examScore.isPending && !examScore.isError) examScore.mutate(exam.answers);
+  }, [examDone, exam, examScore]);
 
   return (
     <div className="space-y-4">
       <Alert className="border-info/40 bg-info/5">
         <Mic className="text-info" />
-        <AlertDescription>{l("উচ্চারণ মূল্যায়ন সিমুলেটেড: ডিভাইসের স্পিচ রিকগনিশন যা শুনেছে তার সাথে লক্ষ্য বাক্যের শব্দ মিলিয়ে স্কোর দেওয়া হয়। এটি পেশাদার উচ্চারণ বিশ্লেষণ নয়।", "Pronunciation assessment is simulated: it compares the words your device's speech recognition heard with the target sentence. It is not professional phonetic analysis.")}</AlertDescription>
+        <AlertDescription>{isRemote() ? l("তোমার কণ্ঠের রেকর্ডিং AI (Gemini) শুনে প্রতিটি শব্দের উচ্চারণ, সাবলীলতা ও সম্পূর্ণতা যাচাই করে টিপস দেয়। রেকর্ডিং সংরক্ষণ করা হয় না।", "The AI (Gemini) listens to your recording and checks each word's pronunciation, fluency and completeness, with tips. Recordings are not stored.") : l("অফলাইন মোড: ডিভাইস যা শুনেছে তার সাথে শব্দ মিলিয়ে আনুমানিক স্কোর।", "Offline mode: an estimate from the words your device heard.")}</AlertDescription>
       </Alert>
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
@@ -563,24 +635,8 @@ function Speaking() {
               <Button variant="outline" disabled={!tts.supported} onClick={() => tts.speak(target, { lang: "en-US", rate: 0.85 }, () => undefined)}>
                 <Volume2 /> {l("আদর্শ উচ্চারণ শোনো", "Hear model")}
               </Button>
-              <Button
-                disabled={!stt.supported}
-                variant={listening ? "destructive" : "default"}
-                onClick={() => {
-                  if (listening) return stt.stop();
-                  setListening(true);
-                  stt.start(
-                    "en-US",
-                    (text) => {
-                      setListening(false);
-                      setHeard(text);
-                      check(text);
-                    },
-                    () => setListening(false),
-                  );
-                }}
-              >
-                {listening ? <MicOff /> : <Mic />} {listening ? l("থামাও", "Stop") : l("বলো", "Speak")}
+              <Button disabled={!(stt.supported || (isRemote() && mic.supported)) || score.isPending} variant={listening ? "destructive" : "default"} onClick={() => (listening ? void stopSpeaking(stt.interim ?? "") : void startSpeaking())}>
+                {score.isPending ? <Sparkles className="animate-pulse" /> : listening ? <MicOff /> : <Mic />} {score.isPending ? l("যাচাই হচ্ছে…", "Checking…") : listening ? l("থামাও", "Stop") : l("বলো", "Speak")}
               </Button>
             </div>
             {listening && stt.interim && <p className="text-center text-sm text-muted-foreground italic">{stt.interim}</p>}
@@ -592,26 +648,49 @@ function Speaking() {
               }}
             >
               <Input value={heard} onChange={(e) => setHeard(e.target.value)} placeholder={l("অথবা যা বলেছ তা টাইপ করো", "Or type what you said")} aria-label={l("যা বলেছ", "What you said")} lang="en" />
-              <Button type="submit" variant="outline" disabled={!heard.trim()}>
+              <Button type="submit" variant="outline" disabled={!heard.trim() || score.isPending}>
                 {l("যাচাই", "Check")}
               </Button>
             </form>
             {result && (
               <div className="space-y-2 rounded-lg border p-3">
                 <p className="text-sm">
-                  {l("সিমুলেটেড স্কোর", "Simulated score")}: <span className="text-xl font-bold">{f.percent(result.score)}</span>
+                  {result.estimate ? l("আনুমানিক স্কোর", "Estimated score") : l("উচ্চারণ স্কোর", "Pronunciation score")}: <span className="text-xl font-bold">{f.percent(result.score)}</span>
                 </p>
-                <p className="text-sm">
-                  {target.split(" ").map((w, i) => {
-                    const clean = w.toLowerCase().replace(/[^a-z]/g, "");
-                    return (
-                      <span key={i} className={cn("mr-1 rounded px-0.5", result.missed.includes(clean) ? "bg-destructive/15 text-destructive" : "bg-success/15 text-success")}>
-                        {w}
-                      </span>
-                    );
-                  })}
+                {!result.estimate && (
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    {([["accuracy", l("সঠিকতা", "Accuracy")], ["fluency", l("সাবলীলতা", "Fluency")], ["completeness", l("সম্পূর্ণতা", "Completeness")]] as const).map(([k, label]) => (
+                      <div key={k} className="rounded-md bg-muted/50 p-2">
+                        <p className="text-muted-foreground">{label}</p>
+                        <p className="font-semibold tabular-nums">{f.percent(result[k])}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {result.transcript && !result.estimate && <p className="text-xs text-muted-foreground">{l("যা শোনা গেছে", "Heard")}: <span lang="en">{result.transcript}</span></p>}
+                <p className="text-sm" lang="en">
+                  {result.words.map((w, i) => (
+                    <span key={i} title={w.tip || undefined} className={cn("mr-1 rounded px-0.5", w.ok ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive")}>
+                      {w.word}
+                    </span>
+                  ))}
                 </p>
-                {!!result.missed.length && <p className="text-xs text-muted-foreground">{l("লাল শব্দগুলো আবার ধীরে বলো।", "Say the red words again, slowly.")}</p>}
+                {result.words.some((w) => !w.ok && w.tip) && (
+                  <ul className="list-disc space-y-0.5 pl-5 text-xs text-muted-foreground">
+                    {result.words.filter((w) => !w.ok && w.tip).map((w, i) => (
+                      <li key={i}>
+                        <strong lang="en">{w.word}</strong>
+                        {w.heard ? ` (${w.heard})` : ""}: {w.tip}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {result.tips.map((t, i) => (
+                  <p key={i} className="text-xs">
+                    💡 {t}
+                  </p>
+                ))}
+                {result.estimate && result.words.some((w) => !w.ok) && <p className="text-xs text-muted-foreground">{l("লাল শব্দগুলো আবার ধীরে বলো।", "Say the red words again, slowly.")}</p>}
               </div>
             )}
           </CardContent>
@@ -628,13 +707,28 @@ function Speaking() {
               </Button>
             ) : examDone ? (
               <div className="space-y-2">
-                <p className="text-sm">{l("পরীক্ষা শেষ! সিমুলেটেড মূল্যায়ন:", "Exam finished! Simulated assessment:")}</p>
-                <p className="text-3xl font-bold text-primary">{f.percent(examScore)}</p>
-                <p className="text-xs text-muted-foreground">{l("প্রতিটি উত্তরে কমপক্ষে ৮টি শব্দ থাকলে পূর্ণ নম্বর (ফ্লুয়েন্সির সরল সূচক)।", "Full credit when each answer has at least 8 words (a simple fluency proxy).")}</p>
+                <p className="text-sm">{examScore.isPending ? l("পরীক্ষা শেষ! AI মূল্যায়ন করছে…", "Exam finished! The AI is assessing…") : l("পরীক্ষা শেষ! মূল্যায়ন:", "Exam finished! Assessment:")}</p>
+                <p className="text-3xl font-bold text-primary">{examScore.isPending ? "…" : f.percent(finalExamScore)}</p>
+                {examScore.data ? (
+                  <ul className="list-disc space-y-0.5 pl-5 text-xs text-muted-foreground">
+                    {examScore.data.strengths.slice(0, 2).map((x, i) => (
+                      <li key={`s${i}`}>{x}</li>
+                    ))}
+                    {examScore.data.issues.slice(0, 3).map((x, i) => (
+                      <li key={`i${i}`}>
+                        {x.why}
+                        {x.fix ? ` → ${x.fix}` : ""}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-xs text-muted-foreground">{l("প্রতিটি উত্তরে কমপক্ষে ৮টি শব্দ থাকলে পূর্ণ নম্বর (অফলাইন আনুমানিক)।", "Full credit when each answer has at least 8 words (offline estimate).")}</p>
+                )}
                 <Button
                   variant="outline"
                   onClick={() => {
-                    record.mutate({ skill: "speaking", score: examScore });
+                    record.mutate({ skill: "speaking", score: finalExamScore });
+                    examScore.reset();
                     setExam(null);
                   }}
                 >

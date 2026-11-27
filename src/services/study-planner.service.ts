@@ -6,6 +6,7 @@ import { dateKey, rng } from "@/mock-data/utils";
 import { seededSubjects } from "@/mock-data/progress";
 import { createMockRepository } from "./core/repository";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
+import { isRemote, remote } from "./core/remote";
 import { onOnboardingComplete } from "./onboarding.service";
 import { progressService } from "./progress.service";
 
@@ -30,7 +31,7 @@ function settingsFrom(profile: Pick<StudentProfile, "targetGpa" | "dailyMinutes"
 }
 
 /**
- * Plan generation simulation (§18 PLAN-18): weighted round-robin over subjects by priority,
+ * Local plan generator (offline mode, and weeks beyond the AI plan): weighted round-robin over subjects by priority,
  * weak chapters first, spaced revision 1/3/7 days after each study block, practice + exam prep near the exam.
  */
 export function generateTasks(settings: StudyPlanSettings, opts: { fromOffset?: number; days?: number; seed?: string; withHistory?: boolean } = {}): StudyTask[] {
@@ -176,14 +177,37 @@ export const studyPlannerService = {
     return settings;
   },
 
-  /** Regenerates future generated tasks; keeps manual/teacher tasks and history. */
+  /**
+   * Regenerates future generated tasks; keeps manual/teacher tasks and history. API mode: the AI
+   * plans the next two weeks from the student's mastery (weak chapters first); later weeks and the
+   * offline mode use the local spaced-revision schedule.
+   */
   async regenerate(studentId: string, settings?: StudyPlanSettings) {
     await mockRequest(900);
     const s = settings ?? (await studyPlannerService.settings(studentId));
     const repo = taskRepo(studentId);
     const today = dateKey(0);
     const kept = (await repo.raw()).filter((t) => t.date < today || t.source !== "generated" || t.status === "completed");
-    const fresh = generateTasks(s, { fromOffset: 0, days: 28, seed: `plan-${studentId}-${Date.now()}` });
+    let fresh: StudyTask[] = [];
+    if (isRemote()) {
+      const ai = await remote
+        .post<{ tasks: StudyTask[] }>(`/planner/${studentId}/generate`, {
+          subjectIds: Object.keys(s.subjectPriority),
+          weakChapterIds: Object.entries(s.chapterPriority).filter(([, p]) => p >= 3).map(([c]) => c),
+          examDate: s.examDate ? s.examDate.slice(0, 10) : undefined,
+          startDate: today,
+          days: 14,
+          dailyMinutes: s.dailyMinutes,
+          startTime: `${String(START_TIMES[s.preferredTime]).padStart(2, "0")}:00`,
+          goal: `Target GPA ${s.targetGpa}. Study days (0=Sun … 6=Sat): ${s.studyDays.join(", ")}.`,
+        })
+        .catch(() => null);
+      const days = new Set(s.studyDays);
+      fresh = (ai?.tasks ?? []).filter((t) => days.has(new Date(`${t.date}T12:00:00`).getDay()));
+    }
+    fresh = fresh.length
+      ? [...fresh, ...generateTasks(s, { fromOffset: 14, days: 14, seed: `plan-${studentId}-${Date.now()}` })]
+      : generateTasks(s, { fromOffset: 0, days: 28, seed: `plan-${studentId}-${Date.now()}` });
     await repo.replaceAll([...kept, ...fresh]);
     await saveDocument(settingsKey(studentId), { ...s, generatedAt: nowIso() });
     return fresh.length;

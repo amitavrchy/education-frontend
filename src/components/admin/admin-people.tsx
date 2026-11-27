@@ -32,6 +32,7 @@ import { audit, auditRepo } from "@/services/admin.service";
 import { usersRepo } from "@/services/auth.service";
 import { subscriptionsRepo } from "@/services/billing.service";
 import { mockRequest, newId, nowIso } from "@/services/core/mock-runtime";
+import { isRemote } from "@/services/core/remote";
 import { guardianLinksRepo, institutionsRepo, privacyRequestsRepo, profilesRepo, teacherProfilesRepo } from "@/services/people.service";
 import { ConfirmAction, KeyValue } from "./admin-shared";
 
@@ -330,7 +331,7 @@ function UserDetail({ user, canManage, canRoles, onClose }: { user: UserAccount;
         <ConfirmAction
           open={!!confirm}
           title={confirm === "suspend" ? l("অ্যাকাউন্ট স্থগিত করবেন?", "Suspend account?") : confirm === "reactivate" ? l("পুনরায় সক্রিয় করবেন?", "Reactivate account?") : l("মুছে ফেলার প্রক্রিয়া শুরু করবেন?", "Start account deletion?")}
-          description={confirm === "delete" ? l("৩০ দিনের যাচাই সময় শুরু হবে; এর মধ্যে বাতিল করা যাবে। (সিমুলেশন)", "A 30-day verification window starts; it can be cancelled meanwhile. (simulation)") : confirm === "suspend" ? l("ব্যবহারকারী লগইন করতে পারবে না।", "The user will not be able to sign in.") : undefined}
+          description={confirm === "delete" ? l("৩০ দিনের যাচাই সময় শুরু হবে; এর মধ্যে বাতিল করা যাবে। অ্যাকাউন্ট সাথে সাথে লগইন বন্ধ হবে।", "A 30-day verification window starts; it can be cancelled meanwhile. Sign-in stops immediately.") : confirm === "suspend" ? l("ব্যবহারকারী লগইন করতে পারবে না।", "The user will not be able to sign in.") : undefined}
           confirmLabel={l("নিশ্চিত", "Confirm")}
           destructive={confirm !== "reactivate"}
           pending={act.isPending}
@@ -375,10 +376,13 @@ export function AdminTeachers() {
       if (!/^\S+@\S+\.\S+$/.test(invite.email)) throw new Error(l("সঠিক ইমেইল দিন", "Enter a valid email"));
       if (!invite.subjectIds.length) throw new Error(l("অন্তত একটি বিষয় দিন", "Assign at least one subject"));
       await mockRequest(400);
-      const t = await teacherProfilesRepo.create({ id: newId("tp"), userId: newId("u"), name: invite.name.trim(), email: invite.email.trim(), role: invite.role, subjectIds: invite.subjectIds, status: "invited", queueSize: 0, reviewsCompleted: 0, approvalRate: 0, avgTurnaroundHours: 0, qualityScore: 0, qualityFeedback: [], invitedAt: nowIso(), createdAt: nowIso(), updatedAt: nowIso() });
+      // API mode: the account is created as "invited" and the server emails the invitation.
+      const userId = newId("u");
+      if (isRemote()) await usersRepo.create({ id: userId, name: invite.name.trim(), email: invite.email.trim().toLowerCase(), role: invite.role, status: "invited", guardianIds: [], studentIds: [], supportTickets: [], onboarded: true, createdAt: nowIso(), updatedAt: nowIso() } as UserAccount);
+      const t = await teacherProfilesRepo.create({ id: newId("tp"), userId, name: invite.name.trim(), email: invite.email.trim(), role: invite.role, subjectIds: invite.subjectIds, status: "invited", queueSize: 0, reviewsCompleted: 0, approvalRate: 0, avgTurnaroundHours: 0, qualityScore: 0, qualityFeedback: [], invitedAt: nowIso(), createdAt: nowIso(), updatedAt: nowIso() });
       await audit(actor, "account", "teacher.invite", { type: "teacher", id: t.id, label: t.email });
     },
-    onSuccess: () => (toast.success(l("আমন্ত্রণ পাঠানো হয়েছে (সিমুলেটেড ইমেইল)", "Invitation sent (simulated email)")), setInvite(null), invalidate()),
+    onSuccess: () => (toast.success(isRemote() ? l("আমন্ত্রণ ইমেইল পাঠানো হয়েছে", "Invitation email sent") : l("আমন্ত্রণ তৈরি হয়েছে (অফলাইন মোডে ইমেইল যায় না)", "Invitation created (no email in offline mode)")), setInvite(null), invalidate()),
     onError: (e) => toast.error(errorText(e, l)),
   });
 
@@ -519,7 +523,7 @@ export function AdminTeachers() {
           )}
         </SheetContent>
       </Sheet>
-      <ConfirmAction open={!!invite} title={l("শিক্ষক/পর্যালোচক আমন্ত্রণ", "Invite teacher/reviewer")} description={l("ইমেইল পাঠানো সিমুলেটেড", "Email delivery is simulated")} confirmLabel={l("আমন্ত্রণ পাঠান", "Send invite")} destructive={false} pending={sendInvite.isPending} onConfirm={() => sendInvite.mutate()} onCancel={() => setInvite(null)}>
+      <ConfirmAction open={!!invite} title={l("শিক্ষক/পর্যালোচক আমন্ত্রণ", "Invite teacher/reviewer")} description={l("আমন্ত্রিত ব্যক্তি ইমেইলের লিংক থেকে পাসওয়ার্ড সেট করে অ্যাকাউন্ট চালু করবেন।", "The invitee activates the account by setting a password from the email link.")} confirmLabel={l("আমন্ত্রণ পাঠান", "Send invite")} destructive={false} pending={sendInvite.isPending} onConfirm={() => sendInvite.mutate()} onCancel={() => setInvite(null)}>
         {invite && (
           <div className="space-y-2">
             <Input value={invite.name} onChange={(e) => setInvite({ ...invite, name: e.target.value })} placeholder={l("নাম", "Name")} aria-label={l("নাম", "Name")} />

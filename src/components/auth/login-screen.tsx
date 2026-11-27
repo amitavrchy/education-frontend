@@ -16,7 +16,7 @@ import { useStartSession } from "@/hooks/use-auth";
 import { useL, useT } from "@/i18n";
 import { ROUTES } from "@/lib/constants";
 import { errorText } from "@/lib/errors";
-import { authService } from "@/services/auth.service";
+import { OTP_REQUIRED, authService } from "@/services/auth.service";
 import { AuthCard } from "./auth-card";
 import { DemoAccounts } from "./demo-accounts";
 import { isRemote } from "@/services/core/remote";
@@ -63,6 +63,11 @@ export function LoginScreen() {
         startSession(session, params.get("next"));
       }
     } catch (error) {
+      if ((error as Error).message === OTP_REQUIRED) {
+        const next = params.get("next");
+        router.push(`${ROUTES.verifyOtp}${next ? `?next=${encodeURIComponent(next)}` : ""}`);
+        return;
+      }
       setErrors({ form: errorText(error, l) });
       setBusy(false);
     }

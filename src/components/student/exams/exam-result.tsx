@@ -108,11 +108,15 @@ export function ExamResultView({ attemptId }: { attemptId: string }) {
         }
       />
 
-      {result.containsSimulatedGrading && (
+      {result.pendingReview > 0 && (
         <Alert className="mb-5 border-warning/40 bg-warning/10">
           <AlertTriangle />
-          <AlertTitle>{l("লিখিত উত্তরের নম্বর সিমুলেটেড অনুমান", "Written-answer marks are a simulated estimate")}</AlertTitle>
-          <AlertDescription>{l(`${result.pendingReview}টি লিখিত উত্তর শিক্ষকের রিভিউয়ের অপেক্ষায়। AI অনুমান অফিসিয়াল নম্বর নয়।`, `${result.pendingReview} written answer(s) await teacher review. The AI estimate is not an official mark.`)}</AlertDescription>
+          <AlertTitle>{result.aiGraded && !result.containsSimulatedGrading ? l("লিখিত উত্তরের নম্বর দিয়েছে AI পরীক্ষক", "Written answers were marked by the AI examiner") : l("লিখিত উত্তরের নম্বর আনুমানিক", "Written-answer marks are an estimate")}</AlertTitle>
+          <AlertDescription>
+            {result.aiGraded && !result.containsSimulatedGrading
+              ? l(`${f.digits(result.pendingReview)}টি লিখিত উত্তর মডেল উত্তরের সাথে মিলিয়ে AI নম্বর দিয়েছে; শিক্ষক চাইলে পরিবর্তন করতে পারেন।`, `${result.pendingReview} written answer(s) were marked by AI against the model answer; a teacher may revise them.`)
+              : l(`${f.digits(result.pendingReview)}টি লিখিত উত্তরের নম্বর কিওয়ার্ড মিলিয়ে আনুমানিক (AI তখন পাওয়া যায়নি) — শিক্ষকের রিভিউয়ের অপেক্ষায়।`, `${result.pendingReview} written answer(s) have a keyword-based estimate (the AI was unavailable) and await teacher review.`)}
+          </AlertDescription>
         </Alert>
       )}
 
@@ -255,7 +259,7 @@ export function ExamResultView({ attemptId }: { attemptId: string }) {
                 <QuestionInput question={q} value={attempt.answers[q.id]} onChange={() => undefined} disabled reveal />
                 {r.aiEstimate && (
                   <p className="rounded-lg bg-warning/10 p-3 text-sm">
-                    <strong>{l("AI অনুমান (সিমুলেটেড)", "AI estimate (simulated)")}:</strong> {f.digits(r.aiEstimate.marks)} — {r.aiEstimate.feedback}
+                    <strong>{r.aiEstimate.by === "ai" ? l("AI পরীক্ষকের নম্বর", "AI examiner's mark") : l("আনুমানিক নম্বর", "Estimated mark")}:</strong> {f.digits(r.aiEstimate.marks)} — {r.aiEstimate.feedback}
                   </p>
                 )}
                 <QuestionSolution q={q} />

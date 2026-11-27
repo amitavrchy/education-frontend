@@ -31,6 +31,7 @@ import { dateKey } from "@/mock-data/utils";
 import { addDays, CalendarView, ListView, TimelineView, WeekBoard } from "./planner-views";
 import { CompleteTaskDialog, TaskDetailDialog, TaskFormDialog } from "./task-dialogs";
 import { useNow } from "@/hooks/use-now";
+import { isRemote } from "@/services/core/remote";
 
 type View = "calendar" | "board" | "timeline" | "list";
 
@@ -70,7 +71,7 @@ export function PlannerPage() {
     <>
       <PageHeader
         title={l("স্টাডি প্ল্যানার", "Study planner")}
-        description={l("ব্যক্তিগত পরিকল্পনা, রিভিশন সূচি ও লক্ষ্য — পরিকল্পনা তৈরি একটি সিমুলেশন", "Personal plan, revision schedule and goals — plan generation is a simulation")}
+        description={isRemote() ? l("ব্যক্তিগত পরিকল্পনা, রিভিশন সূচি ও লক্ষ্য — তোমার দুর্বল অধ্যায় দেখে AI পরের দুই সপ্তাহের পরিকল্পনা করে", "Personal plan, revision schedule and goals — the AI plans the next two weeks from your weak chapters") : l("ব্যক্তিগত পরিকল্পনা, রিভিশন সূচি ও লক্ষ্য", "Personal plan, revision schedule and goals")}
         actions={
           <>
             <Button variant="outline" onClick={() => setSettingsOpen(true)}>

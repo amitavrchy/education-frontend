@@ -30,9 +30,10 @@ import { bookPage } from "@/mock-data/books";
 import { audit, auditRepo, ingestionService } from "@/services/admin.service";
 import { avatarService } from "@/services/avatar.service";
 import { passagesRepo } from "@/services/kb.service";
-import { booksRepo } from "@/services/library.service";
+import { booksRepo, libraryService } from "@/services/library.service";
 import { teacherProfilesRepo } from "@/services/people.service";
 import { newId, nowIso } from "@/services/core/mock-runtime";
+import { isRemote } from "@/services/core/remote";
 
 const STAGE_LABEL: Record<IngestionStage, [string, string]> = {
   upload: ["আপলোড", "Upload"],
@@ -83,14 +84,16 @@ export function AdminBooks() {
     void qc.invalidateQueries({ queryKey: ["library"] });
   };
 
-  // Drive running jobs forward (simulated pipeline workers).
+  // While jobs run, refresh their progress (API mode: the server's queue worker runs the stages;
+  // offline mock: step the local pipeline).
   const running = (jobs.data ?? []).filter((j) => j.stageStatus === "running").map((j) => j.id).join(",");
   useEffect(() => {
     if (!running) return;
     const t = window.setInterval(async () => {
-      for (const id of running.split(",")) await ingestionService.step(id);
+      if (!isRemote()) for (const id of running.split(",")) await ingestionService.step(id);
       void qc.invalidateQueries({ queryKey: ["admin", "ingestion"] });
-    }, 1300);
+      if (isRemote()) void qc.invalidateQueries({ queryKey: ["admin", "books"] });
+    }, isRemote() ? 4000 : 1300);
     return () => window.clearInterval(t);
   }, [running, qc]);
 
@@ -117,7 +120,7 @@ export function AdminBooks() {
     <>
       <PageHeader
         title={l("বই ও ডকুমেন্ট ব্যবস্থাপনা", "Book & document management")}
-        description={l("আপলোড → যাচাই → নিষ্কাশন → OCR → অধ্যায় ম্যাপিং → চাঙ্ক → এমবেড → ইনডেক্স → মান যাচাই → পর্যালোচনা → প্রকাশ (সিমুলেটেড)", "Upload → validate → extract → OCR → map chapters → chunk → embed → index → quality check → review → publish (simulated)")}
+        description={l("আপলোড → যাচাই → নিষ্কাশন → OCR → অধ্যায় ম্যাপিং → চাঙ্ক → এমবেড → ইনডেক্স → মান যাচাই → পর্যালোচনা → প্রকাশ", "Upload → validate → extract → OCR → map chapters → chunk → embed → index → quality check → review → publish")}
         actions={
           <Button onClick={() => setUpload(true)}>
             <Upload /> {l("বই যোগ / PDF আপলোড", "Add book / upload PDF")}
@@ -236,13 +239,15 @@ function BookSheet({ book, job, onClose, onChange }: { book: Book; job?: Ingesti
     onSuccess: () => (toast.success(l("সংরক্ষিত", "Saved")), onChange()),
   });
   const replace = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (file: File) => {
       await booksRepo.update(b.id, { status: "in_review", edition: `${b.edition} (সংশোধিত)` });
-      return ingestionService.create(b.id, f.pick(b.title), `${b.id}-v2.pdf`, 21_000);
+      if (isRemote()) return ingestionService.upload(b.id, f.pick(b.title), file);
+      return ingestionService.create(b.id, f.pick(b.title), file.name, Math.round(file.size / 1024));
     },
     onSuccess: () => (toast.success(l("নতুন সংস্করণ আপলোড — ইনজেশন শুরু", "New version uploaded — ingestion started")), onChange()),
   });
-  const pg = bookPage(b, page);
+  const pageQ = useQuery({ queryKey: ["library", "page", b.id, page], queryFn: () => libraryService.page(b.id, page) });
+  const pg = pageQ.data ?? bookPage(b, page);
   return (
     <Sheet open onOpenChange={(o) => !o && onClose()}>
       <SheetContent className="w-full overflow-y-auto sm:max-w-3xl">
@@ -333,8 +338,20 @@ function BookSheet({ book, job, onClose, onChange }: { book: Book; job?: Ingesti
               <Button disabled={save.isPending} onClick={() => save.mutate()}>
                 {l("সংরক্ষণ", "Save")}
               </Button>
-              <Button variant="outline" disabled={replace.isPending} onClick={() => replace.mutate()}>
-                <FileUp /> {l("সংস্করণ প্রতিস্থাপন", "Replace version")}
+              <Button variant="outline" disabled={replace.isPending} asChild>
+                <label className="cursor-pointer">
+                  {replace.isPending ? <Loader2 className="animate-spin" /> : <FileUp />} {l("সংস্করণ প্রতিস্থাপন", "Replace version")}
+                  <input
+                    type="file"
+                    className="sr-only"
+                    accept=".pdf,.png,.jpg,.jpeg,.webp,.docx,.xlsx,.txt,.md,.csv"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) replace.mutate(file);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
               </Button>
               <Button variant="outline" onClick={() => (setB({ ...b, status: b.status === "published" ? "draft" : "published" }), toast.info(l("সংরক্ষণ চাপুন", "Press save")))}>
                 {b.status === "published" ? l("অপ্রকাশ", "Unpublish") : l("প্রকাশ", "Publish")}
@@ -399,6 +416,8 @@ function BookSheet({ book, job, onClose, onChange }: { book: Book; job?: Ingesti
   );
 }
 
+const ACCEPTED = /\.(pdf|png|jpe?g|webp|docx|xlsx|txt|md|csv)$/i;
+
 function UploadDialog({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
   const l = useL();
   const f = useFormat();
@@ -407,18 +426,19 @@ function UploadDialog({ onClose, onDone }: { onClose: () => void; onDone: () => 
   const [files, setFiles] = useState<File[]>([]);
   const [subjectId, setSubjectId] = useState("ssc-physics");
   const [language, setLanguage] = useState<"bn" | "en">("bn");
-  const [simulateFail, setSimulateFail] = useState(false);
+  const [publisher, setPublisher] = useState("");
   const go = useMutation({
     mutationFn: async () => {
       for (const file of files) {
-        if (!/\.pdf$/i.test(file.name)) throw new Error(l(`${file.name}: শুধু PDF সমর্থিত`, `${file.name}: only PDF is supported`));
+        if (!ACCEPTED.test(file.name)) throw new Error(l(`${file.name}: PDF, ছবি, Word, Excel বা টেক্সট ফাইল দিন`, `${file.name}: use a PDF, photo, Word, Excel or text file`));
+        const name = file.name.replace(ACCEPTED, "");
         const s = cur?.subject(subjectId);
         const id = newId("book");
         const chs = cur?.chaptersOf(subjectId) ?? [];
         let p = 1;
         await booksRepo.create({
           id,
-          title: { bn: file.name.replace(/\.pdf$/i, ""), en: file.name.replace(/\.pdf$/i, "") },
+          title: { bn: name, en: name },
           subjectId,
           levelCode: s?.levelCode ?? "SSC",
           grades: s?.levelCode === "HSC" ? [11, 12] : [9, 10],
@@ -426,7 +446,7 @@ function UploadDialog({ onClose, onDone }: { onClose: () => void; onDone: () => 
           language,
           academicYear: "2027",
           publicationYear: 2026,
-          publisher: "আপলোড (ডেমো)",
+          publisher: publisher.trim() || l("আপলোড", "Uploaded"),
           edition: "২০২৭ সংস্করণ",
           isLatestEdition: true,
           license: { type: "unknown", holder: "—", downloadAllowed: false, printAllowed: false, note: "লাইসেন্স যাচাই অপেক্ষমাণ" },
@@ -440,8 +460,9 @@ function UploadDialog({ onClose, onDone }: { onClose: () => void; onDone: () => 
           updatedAt: nowIso(),
         });
         // Every book gets its own teacher avatar (editable in Admin → Book avatars).
-        await avatarService.ensureForBook({ id, title: { bn: file.name.replace(/\.pdf$/i, ""), en: file.name.replace(/\.pdf$/i, "") }, language, subjectId });
-        await ingestionService.create(id, file.name, file.name, Math.round(file.size / 1024) || 1200, simulateFail ? "ocr" : undefined);
+        await avatarService.ensureForBook({ id, title: { bn: name, en: name }, language, subjectId });
+        if (isRemote()) await ingestionService.upload(id, name, file, { publisher: publisher.trim() || undefined });
+        else await ingestionService.create(id, file.name, file.name, Math.round(file.size / 1024) || 1200);
         await audit(actor, "content", "book.ingest", { type: "book", id, label: file.name });
       }
     },
@@ -452,10 +473,10 @@ function UploadDialog({ onClose, onDone }: { onClose: () => void; onDone: () => 
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{l("বই আপলোড (একাধিক PDF)", "Upload books (multiple PDFs)")}</DialogTitle>
-          <DialogDescription>{l("ফাইল কোথাও পাঠানো হয় না; পাইপলাইন সিমুলেটেড।", "Files aren't sent anywhere; the pipeline is simulated.")}</DialogDescription>
+          <DialogTitle>{l("বই/ডকুমেন্ট আপলোড", "Upload books / documents")}</DialogTitle>
+          <DialogDescription>{l("PDF পৃষ্ঠা ও ছবি AI (Gemini ভিশন) দিয়ে পড়া হয়, Word/Excel/টেক্সট সরাসরি। এরপর অধ্যায় ম্যাপিং, চাঙ্ক ও এমবেডিং হয়ে জ্ঞানভান্ডারে যায়। বড় বইয়ে কিছুক্ষণ লাগে।", "PDF pages and photos are read by AI (Gemini vision); Word/Excel/text are parsed. Then chapters are mapped, chunked and embedded into the knowledge base. Large books take a while.")}</DialogDescription>
         </DialogHeader>
-        <Input type="file" accept=".pdf,application/pdf" multiple onChange={(e) => setFiles([...(e.target.files ?? [])])} aria-label={l("PDF ফাইল", "PDF files")} />
+        <Input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.docx,.xlsx,.txt,.md,.csv" multiple onChange={(e) => setFiles([...(e.target.files ?? [])])} aria-label={l("ফাইল", "Files")} />
         {!!files.length && (
           <ul className="text-xs text-muted-foreground">
             {files.map((x) => (
@@ -488,10 +509,7 @@ function UploadDialog({ onClose, onDone }: { onClose: () => void; onDone: () => 
             </SelectContent>
           </Select>
         </div>
-        <label className="flex items-center justify-between text-sm">
-          {l("OCR ব্যর্থতা সিমুলেট করুন", "Simulate an OCR failure")}
-          <Switch checked={simulateFail} onCheckedChange={setSimulateFail} />
-        </label>
+        <Input value={publisher} onChange={(e) => setPublisher(e.target.value)} placeholder={l("প্রকাশক (যেমন: এনসিটিবি)", "Publisher (e.g. NCTB)")} aria-label={l("প্রকাশক", "Publisher")} />
         <DialogFooter>
           <Button disabled={!files.length || go.isPending} onClick={() => go.mutate()}>
             {go.isPending ? <Loader2 className="animate-spin" /> : <Upload />} {l("আপলোড ও ইনজেস্ট", "Upload & ingest")}

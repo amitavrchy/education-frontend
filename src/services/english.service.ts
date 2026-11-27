@@ -141,7 +141,19 @@ export function writingFeedback(text: string, task: { minWords: number; maxWords
   return { words, sentences: sentences.length, scores: { grammar, vocabulary, structure, task: Math.min(100, taskScore) }, overall, issues, strengths };
 }
 
-/** Simulated pronunciation score: word overlap between target and what was heard/typed. */
+export interface PronunciationResult {
+  transcript: string;
+  score: number;
+  accuracy: number;
+  fluency: number;
+  completeness: number;
+  words: { word: string; ok: boolean; heard: string; tip: string }[];
+  tips: string[];
+  /** true = offline word-overlap estimate (no AI). */
+  estimate?: boolean;
+}
+
+/** Offline estimate: word overlap between target and what was heard/typed (the AI scores recordings in API mode). */
 export function pronunciationScore(target: string, heard: string) {
   const t = target.toLowerCase().replace(/[^a-z\s]/g, "").split(/\s+/).filter(Boolean);
   const h = new Set(heard.toLowerCase().replace(/[^a-z\s]/g, "").split(/\s+/).filter(Boolean));
@@ -174,6 +186,14 @@ export const englishService = {
   async writing(studentId: string, text: string, task: { minWords: number; maxWords: number; kind: string; title?: string }): Promise<WritingFeedback> {
     if (!isRemote()) return writingFeedback(text, task);
     return remote.post<WritingFeedback>(`/english/${studentId}/writing`, { text, kind: task.kind, prompt: task.title ?? "", minWords: task.minWords, maxWords: task.maxWords });
+  },
+  /** API mode: the AI scores a recording (or the device transcript) of the sentence, word by word. */
+  async pronunciation(studentId: string, target: string, input: { audio?: string; transcript?: string }): Promise<PronunciationResult> {
+    if (!isRemote()) {
+      const r = pronunciationScore(target, input.transcript ?? "");
+      return { transcript: input.transcript ?? "", score: r.score, accuracy: r.score, fluency: 0, completeness: r.score, words: target.split(/\s+/).map((w) => { const clean = w.toLowerCase().replace(/[^a-z']/g, ""); return { word: w, ok: !r.missed.includes(clean), heard: "", tip: "" }; }), tips: [], estimate: true };
+    }
+    return remote.post<PronunciationResult>(`/english/${studentId}/pronunciation`, { target, ...input });
   },
   async record(studentId: string, skill: EnglishSkill, score: number, extra?: { taskId?: string }) {
     const p = await getDocument<EnglishProgress>(key(studentId), empty);

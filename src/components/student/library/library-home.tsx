@@ -92,7 +92,7 @@ export function LibraryHome() {
 
   return (
     <>
-      <PageHeader title={l("পাঠ্যবই লাইব্রেরি", "Textbook library")} description={l("কৃত্রিম ডেমো পাঠ্যবই — অফিসিয়াল পাঠ্যবইয়ের প্রতিলিপি নয়", "Synthetic demo textbooks — not reproductions of official textbooks")} />
+      <PageHeader title={l("পাঠ্যবই লাইব্রেরি", "Textbook library")} description={l("এনসিটিবি পাঠ্যবই — অধ্যায়, পৃষ্ঠা, বুকমার্ক ও নোট", "NCTB textbooks — chapters, pages, bookmarks and notes")} />
 
       {!!continueReading.length && (
         <section className="mb-8" aria-labelledby="continue-reading">

@@ -17,6 +17,8 @@ import { useCurrentUser } from "@/hooks/use-auth";
 import { useL } from "@/i18n";
 import { usersRepo } from "@/services";
 import { mockRequest, newId, nowIso } from "@/services/core/mock-runtime";
+import { accountService } from "@/services/account.service";
+import { isRemote } from "@/services/core/remote";
 
 const TOPICS = [
   { id: "ai", icon: Bot, bn: "AI টিউটর", en: "AI tutor" },
@@ -51,6 +53,7 @@ export function HelpCenter() {
   const list = FAQ.filter((x) => (!topic || x.topic === topic) && (!q || `${x.q.join(" ")} ${x.a.join(" ")}`.toLowerCase().includes(q.toLowerCase())));
   const ticket = useMutation({
     mutationFn: async () => {
+      if (isRemote()) return void (await accountService.openTicket(category, subject.trim(), message.trim() || subject.trim()));
       await mockRequest(600);
       if (user && (await usersRepo.find(user.id))) {
         const acc = await usersRepo.get(user.id);
@@ -58,7 +61,7 @@ export function HelpCenter() {
       }
     },
     onSuccess: () => {
-      toast.success(l("টিকিট খোলা হয়েছে। সাধারণত ২৪ ঘণ্টার মধ্যে উত্তর দেওয়া হয় (ডেমো)।", "Ticket opened. We usually reply within 24 hours (demo)."));
+      toast.success(l("টিকিট খোলা হয়েছে — সাপোর্ট টিম নোটিফিকেশন পেয়েছে। সাধারণত ২৪ ঘণ্টার মধ্যে উত্তর দেওয়া হয়।", "Ticket opened — the support team has been notified. We usually reply within 24 hours."));
       setSubject("");
       setMessage("");
     },

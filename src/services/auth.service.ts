@@ -237,10 +237,20 @@ const toSession = (s: ServerSession): AuthSession => ({ user: s.user, accessToke
 
 const post = async <T>(path: string, body?: unknown, skipAuth = true) => (await apiClient.post<ApiResponse<T>>(path, body, { skipAuth })).data;
 
+/** Thrown by password sign-in when two-step verification needs the one-time code next. */
+export const OTP_REQUIRED = "OTP_REQUIRED";
+
 /** Real authentication against the backend (`/auth/*`). Same interface as the mock. */
 const apiAuthService: typeof mockAuthService = {
   async loginWithPassword(input) {
-    return toSession(await post<ServerSession>("/auth/login", input));
+    const res = await post<ServerSession | (PendingOtp & { otpRequired: true })>("/auth/login", input);
+    if ("otpRequired" in res) {
+      // Two-step verification is on: the code was sent; the sign-in finishes on the OTP screen.
+      const { otpRequired: _, ...pending } = res;
+      savePending(pending);
+      throw new Error(OTP_REQUIRED);
+    }
+    return toSession(res);
   },
   async requestLoginOtp(identifier, remember = false) {
     const pending = await post<PendingOtp>("/auth/otp/request", { identifier: identifier.trim(), remember });

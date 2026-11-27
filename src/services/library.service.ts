@@ -2,6 +2,7 @@ import type { Book, BookPage, ReadingState } from "@/contracts";
 import { bookPage, books } from "@/mock-data/books";
 import { createMockRepository, matchesSearch } from "./core/repository";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
+import { isRemote, remote } from "./core/remote";
 import { registerSearchProvider, scoreText } from "./search.service";
 
 export const booksRepo = createMockRepository<Book>({
@@ -51,12 +52,15 @@ export const libraryService = {
     return (await booksRepo.all()).filter((b) => b.status === "published");
   },
   get: (id: string) => booksRepo.get(id),
+  /** A page of the book: the real page read from the uploaded textbook (API mode), else the outline page. */
   async page(bookId: string, pageNumber: number): Promise<BookPage> {
+    if (isRemote()) return remote.get<BookPage>(`/books/${encodeURIComponent(bookId)}/pages/${pageNumber}`);
     await mockRequest(120);
     const book = await booksRepo.get(bookId);
     return bookPage(book, Math.min(Math.max(1, pageNumber), book.pageCount));
   },
   async searchInBook(bookId: string, q: string) {
+    if (isRemote()) return remote.get<{ page: number; heading?: string }[]>(`/books/${encodeURIComponent(bookId)}/search`, { q });
     await mockRequest(200);
     const book = await booksRepo.get(bookId);
     const hits: { page: number; heading?: string }[] = [];

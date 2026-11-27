@@ -122,7 +122,7 @@ export const flashcardService = {
     if (total >= 50) await progressService.grantBadge(studentId, "flashcard-50");
   },
 
-  /** Simulated AI generation (FC-01/03): builds a deck from a chapter's knowledge. */
+  /** Deck for a chapter: the AI writes it from the textbook passages in API mode (offline: from the outline). */
   async generateFromChapter(studentId: string, chapterId: string) {
     await mockRequest(900);
     const ch = chapters.find((c) => c.id === chapterId);
@@ -139,8 +139,19 @@ export const flashcardService = {
     return { deck, count: cards.length };
   },
 
+  /** Deck from a note, a tutor conversation or pasted text: written by the AI in API mode. */
   async generateFromText(studentId: string, name: string, source: FlashcardDeck["source"], text: string, subjectId?: string) {
     await mockRequest(700);
+    if (isRemote()) {
+      const plain = text.replace(/<[^>]+>/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+      const res = await remote.post<{ cards: { front: string; back: string; hint?: string; tags: string[] }[] }>(`/flashcards/${studentId}/generate`, { sourceText: plain.slice(0, 30_000), title: name, count: 12 });
+      const deck = await flashcardService.createDeck(studentId, { name, source, subjectId });
+      const stamp = nowIso();
+      const cards = res.cards.map((c) => ({ id: newId("fc"), deckId: deck.id, front: c.front, back: c.back, hint: c.hint, tags: c.tags, bookmarked: false, ease: 2.5, intervalDays: 0, repetitions: 0, lapses: 0, dueAt: stamp, createdAt: stamp, updatedAt: stamp }));
+      const repo = flashcardRepos(studentId).cards;
+      await repo.replaceAll([...cards, ...(await repo.raw())]);
+      return { deck, count: cards.length };
+    }
     const deck = await flashcardService.createDeck(studentId, { name, source, subjectId });
     const sentences = text
       .replace(/<[^>]+>/g, "\n")

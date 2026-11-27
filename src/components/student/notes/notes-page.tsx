@@ -248,7 +248,7 @@ export function GenerateNoteDialog({ folderId, onClose, initial }: { folderId?: 
         const msgs = await tutorService.messages(studentId, conversationId);
         return notesService.fromConversation(studentId, l(`নোট: ${conv.title}`, `Notes: ${conv.title}`), msgs.map((m) => `${m.role === "user" ? "প্রশ্ন" : "উত্তর"}: ${m.content}`).join("\n"), conv.context.subjectId, conv.context.chapterId);
       }
-      if (source === "upload") return notesService.create(studentId, { kind, source: { type: "upload", label: file!.name }, folderId });
+      if (source === "upload") return notesService.create(studentId, { kind, source: { type: "upload", label: file!.name }, folderId }, file!);
       const ch = cur?.chapter(chapterId);
       return notesService.create(studentId, { kind, source: source === "topic" ? { type: "topic", refId: topicId, label: f.pick(cur?.topic(topicId)?.title) } : { type: "chapter", refId: chapterId, label: f.pick(ch?.title) }, subjectId: ch?.subjectId, chapterId, folderId, tags: ch ? [ch.title.bn] : [] });
     },
@@ -343,8 +343,8 @@ export function GenerateNoteDialog({ folderId, onClose, initial }: { folderId?: 
               <FileUp className="size-6 text-muted-foreground" />
               {file ? file.name : l("PDF, ছবি বা টেক্সট ফাইল বেছে নাও", "Choose a PDF, image or text file")}
             </Label>
-            <input id="note-upload" type="file" accept=".pdf,.txt,image/*" className="sr-only" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-            <p className="text-xs text-muted-foreground">{l("ফাইলটি কোথাও পাঠানো হয় না; লেখা শনাক্তকরণ সিমুলেটেড।", "The file is not uploaded anywhere; text extraction is simulated.")}</p>
+            <input id="note-upload" type="file" accept=".pdf,.txt,.md,.docx,image/*" className="sr-only" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+            <p className="text-xs text-muted-foreground">{isRemote() ? l("ফাইলের লেখা AI পড়ে (PDF-এর প্রথম ১৫ পৃষ্ঠা পর্যন্ত), তারপর সেখান থেকে নোট লেখে। ফাইলটি সংরক্ষণ করা হয় না।", "The AI reads the file's text (up to the first 15 PDF pages) and writes the note from it. The file itself is not stored.") : l("অফলাইন মোডে ফাইলের লেখা পড়া যায় না — শুধু ফাইলের নাম থেকে খসড়া হবে।", "Offline mode can't read the file — the draft uses only its name.")}</p>
           </TabsContent>
         </Tabs>
         {source !== "conversation" && (

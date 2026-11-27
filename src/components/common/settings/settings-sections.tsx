@@ -26,7 +26,9 @@ import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { resetMockDb } from "@/lib/mock-db";
 import { usersRepo } from "@/services";
-import { privacyService, profileService } from "@/services/people.service";
+import { accountService, deviceLabel } from "@/services/account.service";
+import { isRemote } from "@/services/core/remote";
+import { institutionsRepo, privacyService, profileService } from "@/services/people.service";
 import { useAuthStore } from "@/stores/auth-store";
 import { usePreferencesStore, type TextScale } from "@/stores/preferences-store";
 import { NOTIFICATION_META } from "../notification-center";
@@ -529,6 +531,91 @@ export function PrivacySection({ profile }: { profile: StudentProfile }) {
 // ---------------------------------------------------------------- Security (all)
 
 export function SecuritySection() {
+  return isRemote() ? <LiveSecuritySection /> : <OfflineSecuritySection />;
+}
+
+/** Password, two-step verification and active sign-ins against the server. */
+function LiveSecuritySection() {
+  const l = useL();
+  const f = useFormat();
+  const qc = useQueryClient();
+  const [pwd, setPwd] = useState({ current: "", next: "", confirm: "" });
+  const me = useQuery({ queryKey: ["account", "me"], queryFn: accountService.me });
+  const sessions = useQuery({ queryKey: ["account", "sessions"], queryFn: accountService.sessions });
+  const change = useMutation({
+    mutationFn: async () => {
+      if (pwd.next.length < 8) throw new Error("PASSWORD_TOO_SHORT");
+      if (pwd.next !== pwd.confirm) throw new Error(l("নতুন পাসওয়ার্ড মিলছে না", "New passwords do not match"));
+      await accountService.changePassword(pwd.current, pwd.next);
+    },
+    onSuccess: () => {
+      toast.success(l("পাসওয়ার্ড পরিবর্তন হয়েছে — অন্য সব ডিভাইস থেকে সাইন আউট করা হয়েছে", "Password changed — other devices were signed out"));
+      setPwd({ current: "", next: "", confirm: "" });
+      void qc.invalidateQueries({ queryKey: ["account", "sessions"] });
+    },
+    onError: (e) => toast.error(errorText(e, l)),
+  });
+  const twoFa = useMutation({
+    mutationFn: (enabled: boolean) => accountService.setTwoFactor(enabled),
+    onSuccess: (r) => (toast.success(r.twoFactor ? l("দুই-ধাপ যাচাই চালু — পরের লগইনে কোড লাগবে", "Two-step verification on — your next sign-in will ask for a code") : l("দুই-ধাপ যাচাই বন্ধ", "Two-step verification off")), void qc.invalidateQueries({ queryKey: ["account", "me"] })),
+    onError: (e) => toast.error(errorText(e, l)),
+  });
+  const revoke = useMutation({
+    mutationFn: accountService.revokeSession,
+    onSuccess: () => (toast.success(l("সেশন বন্ধ হয়েছে", "Session signed out")), void qc.invalidateQueries({ queryKey: ["account", "sessions"] })),
+    onError: (e) => toast.error(errorText(e, l)),
+  });
+  return (
+    <div className="space-y-4">
+      <Section title={l("পাসওয়ার্ড", "Password")} description={l("অন্তত ৮ অক্ষর। পরিবর্তনের পর অন্য ডিভাইস থেকে সাইন আউট হবে।", "At least 8 characters. Other devices are signed out after a change.")}>
+        <form
+          className="grid gap-3 sm:grid-cols-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            change.mutate();
+          }}
+        >
+          <Input type="password" autoComplete="current-password" placeholder={l("বর্তমান পাসওয়ার্ড", "Current password")} aria-label={l("বর্তমান পাসওয়ার্ড", "Current password")} value={pwd.current} onChange={(e) => setPwd({ ...pwd, current: e.target.value })} />
+          <Input type="password" autoComplete="new-password" placeholder={l("নতুন পাসওয়ার্ড", "New password")} aria-label={l("নতুন পাসওয়ার্ড", "New password")} value={pwd.next} onChange={(e) => setPwd({ ...pwd, next: e.target.value })} />
+          <Input type="password" autoComplete="new-password" placeholder={l("আবার লেখো", "Confirm")} aria-label={l("পাসওয়ার্ড নিশ্চিত", "Confirm password")} value={pwd.confirm} onChange={(e) => setPwd({ ...pwd, confirm: e.target.value })} />
+          <Button type="submit" className="w-fit" disabled={!pwd.current || !pwd.next || change.isPending}>
+            <KeyRound /> {l("পরিবর্তন", "Change password")}
+          </Button>
+        </form>
+      </Section>
+      <Section title={l("দুই-ধাপ যাচাই", "Two-step verification")}>
+        <Row label={l("পাসওয়ার্ড দিয়ে লগইনের পর ফোন/ইমেইলে আসা কোড চাওয়া হবে", "Ask for a code sent to your phone/email after the password")} htmlFor="2fa">
+          <Switch id="2fa" checked={!!me.data?.twoFactor} disabled={me.isPending || twoFa.isPending} onCheckedChange={(v) => twoFa.mutate(v)} />
+        </Row>
+      </Section>
+      <Section title={l("সক্রিয় সেশন", "Active sessions")}>
+        <ul className="divide-y">
+          {(sessions.data ?? []).map((s) => (
+            <li key={s.id} className="flex items-center gap-3 py-2">
+              {/android|iphone|dart/i.test(s.userAgent) ? <Smartphone className="size-5 text-muted-foreground" /> : <Laptop className="size-5 text-muted-foreground" />}
+              <div className="flex-1 text-sm">
+                <p className="font-medium">
+                  {deviceLabel(s.userAgent)} {s.current && <Badge variant="secondary">{l("এই ডিভাইস", "This device")}</Badge>}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {s.ipAddress || "—"} · {l("শেষ ব্যবহার", "last used")} {f.relative(s.lastUsedAt)}
+                </p>
+              </div>
+              {!s.current && (
+                <Button size="sm" variant="outline" disabled={revoke.isPending} onClick={() => revoke.mutate(s.id)}>
+                  {l("সাইন আউট", "Sign out")}
+                </Button>
+              )}
+            </li>
+          ))}
+          {sessions.data?.length === 0 && <li className="py-2 text-sm text-muted-foreground">{l("কোনো সক্রিয় সেশন নেই", "No active sessions")}</li>}
+        </ul>
+      </Section>
+    </div>
+  );
+}
+
+function OfflineSecuritySection() {
   const l = useL();
   const [twoFa, setTwoFa] = useState(false);
   const [pwd, setPwd] = useState({ current: "", next: "", confirm: "" });
@@ -545,7 +632,7 @@ export function SecuritySection() {
       if (pwd.next !== pwd.confirm) throw new Error(l("নতুন পাসওয়ার্ড মিলছে না", "New passwords do not match"));
     },
     onSuccess: () => {
-      toast.success(l("পাসওয়ার্ড পরিবর্তন হয়েছে (ডেমো)", "Password changed (demo)"));
+      toast.success(l("পাসওয়ার্ড পরিবর্তন হয়েছে (অফলাইন মোড)", "Password changed (offline mode)"));
       setPwd({ current: "", next: "", confirm: "" });
     },
     onError: (e) => toast.error(errorText(e, l)),
@@ -608,6 +695,12 @@ export function AccountSection({ showStudentLinks }: { showStudentLinks?: boolea
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [reason, setReason] = useState("");
   const [feedback, setFeedback] = useState("");
+  const institution = useQuery({ queryKey: ["institution", user?.institutionId], queryFn: () => institutionsRepo.find(user!.institutionId!), enabled: !!user?.institutionId });
+  const sendFeedback = useMutation({
+    mutationFn: () => (isRemote() ? accountService.openTicket("feedback", feedback.trim().slice(0, 80), feedback.trim()) : Promise.resolve({ id: "" })),
+    onSuccess: () => (toast.success(l("ধন্যবাদ! তোমার মতামত সাপোর্ট টিমের কাছে গেছে।", "Thanks! Your feedback was sent to support.")), setFeedback("")),
+    onError: (e) => toast.error(errorText(e, l)),
+  });
   const requests = useQuery({ queryKey: ["privacyRequests", user?.id], queryFn: () => privacyService.mine(user!.id), enabled: !!user });
   const request = useMutation({
     mutationFn: (type: "data_export" | "account_deletion") => privacyService.request(user!.id, user!.name, type, type === "account_deletion" ? reason : undefined),
@@ -648,7 +741,7 @@ export function AccountSection({ showStudentLinks }: { showStudentLinks?: boolea
       {user?.institutionId && (
         <Section title={l("প্রতিষ্ঠান", "Institution")}>
           <p className="flex items-center gap-2 text-sm">
-            <Building2 className="size-4" /> {user.institutionId === "inst-2" ? "নবদিগন্ত কলেজ (ডেমো)" : "আইডিয়াল মডেল হাই স্কুল (ডেমো)"}
+            <Building2 className="size-4" /> {institution.data ? f.pick(institution.data.name) : user.institutionId}
           </p>
         </Section>
       )}
@@ -657,13 +750,11 @@ export function AccountSection({ showStudentLinks }: { showStudentLinks?: boolea
           className="space-y-2"
           onSubmit={(e) => {
             e.preventDefault();
-            if (!feedback.trim()) return;
-            toast.success(l("ধন্যবাদ! তোমার মতামত সাপোর্ট টিমের কাছে গেছে (ডেমো)।", "Thanks! Your feedback was sent to support (demo)."));
-            setFeedback("");
+            if (feedback.trim()) sendFeedback.mutate();
           }}
         >
           <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder={l("কী ভালো লাগছে, কী সমস্যা হচ্ছে লেখো…", "Tell us what works and what doesn't…")} aria-label={l("মতামত", "Feedback")} />
-          <Button type="submit" variant="outline" disabled={!feedback.trim()}>
+          <Button type="submit" variant="outline" disabled={!feedback.trim() || sendFeedback.isPending}>
             {l("পাঠাও", "Send")}
           </Button>
         </form>

@@ -26,11 +26,13 @@ import { institutionsRepo } from "@/services/people.service";
 import { questionsRepo } from "@/services/question.service";
 import { reviewItemsRepo } from "@/services/review.service";
 import { paymentsRepo, subscriptionsRepo } from "@/services/billing.service";
+import { isRemote, remote } from "@/services/core/remote";
 
 const RANGES = [7, 30, 90] as const;
 
 function DemoNote() {
   const l = useL();
+  if (isRemote()) return null;
   return (
     <Alert className="mb-4 border-info/40 bg-info/5">
       <Activity className="text-info" />
@@ -58,6 +60,25 @@ function RangePicker({ value, onChange }: { value: number; onChange: (n: number)
   );
 }
 
+type SeriesRow = ReturnType<typeof analyticsSeries>[number];
+
+interface Breakdowns {
+  mau: number;
+  revenueByPlan: { plan: string; amount: number }[];
+  churnPercent: number;
+  aiTokens: number;
+  cohorts: { cohort: string; size: number; weeks: (number | null)[] }[];
+  subjects: { subjectId: string; popularity: number; completion: number; score: number }[];
+}
+
+/** Daily platform metrics: computed by the server from real data (API mode), else the local sample. */
+function useSeries(days: number) {
+  return useQuery({
+    queryKey: ["analytics", "series", days],
+    queryFn: () => (isRemote() ? remote.get<SeriesRow[]>("/analytics/series", { days }) : Promise.resolve(analyticsSeries(days))),
+  });
+}
+
 export function AdminDashboard() {
   const l = useL();
   const [now] = useState(() => Date.now());
@@ -71,8 +92,10 @@ export function AdminDashboard() {
       return { users, questions, books, reviews, jobs, logs, alerts, audit, insts, subs, payments, mod };
     },
   });
-  const series = useMemo(() => analyticsSeries(range), [range]);
-  if (!data.data || !cur) return <Skeleton className="h-[600px]" />;
+  const seriesQ = useSeries(range);
+  const series = seriesQ.data ?? [];
+  if (!data.data || !cur || !seriesQ.data) return <Skeleton className="h-[600px]" />;
+  const scale = (n: number) => (isRemote() ? 1 : n);
   const d = data.data;
   const students = d.users.filter((u) => u.role === "student");
   const active = students.filter((u) => u.lastActiveAt && now - new Date(u.lastActiveAt).getTime() < 7 * 864e5);
@@ -87,11 +110,11 @@ export function AdminDashboard() {
   const coverage = Math.round((cur.chapters.filter((c) => d.questions.filter((q) => q.chapterId === c.id).length >= 5).length / cur.chapters.length) * 100);
   const chartData = series.map((s) => ({ date: f.date(`${s.date}T06:00:00Z`, { day: "numeric", month: "short" }), dau: s.dau, signups: s.signups }));
   const kpis = [
-    { label: l("মোট ব্যবহারকারী", "Total users"), value: f.number(d.users.length * 412), icon: Users, href: "/admin/users", hint: l("ডেমো স্কেল", "demo scale") },
-    { label: l("সক্রিয় শিক্ষার্থী (৭ দিন)", "Active students (7d)"), value: f.number(active.length * 389), icon: Activity, href: "/admin/analytics" },
+    { label: l("মোট ব্যবহারকারী", "Total users"), value: f.number(d.users.length * scale(412)), icon: Users, href: "/admin/users", hint: isRemote() ? undefined : l("ডেমো স্কেল", "demo scale") },
+    { label: l("সক্রিয় শিক্ষার্থী (৭ দিন)", "Active students (7d)"), value: f.number(isRemote() ? Math.max(active.length, ...series.slice(-7).map((x) => x.dau)) : active.length * 389), icon: Activity, href: "/admin/analytics" },
     { label: l("নতুন নিবন্ধন", "New registrations"), value: f.number(series.reduce((s, x) => s + x.signups, 0)), icon: UserPlus, href: "/admin/analytics" },
-    { label: l("পেইড ব্যবহারকারী", "Paid users"), value: f.number(paid.length * 157), icon: CreditCard, href: "/admin/subscriptions" },
-    { label: l("সাবস্ক্রিপশন আয় (ডেমো)", "Subscription revenue (demo)"), value: f.currency(revenue * 97), icon: TrendingUp, href: "/admin/subscriptions" },
+    { label: l("পেইড ব্যবহারকারী", "Paid users"), value: f.number(paid.length * scale(157)), icon: CreditCard, href: "/admin/subscriptions" },
+    { label: isRemote() ? l("সাবস্ক্রিপশন আয়", "Subscription revenue") : l("সাবস্ক্রিপশন আয় (ডেমো)", "Subscription revenue (demo)"), value: f.currency(revenue * scale(97)), icon: TrendingUp, href: "/admin/subscriptions" },
     { label: l("AI অনুরোধ", "AI requests"), value: f.number(series.reduce((s, x) => s + x.aiRequests, 0)), icon: Bot, href: "/admin/knowledge-base" },
     { label: l("ভয়েস মিনিট", "Voice minutes"), value: f.number(series.reduce((s, x) => s + x.voiceMinutes, 0)), icon: Mic, href: "/admin/analytics" },
     { label: l("মোট প্রশ্ন", "Total questions"), value: f.number(d.questions.length), icon: FileQuestionMark, href: "/admin/questions" },
@@ -194,17 +217,25 @@ export function AdminAnalytics() {
   const [range, setRange] = useState(30);
   const [compare, setCompare] = useState(false);
   const [metric, setMetric] = useState<"dau" | "revenue" | "aiRequests" | "voiceMinutes" | "studyMinutes" | "reports">("dau");
-  const series = useMemo(() => analyticsSeries(range), [range]);
-  const prev = useMemo(() => analyticsSeries(range * 2).slice(0, range), [range]);
-  const metricLabel: Record<typeof metric, string> = { dau: l("দৈনিক সক্রিয় ব্যবহারকারী", "Daily active users"), revenue: l("আয় (৳, ডেমো)", "Revenue (৳, demo)"), aiRequests: l("AI অনুরোধ", "AI requests"), voiceMinutes: l("ভয়েস মিনিট", "Voice minutes"), studyMinutes: l("গড় পড়ার সময় (মিনিট)", "Avg study duration (min)"), reports: l("মডারেশন রিপোর্ট", "Moderation reports") };
+  const seriesQ = useSeries(range);
+  const prevQ = useSeries(range * 2);
+  const breakdowns = useQuery({ queryKey: ["analytics", "breakdowns", range], queryFn: () => remote.get<Breakdowns>("/analytics/breakdowns", { days: range }), enabled: isRemote() });
+  const series = useMemo(() => (seriesQ.data?.length ? seriesQ.data : analyticsSeries(range).map((x) => ({ ...x, dau: 0, signups: 0, paid: 0, aiRequests: 0, voiceMinutes: 0, revenue: 0, studyMinutes: 0, reports: 0 }))), [seriesQ.data, range]);
+  const prev = useMemo(() => (prevQ.data ?? []).slice(0, range), [prevQ.data, range]);
+  const live = breakdowns.data;
+  const metricLabel: Record<typeof metric, string> = { dau: l("দৈনিক সক্রিয় ব্যবহারকারী", "Daily active users"), revenue: l("আয় (৳)", "Revenue (৳)"), aiRequests: l("AI অনুরোধ", "AI requests"), voiceMinutes: l("ভয়েস মিনিট", "Voice minutes"), studyMinutes: l("গড় পড়ার সময় (মিনিট)", "Avg study duration (min)"), reports: l("মডারেশন রিপোর্ট", "Moderation reports") };
   const data = series.map((s, i) => ({ date: f.date(`${s.date}T06:00:00Z`, { day: "numeric", month: "short" }), value: s[metric], previous: compare ? prev[i]?.[metric] : undefined }));
   const sum = (k: keyof (typeof series)[number]) => series.reduce((s, x) => s + (x[k] as number), 0);
-  const mau = Math.round(Math.max(...series.map((s) => s.dau)) * 3.4);
+  const mau = live ? live.mau : Math.round(Math.max(...series.map((s) => s.dau)) * 3.4);
   const mrr = Math.round(sum("revenue") * (30 / range));
-  const aiCost = Math.round(sum("aiRequests") * 0.012);
-  const subjects = useMemo(() => (cur?.subjects ?? []).filter((s) => s.levelCode === "SSC").slice(0, 8).map((s, i) => ({ subject: f.pick(s.name), popularity: 92 - i * 8, completion: 64 - i * 3, score: 71 - (i % 4) * 4 })), [cur, f]);
+  // Gemini Flash list price ≈ $0.30 per 1M input tokens (≈ ৳0.037/1K); offline: a per-request guess.
+  const aiCost = live ? Math.round((live.aiTokens / 1000) * 0.037) : Math.round(sum("aiRequests") * 0.012);
+  const subjects = useMemo(
+    () => (live ? live.subjects.map((x) => ({ subject: f.pick(cur?.subject(x.subjectId)?.name) || x.subjectId, popularity: x.popularity, completion: x.completion, score: x.score })) : (cur?.subjects ?? []).filter((s) => s.levelCode === "SSC").slice(0, 8).map((s, i) => ({ subject: f.pick(s.name), popularity: 92 - i * 8, completion: 64 - i * 3, score: 71 - (i % 4) * 4 }))),
+    [cur, f, live],
+  );
   const exportCsv = () => {
-    const rows = ["date,dau,signups,paid,ai_requests,voice_minutes,revenue_demo,study_minutes,reports", ...series.map((s) => [s.date, s.dau, s.signups, s.paid, s.aiRequests, s.voiceMinutes, s.revenue, s.studyMinutes, s.reports].join(","))];
+    const rows = ["date,dau,signups,paid,ai_requests,voice_minutes,revenue,study_minutes,reports", ...series.map((s) => [s.date, s.dau, s.signups, s.paid, s.aiRequests, s.voiceMinutes, s.revenue, s.studyMinutes, s.reports].join(","))];
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([rows.join("\n")], { type: "text/csv" }));
     a.download = `analytics-${range}d.csv`;
@@ -231,8 +262,8 @@ export function AdminAnalytics() {
         <StatCard label="DAU" value={f.number(series[series.length - 1].dau)} icon={Activity} />
         <StatCard label="MAU" value={f.number(mau)} icon={Users} tone="info" />
         <StatCard label={l("রূপান্তর (পেইড)", "Conversion (paid)")} value={f.percent((sum("paid") / Math.max(1, sum("signups"))) * 100, 1)} icon={CreditCard} tone="success" />
-        <StatCard label={l("চার্ন (মাসিক)", "Churn (monthly)")} value={f.percent(3.8, 1)} icon={TrendingUp} tone="destructive" />
-        <StatCard label="MRR (demo)" value={f.currency(mrr)} icon={TrendingUp} tone="success" />
+        <StatCard label={l("চার্ন", "Churn")} value={f.percent(live ? live.churnPercent : 3.8, 1)} icon={TrendingUp} tone="destructive" />
+        <StatCard label="MRR" value={f.currency(mrr)} icon={TrendingUp} tone="success" />
         <StatCard label={l("সক্রিয় শিক্ষার্থী প্রতি AI খরচ", "AI cost / active student")} value={f.currency(Math.round(aiCost / Math.max(1, mau)) || 1)} icon={Bot} tone="warning" hint={l(`মোট ${f.currency(aiCost)}`, `total ${f.currency(aiCost)}`)} />
       </div>
       <Card className="mb-4">
@@ -258,10 +289,14 @@ export function AdminAnalytics() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">{l("প্ল্যানভিত্তিক আয় (ডেমো)", "Revenue by plan (demo)")}</CardTitle>
+            <CardTitle className="text-base">{l("প্ল্যানভিত্তিক আয়", "Revenue by plan")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <DonutChart label={l("প্ল্যানভিত্তিক আয়", "Revenue by plan")} data={[{ name: "Pro", value: 58 }, { name: l("ফ্যামিলি", "Family"), value: 27 }, { name: l("প্রতিষ্ঠান", "Institution"), value: 15 }]} />
+            {live && !live.revenueByPlan.length ? (
+              <p className="py-10 text-center text-sm text-muted-foreground">{l("এই সময়ে কোনো পেমেন্ট নেই", "No payments in this period")}</p>
+            ) : (
+              <DonutChart label={l("প্ল্যানভিত্তিক আয়", "Revenue by plan")} data={live ? live.revenueByPlan.map((p) => ({ name: p.plan, value: p.amount })) : [{ name: "Pro", value: 58 }, { name: l("ফ্যামিলি", "Family"), value: 27 }, { name: l("প্রতিষ্ঠান", "Institution"), value: 15 }]} />
+            )}
           </CardContent>
         </Card>
         <Card className="lg:col-span-2">
@@ -274,8 +309,8 @@ export function AdminAnalytics() {
         </Card>
         <Card className="lg:col-span-3">
           <CardHeader>
-            <CardTitle className="text-base">{l("রিটেনশন কোহর্ট (ডেমো)", "Retention cohorts (demo)")}</CardTitle>
-            <CardDescription>{l("নিবন্ধনের সপ্তাহ অনুযায়ী পরের সপ্তাহগুলোতে সক্রিয় থাকার হার", "Share of each sign-up week still active in later weeks")}</CardDescription>
+            <CardTitle className="text-base">{l("রিটেনশন কোহর্ট", "Retention cohorts")}</CardTitle>
+            <CardDescription>{l("প্রথম সক্রিয় সপ্তাহ অনুযায়ী পরের সপ্তাহগুলোতে সক্রিয় থাকার হার", "Share of each first-active week still active in later weeks")}</CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">
             <Table>
@@ -290,11 +325,14 @@ export function AdminAnalytics() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {Array.from({ length: 6 }, (_, c) => (
-                  <TableRow key={c}>
-                    <TableCell>{f.date(new Date(now - (6 - c) * 7 * 864e5), { day: "numeric", month: "short" })}</TableCell>
+                {(live ? live.cohorts : Array.from({ length: 6 }, (_, c) => ({ cohort: new Date(now - (6 - c) * 7 * 864e5).toISOString(), size: 0, weeks: [0, 1, 2, 3, 4, 5].map((w) => (w > 5 - c ? null : Math.round(100 * Math.pow(0.82, w) - c))) }))).map((row) => (
+                  <TableRow key={row.cohort}>
+                    <TableCell>
+                      {f.date(row.cohort.length === 10 ? `${row.cohort}T06:00:00Z` : row.cohort, { day: "numeric", month: "short" })}
+                      {row.size > 0 && <span className="ml-1 text-xs text-muted-foreground">({f.digits(row.size)})</span>}
+                    </TableCell>
                     {[0, 1, 2, 3, 4, 5].map((w) => {
-                      const v = w > 5 - c ? null : Math.round(100 * Math.pow(0.82, w) - c);
+                      const v = row.weeks[w] ?? null;
                       return (
                         <TableCell key={w} className="text-center text-xs tabular-nums" style={{ background: v === null ? undefined : `color-mix(in oklab, ${masteryColor(v)} ${Math.round(v * 0.6)}%, transparent)` }}>
                           {v === null ? "" : f.percent(v)}
@@ -320,7 +358,7 @@ export function AdminAnalytics() {
                   <TableHead className="text-right">{l("নিবন্ধন", "Sign-ups")}</TableHead>
                   <TableHead className="text-right">{l("পেইড", "Paid")}</TableHead>
                   <TableHead className="text-right">{l("AI অনুরোধ", "AI requests")}</TableHead>
-                  <TableHead className="text-right">{l("আয় (ডেমো)", "Revenue (demo)")}</TableHead>
+                  <TableHead className="text-right">{l("আয়", "Revenue")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

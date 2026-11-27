@@ -34,9 +34,11 @@ import { useFormat, useL } from "@/i18n";
 import { errorText } from "@/lib/errors";
 import { audit } from "@/services/admin.service";
 import { BOARD_YEARS, boardPapersRepo, boardService, INSTITUTION_CATEGORY_LABELS, institutionPapersRepo, scanSvg } from "@/services/archive.service";
-import { mockRequest, newId, nowIso } from "@/services/core/mock-runtime";
+import { newId, nowIso } from "@/services/core/mock-runtime";
 import { curriculumRepos } from "@/services/curriculum.service";
 import { institutionsRepo, teacherProfilesRepo } from "@/services/people.service";
+import { documentService } from "@/services/document.service";
+import { isRemote } from "@/services/core/remote";
 import { questionsRepo } from "@/services/question.service";
 import { reviewItemsRepo } from "@/services/review.service";
 import { bestMatch, ConfirmAction, DuplicateBadge, FileDrop, KeyValue, plainText } from "./admin-shared";
@@ -251,6 +253,8 @@ interface Extracted {
   chapterId: string;
   match: { id: string; stem: string; score: number } | null;
   include: boolean;
+  /** Full draft from the AI extraction (options, answer key, CQ parts). */
+  draft?: Question;
 }
 
 /** Parses "stem,type,difficulty,marks,answer" CSV (header optional, quoted fields supported). */
@@ -299,6 +303,14 @@ function QuestionImport() {
   const chapters = cur?.chaptersOf(subjectId) ?? [];
 
   const extract = async (files: File[]) => {
+    try {
+      await extractFiles(files);
+    } catch (e) {
+      toast.error(errorText(e, l));
+      setStage(items.length ? "preview" : "idle");
+    }
+  };
+  const extractFiles = async (files: File[]) => {
     setStage("extracting");
     setProgress(0);
     const existing = (await questionsRepo.raw()).filter((q) => q.subjectId === subjectId);
@@ -310,16 +322,19 @@ function QuestionImport() {
         const rows = parseCsv(await file.text());
         const body = rows[0]?.[0]?.toLowerCase().includes("stem") ? rows.slice(1) : rows;
         raw = body.map((r) => ({ stem: r[0]?.trim() ?? "", type: (QUESTION_TYPES as readonly string[]).includes(r[1]?.trim()) ? (r[1].trim() as QuestionType) : "short", difficulty: (["easy", "medium", "hard"].includes(r[2]?.trim()) ? r[2].trim() : "medium") as Question["difficulty"], marks: Number(r[3]) || 1, answer: r[4]?.trim() || l("(উত্তর যোগ করুন)", "(add answer)") })).filter((r) => r.stem);
+      } else if (isRemote()) {
+        // The AI service reads the file (vision for PDF/photos) and finds the questions in it.
+        const doc = await documentService.readText(file);
+        if (!doc.text.trim()) throw new Error(l(`${file.name}: কোনো লেখা পাওয়া যায়নি`, `${file.name}: no text found`));
+        const res = await documentService.extractQuestions(subjectId, doc.text);
+        for (const [i, q] of res.questions.entries()) {
+          const m = bestMatch(q.stem, existing, (x) => x.stem);
+          out.push({ key: `${file.name}-${i}`, stem: q.stem, type: q.type, difficulty: q.difficulty, marks: q.marks, answer: q.answer, chapterId: q.chapterId, draft: q, match: m && m.score >= 0.5 ? { id: m.item.id, stem: m.item.stem, score: m.score } : null, include: !(m && m.score >= 0.8) });
+        }
+        setProgress(Math.round(((fi + 1) / files.length) * 100));
+        continue;
       } else {
-        // Simulated extraction for xlsx/docx/pdf/images: a deterministic mix of new items and
-        // near-copies of existing questions so duplicate detection can be demonstrated.
-        await mockRequest(700);
-        const seedQs = existing.slice(fi * 3, fi * 3 + 2);
-        raw = [
-          ...seedQs.map((q) => ({ stem: q.stem.replace(/।$/, "") + " ?", type: q.type, difficulty: q.difficulty, marks: q.marks, answer: q.answer })),
-          { stem: l(`${file.name} থেকে নিষ্কাশিত প্রশ্ন: একটি বস্তুর ভর ৫ কেজি এবং ত্বরণ ২ মি/সে² হলে বল কত?`, `Extracted from ${file.name}: a 5 kg body accelerates at 2 m/s². Find the force.`), type: "numerical", difficulty: "easy", marks: 2, answer: "F = ma = 10 N" },
-          { stem: l("নিষ্কাশিত সংক্ষিপ্ত প্রশ্ন: জড়তা কাকে বলে?", "Extracted short question: what is inertia?"), type: "short", difficulty: "easy", marks: 2, answer: l("বস্তুর অবস্থার পরিবর্তন রোধের প্রবণতা", "A body's tendency to resist change in motion") },
-        ];
+        throw new Error(l("এই ফাইল থেকে প্রশ্ন বের করতে সার্ভার (API মোড) দরকার; অফলাইনে শুধু CSV চলে।", "Extracting questions from this file needs the server (API mode); offline only CSV works."));
       }
       for (const [i, r] of raw.entries()) {
         const m = bestMatch(r.stem, existing, (q) => q.stem);
@@ -337,7 +352,7 @@ function QuestionImport() {
       if (!chosen.length) throw new Error(l("কোনো প্রশ্ন বাছাই করা হয়নি", "No questions selected"));
       for (const it of chosen) {
         const base = blankQuestion(subjectId, it.chapterId);
-        await questionsRepo.create({ ...base, id: newId("q"), stem: it.stem, type: it.type, answer: it.answer, explanation: "", marks: it.marks, difficulty: it.difficulty, status: "draft", verification: "unverified", duplicateOfId: it.match && it.match.score >= 0.8 ? it.match.id : undefined, tags: ["imported"], createdAt: nowIso(), updatedAt: nowIso() });
+        await questionsRepo.create({ ...base, ...(it.draft ?? {}), id: newId("q"), subjectId, chapterId: it.chapterId || base.chapterId, stem: it.stem, type: it.type, answer: it.answer, explanation: it.draft?.explanation ?? "", marks: it.marks, difficulty: it.difficulty, status: "draft", verification: "unverified", duplicateOfId: it.match && it.match.score >= 0.8 ? it.match.id : undefined, tags: ["imported"], createdAt: nowIso(), updatedAt: nowIso() });
       }
       await audit(actor, "content", "question.import", { type: "question", id: subjectId, label: l(`${chosen.length}টি প্রশ্ন ইমপোর্ট`, `Imported ${chosen.length} questions`) });
       return chosen.length;
@@ -351,7 +366,7 @@ function QuestionImport() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">{l("ফাইল থেকে ইমপোর্ট", "Import from files")}</CardTitle>
-          <CardDescription>{l("CSV আসলে পার্স হয় (stem,type,difficulty,marks,answer)। Excel, Word, PDF ও ছবি থেকে নিষ্কাশন সিমুলেটেড।", "CSV is really parsed (stem,type,difficulty,marks,answer). Excel, Word, PDF and image extraction is simulated.")}</CardDescription>
+          <CardDescription>{l("CSV (stem,type,difficulty,marks,answer) সরাসরি পার্স হয়। Excel, Word, PDF ও ছবি AI পড়ে প্রশ্ন, অপশন, উত্তর ও অধ্যায় বের করে — সংরক্ষণের আগে যাচাই করুন।", "CSV (stem,type,difficulty,marks,answer) is parsed directly. For Excel, Word, PDF and photos the AI reads the file and finds questions, options, answers and chapters — review before saving.")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="space-y-1">
@@ -373,7 +388,7 @@ function QuestionImport() {
           {stage === "extracting" && (
             <div className="space-y-1 text-sm">
               <div className="flex items-center gap-2">
-                <Loader2 className="size-4 animate-spin" /> {l("প্রশ্ন নিষ্কাশন হচ্ছে (সিমুলেটেড)…", "Extracting questions (simulated)…")}
+                <Loader2 className="size-4 animate-spin" /> {l("AI প্রশ্ন নিষ্কাশন করছে… (বড় ফাইলে এক-দুই মিনিট লাগতে পারে)", "AI is extracting questions… (large files can take a minute or two)")}
               </div>
               <Progress value={progress} />
             </div>
@@ -600,6 +615,7 @@ interface SplitQ {
   chapterId: string;
   verified: boolean;
   match: { id: string; score: number } | null;
+  draft?: Question;
 }
 
 function BoardUpload() {
@@ -621,13 +637,37 @@ function BoardUpload() {
   const runOcr = async (files: File[]) => {
     setFile(files[0]);
     setPhase("ocr");
-    await mockRequest(900);
-    const pool = (await questionsRepo.raw()).filter((q) => q.subjectId === meta.subjectId).slice(0, 6);
-    const text = pool.map((q, i) => `${i + 1}. ${stripMd(q.stem)}`).join("\n");
-    setOcrText(text || l("১. (OCR কোনো লেখা পায়নি)", "1. (OCR found no text)"));
+    if (!isRemote()) {
+      setOcrText("");
+      setPhase("form");
+      toast.error(l("প্রশ্নপত্র পড়তে সার্ভার (API মোড) দরকার", "Reading a paper needs the server (API mode)"));
+      return;
+    }
+    try {
+      const doc = await documentService.readText(files[0]);
+      setOcrText(doc.text || l("১. (OCR কোনো লেখা পায়নি)", "1. (OCR found no text)"));
+    } catch (e) {
+      toast.error(errorText(e, l));
+      setPhase("form");
+    }
   };
   const runSplit = async () => {
     const existing = (await questionsRepo.raw()).filter((q) => q.subjectId === meta.subjectId);
+    if (isRemote()) {
+      try {
+        const res = await documentService.extractQuestions(meta.subjectId, ocrText);
+        setSplit(
+          res.questions.map((q, i) => {
+            const m = bestMatch(q.stem, existing, (x) => x.stem);
+            return { key: `s${i}`, text: q.stem, chapterId: q.chapterId || (chapters[0]?.id ?? ""), verified: false, match: m && m.score >= 0.5 ? { id: m.item.id, score: m.score } : null, draft: q };
+          }),
+        );
+        setPhase("split");
+      } catch (e) {
+        toast.error(errorText(e, l));
+      }
+      return;
+    }
     const parts = ocrText.split(/\n(?=\s*[\d০-৯]+[.।)])/).map((s) => s.replace(/^\s*[\d০-৯]+[.।)]\s*/, "").trim()).filter(Boolean);
     setSplit(
       parts.map((text, i) => {
@@ -645,7 +685,7 @@ function BoardUpload() {
       for (const s of split) {
         const id = newId("q");
         const base = blankQuestion(meta.subjectId, s.chapterId);
-        await questionsRepo.create({ ...base, id, stem: s.text, type: meta.examType === "mcq" ? "mcq" : "creative", source: { kind: "board", label: `${meta.boardId} ${meta.year} (${l("অযাচাইকৃত আপলোড", "unverified upload")})`, boardId: meta.boardId, year: meta.year }, verification: s.verified ? "verified" : "unverified", duplicateOfId: s.match && s.match.score >= 0.8 ? s.match.id : undefined, status: "draft", createdAt: nowIso(), updatedAt: nowIso() });
+        await questionsRepo.create({ ...base, ...(s.draft ?? {}), id, subjectId: meta.subjectId, chapterId: s.chapterId || base.chapterId, stem: s.text, type: s.draft?.type ?? (meta.examType === "mcq" ? "mcq" : "creative"), tags: ["board-upload"], source: { kind: "board", label: `${meta.boardId} ${meta.year} (${l("অযাচাইকৃত আপলোড", "unverified upload")})`, boardId: meta.boardId, year: meta.year }, verification: s.verified ? "verified" : "unverified", duplicateOfId: s.match && s.match.score >= 0.8 ? s.match.id : undefined, status: "draft", createdAt: nowIso(), updatedAt: nowIso() });
         ids.push(id);
       }
       const title = `${f.pick(cur?.subject(meta.subjectId)?.name)} ${meta.paperNumber} — ${meta.boardId} ${meta.year} (${l("আপলোড", "upload")})`;
@@ -787,7 +827,7 @@ function BoardUpload() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{phase === "split" ? l("প্রশ্ন বিভাজন ও অধ্যায় ম্যাপিং", "Question splitting & chapter mapping") : l("OCR নিষ্কাশন প্রিভিউ (সিমুলেটেড)", "OCR extraction preview (simulated)")}</CardTitle>
+          <CardTitle className="text-base">{phase === "split" ? l("প্রশ্ন বিভাজন ও অধ্যায় ম্যাপিং", "Question splitting & chapter mapping") : l("OCR নিষ্কাশন প্রিভিউ (AI)", "OCR extraction preview (AI)")}</CardTitle>
           <CardDescription>{l("আপলোড করা প্রশ্নপত্র 'অযাচাইকৃত' হিসেবে সংরক্ষিত হবে যতক্ষণ না উৎস প্রমাণিত হয়।", "Uploaded papers are saved as 'unverified' until the source is authenticated.")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -1002,7 +1042,7 @@ function InstitutionSubmissions() {
                     {open.scanPages[0] ? <img src={open.scanPages[0]} alt={l("প্রশ্নপত্রের স্ক্যান", "Paper scan")} className="w-full rounded-lg border" /> : <p className="text-sm text-muted-foreground">—</p>}
                   </div>
                   <div>
-                    <p className="mb-1 text-xs font-medium text-muted-foreground">{l("নিষ্কাশিত লেখা (সিমুলেটেড OCR)", "Extracted text (simulated OCR)")}</p>
+                    <p className="mb-1 text-xs font-medium text-muted-foreground">{l("নিষ্কাশিত লেখা", "Extracted text")}</p>
                     <pre className="max-h-80 overflow-auto whitespace-pre-wrap rounded-lg border bg-muted/40 p-2 text-xs">{open.extractedText}</pre>
                   </div>
                 </div>

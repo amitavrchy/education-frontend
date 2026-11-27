@@ -87,7 +87,8 @@ export interface QuestionResult {
   awarded: number;
   max: number;
   /** For descriptive answers: simulated AI estimate, explicitly non-authoritative. */
-  aiEstimate?: { marks: number; feedback: string };
+  /** Written answers: the AI examiner's mark (or a keyword estimate when the AI was unavailable); a teacher may revise it. */
+  aiEstimate?: { marks: number; feedback: string; by?: "ai" | "estimate" };
   timeSpentSec?: number;
 }
 
@@ -109,7 +110,10 @@ export interface ExamResult {
   byDifficulty: Record<Difficulty, { correct: number; total: number }>;
   weakTopicIds: string[];
   recommendedChapterIds: string[];
+  /** Some written answers were marked by the keyword estimate (the AI examiner was unavailable). */
   containsSimulatedGrading: boolean;
+  /** Written answers were marked by the AI examiner. */
+  aiGraded?: boolean;
   teacherFeedback?: { by: string; text: string; at: string };
 }
 

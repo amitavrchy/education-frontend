@@ -294,7 +294,7 @@ function ExamDetail({ exam, onClose, onDuplicate }: { exam: Exam; onClose: () =>
                     <Badge variant="secondary">
                       {f.digits(a.result!.score)}/{f.digits(a.result!.total)} · {a.result!.grade}
                     </Badge>
-                    {a.result!.containsSimulatedGrading && <Badge variant="outline">{l("সিমুলেটেড গ্রেডিং", "Simulated grading")}</Badge>}
+                    {a.result!.pendingReview > 0 && <Badge variant="outline">{a.result!.aiGraded && !a.result!.containsSimulatedGrading ? l("AI গ্রেডিং", "AI graded") : l("আনুমানিক গ্রেডিং", "Estimated grading")}</Badge>}
                     <Button size="xs" variant="outline" onClick={() => setOverride({ id: a.id, score: a.result!.score, note: "" })}>
                       {l("নম্বর সংশোধন", "Override")}
                     </Button>

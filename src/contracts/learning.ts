@@ -58,8 +58,10 @@ export interface BookPage {
   pageNumber: number;
   chapterRefId: string;
   heading?: string;
-  /** Markdown + LaTeX body of the synthetic page. */
+  /** Markdown + LaTeX body of the page. */
   body: string;
+  /** "book" = read from the uploaded textbook; "outline" = placeholder made from the chapter outline. */
+  source?: "book" | "outline";
 }
 
 export interface ReadingState {

@@ -4,7 +4,8 @@ import { scenarios } from "@/mock-data/tutor-scenarios";
 import { daysFromNow } from "@/mock-data/utils";
 import { createMockRepository, matchesSearch } from "./core/repository";
 import { isRemote, remote } from "./core/remote";
-import { mockRequest, newId, nowIso } from "./core/mock-runtime";
+import { documentService } from "./document.service";
+import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { progressService } from "./progress.service";
 import { registerSearchProvider, scoreText } from "./search.service";
 
@@ -24,7 +25,7 @@ export const NOTE_KIND_LABELS: Record<NoteKind, [string, string]> = {
 };
 
 /** Simulated "AI" note generation from curriculum + scenario knowledge (NOTE-02…13). */
-export function generateNoteHtml(kind: NoteKind, opts: { chapterId?: string; topicId?: string; questionText?: string; answerText?: string; conversation?: string; uploadName?: string }): { title: string; html: string } {
+export function generateNoteHtml(kind: NoteKind, opts: { chapterId?: string; topicId?: string; questionText?: string; answerText?: string; conversation?: string; uploadName?: string; uploadText?: string }): { title: string; html: string } {
   const chapter = chapters.find((c) => c.id === opts.chapterId);
   const topic = topics.find((t) => t.id === opts.topicId);
   const chapterTopics = topics.filter((t) => t.chapterId === (opts.chapterId ?? topic?.chapterId));
@@ -135,7 +136,7 @@ async function generateNote(studentId: string, kind: NoteKind, opts: GenerateOpt
     questionText: opts.questionText,
     answerText: opts.answerText,
     conversation: opts.conversation,
-    uploadText: opts.uploadName ? `File: ${opts.uploadName}` : undefined,
+    uploadText: opts.uploadText ? `File: ${opts.uploadName ?? ""}\n\n${opts.uploadText}`.slice(0, 30_000) : undefined,
   });
 }
 
@@ -144,9 +145,12 @@ export const notesService = {
   get: (studentId: string, id: string) => notesRepos(studentId).notes.get(id),
   folders: (studentId: string) => notesRepos(studentId).folders.all(),
 
-  async create(studentId: string, input: NoteDraftInput) {
+  /** `file`: an uploaded PDF/photo/document — its text is read on the server and the note is made from it. */
+  async create(studentId: string, input: NoteDraftInput, file?: File) {
     await mockRequest(input.content ? 100 : 700);
-    const gen = input.content ? { title: input.title ?? "নতুন নোট", html: input.content } : await generateNote(studentId, input.kind, { chapterId: input.chapterId, topicId: input.source.type === "topic" ? input.source.refId : undefined, uploadName: input.source.type === "upload" ? input.source.label : undefined });
+    const uploadText = file && isRemote() ? (await documentService.readText(file)).text : undefined;
+    if (file && isRemote() && !uploadText?.trim()) invalid("NO_TEXT_FOUND");
+    const gen = input.content ? { title: input.title ?? "নতুন নোট", html: input.content } : await generateNote(studentId, input.kind, { chapterId: input.chapterId, topicId: input.source.type === "topic" ? input.source.refId : undefined, uploadName: input.source.type === "upload" ? input.source.label : undefined, uploadText });
     const note = await notesRepos(studentId).notes.create({
       id: newId("note"),
       title: input.title ?? gen.title,

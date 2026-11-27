@@ -27,6 +27,7 @@ import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { DEMO_LINK_CODE, guardianService, type GuardianGoal } from "@/services/guardian.service";
 import { ChildSwitcher, guardianKeys, NotShared, useChildren, WithChild } from "./child-context";
+import { isRemote } from "@/services/core/remote";
 
 type L = (bn: string, en: string) => string;
 const PERMS = (l: L): [keyof GuardianLink["permissions"], string][] => [
@@ -334,9 +335,14 @@ function ReportsBody({ child }: { child: GuardianLink }) {
         `${l("স্ট্রিক", "Streak")}: ${s.data.streak}`,
         p.progress ? `${l("দুর্বল টপিক", "Weak topics")}: ${s.data.weakTopicIds.map((t) => f.pick(cur?.topic(t)?.title)).join(", ") || "—"}` : "",
         "",
-        l("এই রিপোর্টে AI কথোপকথন অন্তর্ভুক্ত নয়। সব তথ্য ডেমো।", "AI conversations are not included in this report. All data is demo."),
+        l("এই রিপোর্টে AI কথোপকথন অন্তর্ভুক্ত নয়।", "AI conversations are not included in this report."),
       ].filter(Boolean)
     : [];
+  const email = useMutation({
+    mutationFn: () => (isRemote() ? guardianService.emailReport(child.studentId, l(`${child.studentName} — ${period === "weekly" ? "সাপ্তাহিক" : "মাসিক"} রিপোর্ট`, `${child.studentName} — ${period} report`), lines) : Promise.resolve({ sentTo: "" })),
+    onSuccess: (r) => toast.success(r.sentTo ? l(`রিপোর্ট ${r.sentTo}-এ পাঠানো হয়েছে`, `Report sent to ${r.sentTo}`) : l("অফলাইন মোডে ইমেইল পাঠানো যায় না", "Email isn't available offline")),
+    onError: (e) => toast.error(errorText(e, l)),
+  });
   const download = () => {
     const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
     const a = document.createElement("a");
@@ -360,7 +366,7 @@ function ReportsBody({ child }: { child: GuardianLink }) {
           <Button variant="outline" onClick={() => window.print()}>
             <Printer /> {l("প্রিন্ট", "Print")}
           </Button>
-          <Button variant="outline" onClick={() => toast.success(l("রিপোর্ট ইমেইলে পাঠানো হয়েছে (ডেমো)", "Report emailed (demo)"))}>
+          <Button variant="outline" disabled={!s.data || email.isPending} onClick={() => email.mutate()}>
             <Mail /> {l("ইমেইল", "Email")}
           </Button>
         </div>

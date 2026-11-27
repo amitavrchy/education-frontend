@@ -530,7 +530,7 @@ function GeneratorDialog({ onClose, onCreated }: { onClose: () => void; onCreate
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="size-4 text-primary" /> {l("ফ্ল্যাশকার্ড তৈরি", "Generate flashcards")}
           </DialogTitle>
-          <DialogDescription>{l("AI তৈরি একটি সিমুলেশন — কার্ডগুলো যাচাই করে নিও।", "AI generation is simulated — review the cards.")}</DialogDescription>
+          <DialogDescription>{isRemote() ? l("AI কার্ড লেখে (পাঠ্যবই, নোট বা চ্যাট থেকে) — একবার যাচাই করে নিও।", "The AI writes the cards (from the textbook, a note or a chat) — give them a quick check.") : l("অফলাইন মোড: কার্ড স্থানীয়ভাবে তৈরি হয়।", "Offline mode: cards are made locally.")}</DialogDescription>
         </DialogHeader>
         <Tabs defaultValue="chapter">
           <TabsList className="grid w-full grid-cols-5">

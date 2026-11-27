@@ -38,6 +38,8 @@ export interface ChildSummary {
 }
 
 export const guardianService = {
+  /** Emails the report (as the guardian sees it) to the guardian's own address. */
+  emailReport: (studentId: string, title: string, lines: string[]) => remote.post<{ sentTo: string }>("/guardian/report-email", { studentId, title, lines }),
   links: async (guardianId: string) =>
     isRemote() ? (await remote.get<GuardianLink[]>("/guardian/links")).filter((l) => l.status !== "revoked") : (await guardianLinksRepo.all()).filter((l) => l.guardianId === guardianId && l.status !== "revoked"),
 

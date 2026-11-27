@@ -414,7 +414,11 @@ function Reader({ book }: { book: Book }) {
                 {f.pick(chapterRef?.title)} · {l("পৃষ্ঠা", "page")} {f.digits(current)}
               </p>
               <RichText>{pageQ.data.body}</RichText>
-              <p className="mt-8 border-t pt-2 text-center text-xs text-muted-foreground">{l("কৃত্রিম ডেমো পাঠ্য — অফিসিয়াল পাঠ্যবই নয়", "Synthetic demo text — not an official textbook")}</p>
+              <p className="mt-8 border-t pt-2 text-center text-xs text-muted-foreground">
+                {pageQ.data.source === "book"
+                  ? `${book.publisher} · ${book.edition}`
+                  : l("নমুনা পাঠ্য (অধ্যায়ের রূপরেখা থেকে) — এই বইয়ের PDF এখনো আপলোড হয়নি", "Sample text (from the chapter outline) — this book's PDF has not been uploaded yet")}
+              </p>
             </article>
           )}
           {(rs?.pageNotes ?? []).filter((n) => n.page === current).map((n) => (

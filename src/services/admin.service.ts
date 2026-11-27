@@ -89,12 +89,23 @@ export const ingestionRepo = createMockRepository<IngestionJob>({ collection: "i
 
 export const ingestionService = {
   list: () => ingestionRepo.all(),
+  /** API mode: uploads the file to the server and starts the real ingestion pipeline. */
+  async upload(bookId: string, bookTitle: string, file: File, meta: { publisher?: string; edition?: string } = {}) {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("bookId", bookId);
+    form.append("bookTitle", bookTitle);
+    if (meta.publisher) form.append("publisher", meta.publisher);
+    if (meta.edition) form.append("edition", meta.edition);
+    return remote.post<IngestionJob>("/ingestion-jobs/upload", form);
+  },
   async create(bookId: string, bookTitle: string, fileName: string, fileSizeKb: number, failAt?: IngestionStage) {
     await mockRequest(300);
     return ingestionRepo.create({ id: newId("ing"), bookId, bookTitle, fileName, fileSizeKb, stage: "upload", stageStatus: "running", progress: 0, stages: INGESTION_STAGES.map((stage, i) => ({ stage, status: i === 0 ? "running" : "pending", startedAt: i === 0 ? nowIso() : undefined })), logs: [{ at: nowIso(), level: "info", message: `Upload started: ${fileName}` }], failAt, chunkCount: 0, pagesProcessed: 0, createdAt: nowIso(), updatedAt: nowIso() });
   },
   /** Advances one stage (called on an interval by the UI). Stops at failures and at review. */
   async step(id: string) {
+    if (isRemote()) return ingestionRepo.get(id); // the server's queue worker runs the stages
     const job = await ingestionRepo.get(id);
     if (job.stageStatus !== "running") return job;
     const i = INGESTION_STAGES.indexOf(job.stage);
@@ -121,12 +132,14 @@ export const ingestionService = {
     });
   },
   async retry(id: string) {
+    if (isRemote()) return remote.post<IngestionJob>(`/ingestion-jobs/${id}/retry`);
     const job = await ingestionRepo.get(id);
     const i = INGESTION_STAGES.indexOf(job.stage);
     const stages = job.stages.map((s, j) => (j === i ? { ...s, status: "running" as const, message: undefined, startedAt: nowIso() } : s));
     return ingestionRepo.update(id, { stages, stageStatus: "running", failAt: undefined, logs: [...job.logs, { at: nowIso(), level: "info", message: `Retry ${job.stage}` }] });
   },
   async approveReview(id: string) {
+    if (isRemote()) return remote.post<IngestionJob>(`/ingestion-jobs/${id}/approve`);
     const job = await ingestionRepo.get(id);
     const i = INGESTION_STAGES.indexOf("review");
     const stages = job.stages.map((s, j) => (j === i ? { ...s, status: "succeeded" as const, finishedAt: nowIso() } : j === i + 1 ? { ...s, status: "running" as const, startedAt: nowIso() } : s));
@@ -134,6 +147,7 @@ export const ingestionService = {
     return ingestionRepo.update(id, { stages, stage: "publish", stageStatus: "running", logs: [...job.logs, { at: nowIso(), level: "info", message: "Reviewer approved" }] });
   },
   async reindex(id: string) {
+    if (isRemote()) return remote.post<IngestionJob>(`/ingestion-jobs/${id}/reindex`);
     const job = await ingestionRepo.get(id);
     const from = INGESTION_STAGES.indexOf("chunk");
     const stages = job.stages.map((s, j) => (j === from ? { ...s, status: "running" as const, startedAt: nowIso() } : j > from ? { ...s, status: "pending" as const, startedAt: undefined, finishedAt: undefined } : s));
@@ -197,10 +211,12 @@ export const kbService = {
   collections: () => kbCollectionsRepo.all(),
   passages: () => passagesRepo.all(),
   async reindexCollection(id: string) {
+    if (isRemote()) return remote.post<KbCollection>(`/kb/collections/${id}/reindex`);
     await mockRequest(400);
     return kbCollectionsRepo.update(id, { status: "indexing", updatedAt: nowIso() });
   },
   async finishIndexing(id: string) {
+    if (isRemote()) return kbCollectionsRepo.get(id); // the server finishes and updates the collection
     return kbCollectionsRepo.update(id, { status: "ready", updatedAt: nowIso() });
   },
   /** Retrieval preview: the same keyword retriever the mock tutor uses. */

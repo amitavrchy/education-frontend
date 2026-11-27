@@ -28,6 +28,8 @@ import { examService } from "@/services/exam.service";
 import { flashcardService } from "@/services/flashcards.service";
 import { levelFor, progressService } from "@/services/progress.service";
 import { usePreferencesStore } from "@/stores/preferences-store";
+import { isRemote } from "@/services/core/remote";
+import { LiveChallenges, LiveLeaderboard } from "./social-live";
 
 const BADGE_ICONS: Record<string, typeof Award> = { footprints: Footprints, flame: Flame, target: Target, "book-check": BookCheck, star: Star, moon: Moon, sparkles: Sparkles, brain: Brain, trophy: Trophy };
 const TIER = { bronze: "from-amber-700/80 to-amber-500/80", silver: "from-slate-500/80 to-slate-300/80", gold: "from-yellow-500 to-amber-300" };
@@ -272,7 +274,13 @@ export function AchievementsPage() {
           </Card>
         </TabsContent>
 
-        {!hideCompetitive && (
+        {!hideCompetitive && isRemote() && (
+          <TabsContent value="social" className="grid gap-4 lg:grid-cols-2">
+            <LiveChallenges />
+            <LiveLeaderboard />
+          </TabsContent>
+        )}
+        {!hideCompetitive && !isRemote() && (
           <TabsContent value="social" className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
@@ -304,7 +312,7 @@ export function AchievementsPage() {
                   className="w-full"
                   onClick={() => {
                     challenge.mutate([...state.friendChallenges, { id: `fc-${Date.now()}`, friend: l("রিয়াদ", "Riyad"), title: l("দৈনিক কুইজ: সেরা স্কোর", "Daily quiz: best score"), status: "pending", myScore: 0, theirScore: 0 }]);
-                    toast.success(l("চ্যালেঞ্জ পাঠানো হয়েছে (ডেমো)", "Challenge sent (demo)"));
+                    toast.success(l("চ্যালেঞ্জ যোগ হয়েছে (অফলাইন মোড)", "Challenge added (offline mode)"));
                   }}
                 >
                   <Swords /> {l("নতুন চ্যালেঞ্জ", "New challenge")}
@@ -346,7 +354,7 @@ function Leaderboard({ myXp }: { myXp: number }) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Crown className="size-4" /> {l("সাপ্তাহিক লিডারবোর্ড (ঐচ্ছিক)", "Weekly leaderboard (optional)")}
         </CardTitle>
-        <CardDescription>{l("শুধু যারা অংশ নিতে সম্মত হয়েছে। নামগুলো কাল্পনিক ডেমো।", "Only students who opted in. Names are fictional demo data.")}</CardDescription>
+        <CardDescription>{l("অফলাইন মোড: নমুনা তালিকা।", "Offline mode: sample list.")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="mb-3 flex gap-1">
