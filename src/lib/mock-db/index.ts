@@ -19,7 +19,7 @@ export const MOCK_SEED_VERSION = 8;
  * Singleton documents the backend stores (`GET|PUT /documents/:key`). Everything else stays
  * device-local (preferences, caches) even in API mode. Prefixed keys look like `english:u-1`.
  */
-const SERVER_DOCUMENTS = new Set(["systemConfig", "permissionMatrix", "aiSettings"]);
+const SERVER_DOCUMENTS = new Set(["systemConfig", "permissionMatrix", "aiSettings", "paymentSettings"]);
 const SERVER_DOCUMENT_PREFIXES = ["gamification:", "usage:", "planSettings:", "english:", "guardianGoals:"];
 
 export function isServerDocument(name: string): boolean {

@@ -1,6 +1,8 @@
 import type { AppNotification, Notice } from "@/contracts";
 import { noticeSeed, notificationSeed } from "@/mock-data/notifications";
 import type { PortalKey } from "@/types";
+import { portalForRole } from "@/lib/auth/permissions";
+import { useAuthStore } from "@/stores/auth-store";
 import { createMockRepository, selectRepository } from "./core/repository";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { isRemote, remote } from "./core/remote";
@@ -43,6 +45,13 @@ export const notificationService = {
   },
   /** Used by features that "send" notifications locally (reminders, results, admin broadcasts). */
   async push(input: Omit<AppNotification, "id" | "read" | "archived" | "createdAt">) {
+    // API mode: notifications for other people (teachers, guardians, students) are sent by the
+    // server when the action happens; the client may only add reminders to its own inbox.
+    if (isRemote()) {
+      const role = useAuthStore.getState().user?.role;
+      if (!role || portalForRole(role) !== input.portal)
+        return { ...input, id: newId("ntf"), read: false, archived: false, createdAt: nowIso() } as AppNotification;
+    }
     await mockRequest(50);
     return notificationsRepo.create({ ...input, read: false, archived: false, createdAt: nowIso(), id: newId("ntf") });
   },

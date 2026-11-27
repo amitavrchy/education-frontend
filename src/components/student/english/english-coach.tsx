@@ -5,6 +5,7 @@ import { BookA, BookOpenText, CheckCircle2, Ear, GalleryVerticalEnd, Headphones,
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { errorText } from "@/lib/errors";
 import { RadarSkill } from "@/components/charts/kit";
 import { PageHeader } from "@/components/common/page-header";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -19,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useStudentId } from "@/hooks/use-student";
 import { useFormat, useL } from "@/i18n";
 import { cn } from "@/lib/utils";
-import { CORRECTIONS, englishService, GRAMMAR_QUIZ, LISTENING, PRONUNCIATION, pronunciationScore, READING, SPEAKING_PROMPTS, VOCAB, WRITING_TASKS, writingFeedback, type EnglishSkill, type McqItem, type WritingFeedback } from "@/services/english.service";
+import { CORRECTIONS, englishService, GRAMMAR_QUIZ, LISTENING, PRONUNCIATION, pronunciationScore, READING, SPEAKING_PROMPTS, VOCAB, WRITING_TASKS, type EnglishSkill, type McqItem, type WritingFeedback } from "@/services/english.service";
 import { useDeviceRecognition, useDeviceSpeech } from "../voice/use-voice-io";
 
 function useRecord() {
@@ -359,6 +360,15 @@ function Writing() {
   const [fb, setFb] = useState<WritingFeedback | null>(null);
   const task = WRITING_TASKS.find((t) => t.id === taskId)!;
   const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const studentId = useStudentId();
+  const writing = useMutation({
+    mutationFn: () => englishService.writing(studentId, text, task),
+    onSuccess: (r) => {
+      setFb(r);
+      record.mutate({ skill: "writing", score: r.overall, taskId: task.id });
+    },
+    onError: (e) => toast.error(errorText(e, l)),
+  });
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
       <Card>
@@ -387,14 +397,10 @@ function Writing() {
               {f.digits(words)} {l("শব্দ", "words")} ({f.digits(task.minWords)}–{f.digits(task.maxWords)})
             </span>
             <Button
-              disabled={words < 20}
-              onClick={() => {
-                const r = writingFeedback(text, task);
-                setFb(r);
-                record.mutate({ skill: "writing", score: r.overall, taskId: task.id });
-              }}
+              disabled={words < 20 || writing.isPending}
+              onClick={() => writing.mutate()}
             >
-              <Sparkles /> {l("ফিডব্যাক নাও", "Get feedback")}
+              <Sparkles /> {writing.isPending ? l("মূল্যায়ন হচ্ছে…", "Checking…") : l("ফিডব্যাক নাও", "Get feedback")}
             </Button>
           </div>
         </CardContent>
@@ -402,7 +408,7 @@ function Writing() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">{l("লেখার ফিডব্যাক", "Writing feedback")}</CardTitle>
-          <CardDescription>{l("নিয়মভিত্তিক সিমুলেটেড মূল্যায়ন — শিক্ষকের মূল্যায়নের বিকল্প নয়", "Rule-based simulated assessment — not a substitute for a teacher")}</CardDescription>
+          <CardDescription>{l("AI মূল্যায়ন — শিক্ষকের মূল্যায়নের বিকল্প নয়", "AI assessment — not a substitute for a teacher")}</CardDescription>
         </CardHeader>
         <CardContent>
           {!fb ? (

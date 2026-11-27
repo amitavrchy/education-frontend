@@ -2,6 +2,7 @@ import type { VoiceLanguage, VoiceSession, VoiceTurn } from "@/contracts";
 import { scenarios, type Scenario } from "@/mock-data/tutor-scenarios";
 import { daysFromNow } from "@/mock-data/utils";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { flashcardService } from "./flashcards.service";
 import { notesService } from "./notes.service";
@@ -22,6 +23,9 @@ export interface VoiceReplyInput {
   /** Oral exam: the scenario whose question is being answered. */
   oralScenarioId?: string;
   subjectId?: string;
+  /** API mode: whose quota is used, and the conversation so far. */
+  studentId?: string;
+  turns?: Pick<VoiceTurn, "speaker" | "text">[];
 }
 export interface VoiceReply {
   text: string;
@@ -120,8 +124,32 @@ export function voiceRepo(studentId: string) {
 
 const transcript = (s: VoiceSession) => s.turns.map((t) => `${t.speaker === "student" ? "শিক্ষার্থী" : "টিউটর"}: ${t.text}`).join("\n");
 
+/**
+ * API mode: the AI service writes each spoken reply (`POST /voice/:sid/reply`). In an oral exam
+ * `oralScenarioId` carries the question being answered; the reply returns the next one.
+ */
+export const remoteVoiceAdapter: VoiceAdapter = {
+  opening(language, mode) {
+    if (mode === "oral_exam")
+      return { text: T(language, "মৌখিক পরীক্ষা শুরু করছি। প্রস্তুত হলে 'শুরু' বলো, আমি প্রথম প্রশ্ন করব।", "Let's start the oral exam. Say 'start' when you're ready for the first question."), latencyMs: 0 };
+    return mockVoiceAdapter.opening(language, mode);
+  },
+  async reply(input) {
+    const t0 = Date.now();
+    const r = await remote.post<{ text: string; nextQuestion?: string; score?: { got: number; max: number } }>(`/voice/${input.studentId}/reply`, {
+      text: input.text,
+      mode: input.mode,
+      language: input.language,
+      subjectId: input.subjectId,
+      oralQuestion: input.oralScenarioId,
+      turns: (input.turns ?? []).slice(-10).map((t) => ({ speaker: t.speaker === "student" ? "student" : "tutor", text: t.text })),
+    });
+    return { text: r.text, oralScenarioId: r.nextQuestion, score: r.score, latencyMs: Date.now() - t0 };
+  },
+};
+
 export const voiceService = {
-  adapter: mockVoiceAdapter as VoiceAdapter,
+  adapter: (isRemote() ? remoteVoiceAdapter : mockVoiceAdapter) as VoiceAdapter,
   sessions: (studentId: string) => voiceRepo(studentId).all(),
   async quota(studentId: string) {
     const { meter, limits } = await usageService.get(studentId);
@@ -130,7 +158,8 @@ export const voiceService = {
   /** Persists a finished session and charges voice minutes. */
   async save(studentId: string, session: VoiceSession) {
     const minutes = Math.max(1, Math.ceil(session.durationSec / 60));
-    await usageService.consume(studentId, "voice", minutes).catch(() => undefined);
+    // API mode: the server already counts voice usage per reply.
+    if (!isRemote()) await usageService.consume(studentId, "voice", minutes).catch(() => undefined);
     const summary = session.summary ?? voiceService.summarize(session);
     const saved = { ...session, saved: true, summary };
     const repo = voiceRepo(studentId);

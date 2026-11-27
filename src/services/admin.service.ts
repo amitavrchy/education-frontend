@@ -1,4 +1,4 @@
-import { INGESTION_STAGES, type AiLogEntry, type AiSettings, type ApiKeySetting, type AuditLog, type EvalDataset, type IngestionJob, type IngestionStage, type KbCollection, type ModerationCase, type PromptTemplate, type SecurityAlert, type SessionRecord, type SystemConfig, type TutorContext } from "@/contracts";
+import { INGESTION_STAGES, type AiLogEntry, type AiSettings, type ApiKeySetting, type AuditLog, type EvalDataset, type IngestionJob, type IngestionStage, type KbCollection, type ModerationCase, type PromptTemplate, type SecurityAlert, type SessionRecord, type SourcePassage, type SystemConfig, type TutorContext } from "@/contracts";
 import type { UserRole } from "@/types";
 import { getDocument, saveDocument } from "@/lib/mock-db";
 import { ROLE_PERMISSIONS, type Permission, type PermissionMatrix } from "@/lib/auth/permissions";
@@ -6,6 +6,7 @@ import { subjects } from "@/mock-data/curriculum";
 import { daysFromNow, rng, SEED_EPOCH } from "@/mock-data/utils";
 import { retrieve } from "./ai/tutor-engine";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { booksRepo } from "./library.service";
 import { passagesRepo } from "./kb.service";
@@ -204,6 +205,10 @@ export const kbService = {
   },
   /** Retrieval preview: the same keyword retriever the mock tutor uses. */
   async simulateQuery(query: string, subjectId?: string) {
+    if (isRemote()) {
+      const rows = await remote.post<{ passage: SourcePassage; score: number }[]>("/kb/query", { query, subjectId });
+      return rows.slice(0, 6).map((r) => ({ p: r.passage, score: r.score }));
+    }
     await mockRequest(300);
     const passages = await passagesRepo.raw();
     const ctx: TutorContext = { levelCode: "SSC", grade: 10, subjectId, curriculumVersionId: "cv-2012r", language: "bn", mode: "simple" };

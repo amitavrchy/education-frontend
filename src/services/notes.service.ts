@@ -3,6 +3,7 @@ import { chapters, subjects, topics } from "@/mock-data/curriculum";
 import { scenarios } from "@/mock-data/tutor-scenarios";
 import { daysFromNow } from "@/mock-data/utils";
 import { createMockRepository, matchesSearch } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { progressService } from "./progress.service";
 import { registerSearchProvider, scoreText } from "./search.service";
@@ -122,6 +123,22 @@ export interface NoteDraftInput {
   tags?: string[];
 }
 
+type GenerateOpts = Parameters<typeof generateNoteHtml>[1];
+
+/** Note text: written by the AI service in API mode (`POST /notes/:sid/generate`), else locally. */
+async function generateNote(studentId: string, kind: NoteKind, opts: GenerateOpts): Promise<{ title: string; html: string }> {
+  if (!isRemote()) return generateNoteHtml(kind, opts);
+  return remote.post<{ title: string; html: string }>(`/notes/${studentId}/generate`, {
+    kind,
+    chapterId: opts.chapterId,
+    topicId: opts.topicId,
+    questionText: opts.questionText,
+    answerText: opts.answerText,
+    conversation: opts.conversation,
+    uploadText: opts.uploadName ? `File: ${opts.uploadName}` : undefined,
+  });
+}
+
 export const notesService = {
   list: (studentId: string) => notesRepos(studentId).notes.all(),
   get: (studentId: string, id: string) => notesRepos(studentId).notes.get(id),
@@ -129,7 +146,7 @@ export const notesService = {
 
   async create(studentId: string, input: NoteDraftInput) {
     await mockRequest(input.content ? 100 : 700);
-    const gen = input.content ? { title: input.title ?? "নতুন নোট", html: input.content } : generateNoteHtml(input.kind, { chapterId: input.chapterId, topicId: input.source.type === "topic" ? input.source.refId : undefined, uploadName: input.source.type === "upload" ? input.source.label : undefined });
+    const gen = input.content ? { title: input.title ?? "নতুন নোট", html: input.content } : await generateNote(studentId, input.kind, { chapterId: input.chapterId, topicId: input.source.type === "topic" ? input.source.refId : undefined, uploadName: input.source.type === "upload" ? input.source.label : undefined });
     const note = await notesRepos(studentId).notes.create({
       id: newId("note"),
       title: input.title ?? gen.title,
@@ -174,12 +191,12 @@ export const notesService = {
     await repo.bulkUpdate((await repo.raw()).filter((n) => n.folderId === id).map((n) => n.id), { folderId: undefined });
     await notesRepos(studentId).folders.remove(id);
   },
-  fromConversation: (studentId: string, title: string, transcript: string, subjectId?: string, chapterId?: string) => {
-    const g = generateNoteHtml("custom", { conversation: transcript });
+  fromConversation: async (studentId: string, title: string, transcript: string, subjectId?: string, chapterId?: string) => {
+    const g = await generateNote(studentId, "custom", { conversation: transcript });
     return notesService.create(studentId, { kind: "takeaways", title: title || g.title, content: g.html, source: { type: "conversation", label: title }, subjectId, chapterId });
   },
-  fromQuestion: (studentId: string, q: { id: string; stem: string; answer: string; subjectId: string; chapterId: string }) => {
-    const g = generateNoteHtml("important_questions", { questionText: q.stem, answerText: q.answer });
+  fromQuestion: async (studentId: string, q: { id: string; stem: string; answer: string; subjectId: string; chapterId: string }) => {
+    const g = await generateNote(studentId, "important_questions", { questionText: q.stem, answerText: q.answer });
     return notesService.create(studentId, { kind: "important_questions", title: g.title, content: g.html, source: { type: "question", refId: q.id }, subjectId: q.subjectId, chapterId: q.chapterId });
   },
 };

@@ -106,7 +106,7 @@ export function PhotoSolver() {
       setStage(0);
       const timer = window.setInterval(() => setStage((s) => Math.min(STAGES.length - 1, s + 1)), 420);
       try {
-        return await ocrService.extract(studentId, { name: file.name, size: file.size, type: file.type });
+        return await ocrService.extract(studentId, { name: file.name, size: file.size, type: file.type }, file);
       } finally {
         window.clearInterval(timer);
       }

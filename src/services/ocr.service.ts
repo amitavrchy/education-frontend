@@ -1,6 +1,8 @@
 import type { OcrJob } from "@/contracts";
 import { daysFromNow, hashString } from "@/mock-data/utils";
+import { toImageDataUrl } from "@/lib/image-data-url";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { notesService } from "./notes.service";
 import { practiceSetService, questionsRepo, reportsRepo } from "./question.service";
@@ -127,9 +129,16 @@ export function ocrRepo(studentId: string) {
 export const ocrService = {
   history: (studentId: string) => ocrRepo(studentId).all(),
   /** Simulated OCR: validates, charges photo quota, then "reads" the image. */
-  async extract(studentId: string, file: { name: string; size: number; type: string }) {
+  async extract(studentId: string, file: { name: string; size: number; type: string }, blob?: Blob) {
     const v = validateImage(file);
     if (v !== "ok") invalid(v);
+    // API mode: the AI service reads the photo (the server counts the photo quota).
+    if (isRemote()) {
+      if (!blob) invalid("INVALID_IMAGE");
+      const image = await toImageDataUrl(blob);
+      const res = await remote.post<{ job: OcrJob }>(`/ocr/${studentId}/solve`, { fileName: file.name, image, solve: false });
+      return res.job;
+    }
     await usageService.consume(studentId, "photo");
     await mockRequest(1600, { requiresNetwork: true });
     const fx = fixtureFor(file.name, file.size);
@@ -139,6 +148,14 @@ export const ocrService = {
     return ocrRepo(studentId).create({ id: newId("ocr"), fileName: file.name, fixtureId: fx.id, status: "extracted", extractedText: fx.text, detectedSubjectId: fx.subjectId, chapterId: fx.chapterId, confidence: fx.confidence, createdAt: nowIso() });
   },
   async solve(studentId: string, jobId: string, patch: { correctedText?: string; subjectId?: string; chapterId?: string }) {
+    if (isRemote()) {
+      const job = await ocrRepo(studentId).get(jobId);
+      return remote.post<OcrJob>(`/ocr/${studentId}/${jobId}/solve`, {
+        correctedText: (patch.correctedText ?? job.extractedText).trim(),
+        subjectId: patch.subjectId || undefined,
+        chapterId: patch.chapterId || undefined,
+      });
+    }
     await mockRequest(1200, { requiresNetwork: true });
     const repo = ocrRepo(studentId);
     const job = await repo.get(jobId);

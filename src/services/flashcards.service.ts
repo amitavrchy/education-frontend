@@ -3,6 +3,7 @@ import { chapters, subjects, topics } from "@/mock-data/curriculum";
 import { scenarios } from "@/mock-data/tutor-scenarios";
 import { daysFromNow, rng } from "@/mock-data/utils";
 import { createMockRepository, matchesSearch } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { progressService } from "./progress.service";
 import { questionsRepo } from "./question.service";
@@ -128,7 +129,12 @@ export const flashcardService = {
     const deck = await flashcardService.createDeck(studentId, { name: ch ? `${ch.title.bn} (AI)` : "AI ডেক", source: "ai", subjectId: ch?.subjectId, chapterId });
     const repo = flashcardRepos(studentId).cards;
     const stamp = nowIso();
-    const cards = cardsFromChapter(deck.id, chapterId).map((c) => ({ ...c, id: newId("fc"), createdAt: stamp, updatedAt: stamp }));
+    const drafts = isRemote()
+      ? (await remote.post<{ cards: { front: string; back: string; hint?: string; tags: string[] }[] }>(`/flashcards/${studentId}/generate`, { chapterId, count: 12 })).cards.map((c) => ({
+          deckId: deck.id, front: c.front, back: c.back, hint: c.hint, tags: c.tags, bookmarked: false, ease: 2.5, intervalDays: 0, repetitions: 0, lapses: 0, dueAt: stamp,
+        }))
+      : cardsFromChapter(deck.id, chapterId);
+    const cards = drafts.map((c) => ({ ...c, id: newId("fc"), createdAt: stamp, updatedAt: stamp }));
     await repo.replaceAll([...cards, ...(await repo.raw())]);
     return { deck, count: cards.length };
   },

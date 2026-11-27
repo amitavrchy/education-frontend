@@ -1,6 +1,7 @@
 import { getDocument, saveDocument } from "@/lib/mock-db";
 import { dateKey } from "@/mock-data/utils";
 import { mockRequest } from "./core/mock-runtime";
+import { isRemote, remote } from "./core/remote";
 import { flashcardService, flashcardRepos } from "./flashcards.service";
 import { progressService } from "./progress.service";
 
@@ -168,6 +169,11 @@ export const englishService = {
   async progress(studentId: string) {
     await mockRequest(100);
     return getDocument<EnglishProgress>(key(studentId), empty);
+  },
+  /** Writing feedback: the AI service in API mode, the rule-based checker in the mock. */
+  async writing(studentId: string, text: string, task: { minWords: number; maxWords: number; kind: string; title?: string }): Promise<WritingFeedback> {
+    if (!isRemote()) return writingFeedback(text, task);
+    return remote.post<WritingFeedback>(`/english/${studentId}/writing`, { text, kind: task.kind, prompt: task.title ?? "", minWords: task.minWords, maxWords: task.maxWords });
   },
   async record(studentId: string, skill: EnglishSkill, score: number, extra?: { taskId?: string }) {
     const p = await getDocument<EnglishProgress>(key(studentId), empty);

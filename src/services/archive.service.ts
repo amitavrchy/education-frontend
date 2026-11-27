@@ -2,6 +2,7 @@ import type { BoardPaper, InstitutionExamCategory, InstitutionPaper, LevelCode, 
 import { CURRENT_VERSION_ID, ARCHIVED_VERSION_ID, boards, chapters, subjects } from "@/mock-data/curriculum";
 import { questions as seedQuestions } from "@/mock-data/questions";
 import { institutions } from "@/mock-data/users";
+import { institutionsRepo } from "./people.service";
 import { bi, daysFromNow, hashString, rng, SEED_EPOCH } from "@/mock-data/utils";
 import { createMockRepository, matchesSearch } from "./core/repository";
 import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
@@ -309,13 +310,11 @@ export interface InstitutionPaperFilters {
 }
 
 export const institutionArchiveService = {
-  institutions: async () => {
-    await mockRequest(120);
-    return institutions;
-  },
+  /** The institution directory (from the server in API mode). */
+  institutions: () => institutionsRepo.raw(),
   async papers(f: InstitutionPaperFilters) {
     await mockRequest(160);
-    const insts = new Map(institutions.map((i) => [i.id, i]));
+    const insts = new Map((await institutionsRepo.raw()).map((i) => [i.id, i]));
     return (await institutionPapersRepo.raw())
       .filter((p) => {
         const inst = insts.get(p.institutionId);
@@ -338,7 +337,8 @@ export const institutionArchiveService = {
   async paperWithQuestions(id: string) {
     const paper = await institutionPapersRepo.get(id);
     const all = new Map((await questionsRepo.raw()).map((q) => [q.id, q]));
-    return { paper, questions: paper.questionIds.map((q) => all.get(q)).filter(Boolean) as Question[], institution: institutions.find((i) => i.id === paper.institutionId)! };
+    const institution = await institutionsRepo.get(paper.institutionId);
+    return { paper, questions: paper.questionIds.map((q) => all.get(q)).filter(Boolean) as Question[], institution };
   },
   async report(paperId: string, reporterId: string, reason: string, details?: string) {
     const p = await institutionPapersRepo.get(paperId);

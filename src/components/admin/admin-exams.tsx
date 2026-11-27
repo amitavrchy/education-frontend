@@ -28,6 +28,7 @@ import { useCurriculum } from "@/hooks/use-curriculum";
 import { useFormat, useL } from "@/i18n";
 import { errorText } from "@/lib/errors";
 import { DEMO_STUDENT_ID } from "@/mock-data/users";
+import { isRemote, remote } from "@/services/core/remote";
 import { audit } from "@/services/admin.service";
 import { newId, nowIso } from "@/services/core/mock-runtime";
 import { examAttemptsRepo, examsRepo, gradeFor, templatesRepo } from "@/services/exam.service";
@@ -165,7 +166,12 @@ function ExamDetail({ exam, onClose, onDuplicate }: { exam: Exam; onClose: () =>
   const live = useQuery({ queryKey: ["exams", "one", exam.id], queryFn: () => examsRepo.get(exam.id), initialData: exam });
   const e = live.data;
   const qs = useQuery({ queryKey: ["exam-questions", exam.id], queryFn: async () => (await questionsRepo.raw()).filter((q) => exam.questionIds.includes(q.id)) });
-  const attempts = useQuery({ queryKey: ["exam-attempts-admin", exam.id], queryFn: async () => (await examAttemptsRepo(DEMO_STUDENT_ID).raw()).filter((a) => a.examId === exam.id && a.result) });
+  // Results across every student (the server lists them; the mock has one demo student).
+  const attempts = useQuery({
+    queryKey: ["exam-attempts-admin", exam.id],
+    queryFn: async (): Promise<ExamAttempt[]> =>
+      isRemote() ? remote.get("/staff/exam-attempts", { examId: exam.id }) : (await examAttemptsRepo(DEMO_STUDENT_ID).raw()).filter((a) => a.examId === exam.id && a.result),
+  });
   const [override, setOverride] = useState<{ id: string; score: number; note: string } | null>(null);
 
   const patch = useMutation({
@@ -179,11 +185,12 @@ function ExamDetail({ exam, onClose, onDuplicate }: { exam: Exam; onClose: () =>
   const saveOverride = useMutation({
     mutationFn: async () => {
       if (!override) return;
-      const a = await examAttemptsRepo(DEMO_STUDENT_ID).get(override.id);
+      const owner = attempts.data?.find((x) => x.id === override.id)?.studentId ?? DEMO_STUDENT_ID;
+      const a = await examAttemptsRepo(owner).get(override.id);
       if (!a.result) return;
       if (override.score < 0 || override.score > a.result.total) throw new Error(l(`০–${a.result.total} এর মধ্যে নম্বর দিন`, `Score must be 0–${a.result.total}`));
       const percent = Math.round((override.score / a.result.total) * 100);
-      await examAttemptsRepo(DEMO_STUDENT_ID).update(a.id, { result: { ...a.result, score: override.score, percent, grade: gradeFor(percent), passed: percent >= e.passPercent, teacherFeedback: { by: actor.name, text: override.note || l("ম্যানুয়াল নম্বর সংশোধন", "Manual score override"), at: nowIso() } } });
+      await examAttemptsRepo(owner).update(a.id, { result: { ...a.result, score: override.score, percent, grade: gradeFor(percent), passed: percent >= e.passPercent, teacherFeedback: { by: actor.name, text: override.note || l("ম্যানুয়াল নম্বর সংশোধন", "Manual score override"), at: nowIso() } } });
       await audit(actor, "content", "exam.grade_override", { type: "exam_attempt", id: a.id, label: `${a.result.score} → ${override.score}` }, override.note);
     },
     onSuccess: () => (toast.success(l("নম্বর সংশোধিত — শিক্ষার্থীর ফলাফলে দেখা যাবে", "Score overridden — visible in the student's result")), setOverride(null), void attempts.refetch()),

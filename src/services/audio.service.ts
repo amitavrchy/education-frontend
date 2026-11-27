@@ -3,6 +3,7 @@ import { chapters, subjects, topics } from "@/mock-data/curriculum";
 import { scenarios } from "@/mock-data/tutor-scenarios";
 import { bi, daysFromNow, SEED_EPOCH } from "@/mock-data/utils";
 import { createMockRepository, matchesSearch } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { progressService } from "./progress.service";
 import { registerSearchProvider, scoreText } from "./search.service";
@@ -104,6 +105,8 @@ export const audioService = {
   },
   /** Simulated "AI" lesson generation: assembled from curriculum knowledge, not a TTS/AI provider. */
   async generate(chapterId: string) {
+    // API mode: the AI service writes the lesson script; the server saves it to the catalogue.
+    if (isRemote()) return remote.post<AudioLesson>("/audio-lessons/generate", { chapterId });
     await mockRequest(1600, { requiresNetwork: true });
     const lesson = chapterLesson(chapterId, "generated");
     return lessonsRepo.create({ ...lesson, id: newId("aud") });

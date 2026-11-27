@@ -152,7 +152,7 @@ export function VoiceTutor() {
   );
 
   const reply = useMutation({
-    mutationFn: (text: string) => voiceService.adapter.reply({ text, language, mode, oralScenarioId: oralId, subjectId: subjectId === "none" ? undefined : subjectId }),
+    mutationFn: (text: string) => voiceService.adapter.reply({ text, language, mode, oralScenarioId: oralId, subjectId: subjectId === "none" ? undefined : subjectId, studentId, turns: sessionRef.current?.turns.slice(0, -1) }),
     onSuccess: (r) => {
       setLastLatency(r.latencyMs);
       if (r.oralScenarioId) setOralId(r.oralScenarioId);

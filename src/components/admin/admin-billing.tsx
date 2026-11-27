@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowDownRight, ArrowUpRight, CheckCircle2, CreditCard, Loader2, Pencil, Plus, Receipt, XCircle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { BarsChart, DonutChart, TrendChart } from "@/components/charts/kit";
 import { ChartCard } from "@/components/charts/chart-card";
@@ -22,40 +22,59 @@ import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetT
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Coupon, Payment, Plan, PlanCode, RefundRequest, Subscription } from "@/contracts";
+import type { Coupon, ManualPaymentMethod, Payment, PaymentSettings, Plan, PlanCode, RefundRequest, Subscription } from "@/contracts";
 import { useCan } from "@/hooks/use-auth";
 import { useFormat, useL } from "@/i18n";
 import { errorText } from "@/lib/errors";
 import { analyticsSeries, audit } from "@/services/admin.service";
 import { usersRepo } from "@/services/auth.service";
-import { billingService, couponsRepo, paymentsRepo, plansRepo, priceWithCoupon, refundsRepo, subscriptionsRepo } from "@/services/billing.service";
+import { billingService, couponsRepo, manualPaymentService, paymentsRepo, plansRepo, priceWithCoupon, refundsRepo, subscriptionsRepo } from "@/services/billing.service";
+import { isRemote } from "@/services/core/remote";
 import { mockRequest, newId, nowIso } from "@/services/core/mock-runtime";
 import { ConfirmAction, DemoDataNote, KeyValue } from "./admin-shared";
 
 const PLAN_ORDER: PlanCode[] = ["free", "pro", "family"];
-const METHOD_LABEL: Record<Payment["method"], string> = { bkash_mock: "bKash (mock)", nagad_mock: "Nagad (mock)", card_mock: "Card (mock)", bank_mock: "Bank (mock)" };
+const METHOD_LABEL: Record<Payment["method"], string> = { bkash: "bKash", nagad: "Nagad", rocket: "Rocket", upay: "Upay", bkash_mock: "bKash (mock)", nagad_mock: "Nagad (mock)", card_mock: "Card (mock)", bank_mock: "Bank (mock)" };
+const MANUAL_METHODS: ManualPaymentMethod[] = ["bkash", "nagad", "rocket", "upay"];
 
 export function AdminSubscriptions() {
   const l = useL();
   const can = useCan();
   const manage = can("billing.manage");
+  const live = isRemote();
+  const [tab, setTab] = useState("analytics");
+  // Links from payment notifications open the verification tab (?tab=verify).
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.search).get("tab");
+    if (t) setTab(t);
+  }, []);
   return (
     <>
       <PageHeader title={l("সাবস্ক্রিপশন ও বিলিং", "Subscriptions & billing")} description={l("প্ল্যান, সীমা, সাবস্ক্রিপশন, পেমেন্ট, ইনভয়েস, কুপন, ট্রায়াল, রিফান্ড, চেকআউট সিমুলেটর ও আয় বিশ্লেষণ", "Plans, limits, subscriptions, payments, invoices, coupons, trials, refunds, checkout simulator and revenue analytics")} />
-      <Alert className="mb-4">
-        <AlertTitle>{l("সব আর্থিক সংখ্যা মক/ডেমো", "All financial figures are mock/demo")}</AlertTitle>
-        <AlertDescription>{l("কোনো প্রকৃত পেমেন্ট গেটওয়ে সংযুক্ত নেই; কার্ডের তথ্য কখনো সংগ্রহ বা সংরক্ষণ হয় না।", "No real payment gateway is connected; card details are never collected or stored.")}</AlertDescription>
-      </Alert>
-      <Tabs defaultValue="analytics">
+      {!live && (
+        <Alert className="mb-4">
+          <AlertTitle>{l("সব আর্থিক সংখ্যা মক/ডেমো", "All financial figures are mock/demo")}</AlertTitle>
+          <AlertDescription>{l("কোনো প্রকৃত পেমেন্ট গেটওয়ে সংযুক্ত নেই; কার্ডের তথ্য কখনো সংগ্রহ বা সংরক্ষণ হয় না।", "No real payment gateway is connected; card details are never collected or stored.")}</AlertDescription>
+        </Alert>
+      )}
+      <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex-wrap">
+          <TabsTrigger value="verify">{l("পেমেন্ট যাচাই", "Verify payments")}</TabsTrigger>
+          <TabsTrigger value="wallets">{l("পেমেন্ট নম্বর", "Payment numbers")}</TabsTrigger>
           <TabsTrigger value="analytics">{l("বিশ্লেষণ", "Analytics")}</TabsTrigger>
           <TabsTrigger value="plans">{l("প্ল্যান", "Plans")}</TabsTrigger>
           <TabsTrigger value="subs">{l("সাবস্ক্রিপশন", "Subscriptions")}</TabsTrigger>
           <TabsTrigger value="payments">{l("পেমেন্ট ও ইনভয়েস", "Payments & invoices")}</TabsTrigger>
           <TabsTrigger value="coupons">{l("কুপন", "Coupons")}</TabsTrigger>
           <TabsTrigger value="refunds">{l("রিফান্ড", "Refunds")}</TabsTrigger>
-          <TabsTrigger value="checkout">{l("চেকআউট সিমুলেটর", "Checkout simulator")}</TabsTrigger>
+          {!live && <TabsTrigger value="checkout">{l("চেকআউট সিমুলেটর", "Checkout simulator")}</TabsTrigger>}
         </TabsList>
+        <TabsContent value="verify" className="mt-4">
+          <PaymentVerification manage={manage} />
+        </TabsContent>
+        <TabsContent value="wallets" className="mt-4">
+          <PaymentNumbers manage={manage} />
+        </TabsContent>
         <TabsContent value="analytics" className="mt-4">
           <RevenueAnalytics />
         </TabsContent>
@@ -79,6 +98,147 @@ export function AdminSubscriptions() {
         </TabsContent>
       </Tabs>
     </>
+  );
+}
+
+/** Manual payments waiting for a transaction-id check: approve activates the plan, reject needs a reason. */
+function PaymentVerification({ manage }: { manage: boolean }) {
+  const l = useL();
+  const f = useFormat();
+  const qc = useQueryClient();
+  const awaiting = useQuery({ queryKey: ["billing", "awaiting"], queryFn: manualPaymentService.awaiting, refetchInterval: 30_000 });
+  const [reject, setReject] = useState<Payment | null>(null);
+  const [note, setNote] = useState("");
+  const verify = useMutation({
+    mutationFn: ({ id, approve, note }: { id: string; approve: boolean; note: string }) => manualPaymentService.verify(id, approve, note),
+    onSuccess: (p) => {
+      toast.success(p.status === "success" ? l("যাচাই সম্পন্ন — প্ল্যান চালু হয়েছে", "Verified — the plan is active") : l("পেমেন্ট বাতিল করা হয়েছে", "Payment rejected"));
+      setReject(null);
+      setNote("");
+      void qc.invalidateQueries({ queryKey: ["billing"] });
+    },
+    onError: (e) => toast.error(errorText(e, l)),
+  });
+  if (awaiting.isLoading) return <Skeleton className="h-40" />;
+  const rows = awaiting.data ?? [];
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{l("যাচাইয়ের অপেক্ষায়", "Awaiting verification")} ({f.digits(rows.length)})</CardTitle>
+        <CardDescription>{l("বিকাশ/নগদ/রকেট/উপায় স্টেটমেন্টে ট্রানজেকশন আইডি, প্রেরকের নম্বর ও টাকার পরিমাণ মিলিয়ে দেখুন।", "Check the transaction ID, sender number and amount against your bKash/Nagad/Rocket/Upay statement.")}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {!rows.length && <p className="py-6 text-center text-sm text-muted-foreground">{l("কোনো পেমেন্ট অপেক্ষমাণ নেই।", "No payments are waiting.")}</p>}
+        {rows.map((p) => (
+          <div key={p.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3 text-sm">
+            <div className="space-y-0.5">
+              <p className="font-medium">
+                {p.userName} · {p.planCode.toUpperCase()} {p.cycle === "yearly" ? l("(বার্ষিক)", "(yearly)") : l("(মাসিক)", "(monthly)")} · {f.currency(p.amount)}
+              </p>
+              <p className="font-mono text-xs">
+                {METHOD_LABEL[p.method]} · {p.senderNumber} · TrxID {p.transactionId}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {p.invoiceNo} · {f.date(p.createdAt, { dateStyle: "medium", timeStyle: "short" })}
+                {p.couponCode ? ` · ${l("কুপন", "coupon")} ${p.couponCode}` : ""}
+              </p>
+            </div>
+            {manage && (
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => setReject(p)} disabled={verify.isPending}>
+                  <XCircle /> {l("বাতিল", "Reject")}
+                </Button>
+                <Button size="sm" onClick={() => verify.mutate({ id: p.id, approve: true, note: "" })} disabled={verify.isPending}>
+                  <CheckCircle2 /> {l("যাচাই করুন", "Verify")}
+                </Button>
+              </div>
+            )}
+          </div>
+        ))}
+      </CardContent>
+      <ConfirmAction
+        open={!!reject}
+        title={l("পেমেন্ট বাতিল করবেন?", "Reject this payment?")}
+        description={reject ? `${reject.userName} · TrxID ${reject.transactionId}` : undefined}
+        confirmLabel={l("বাতিল করুন", "Reject")}
+        pending={verify.isPending}
+        onCancel={() => setReject(null)}
+        onConfirm={() => reject && note.trim() && verify.mutate({ id: reject.id, approve: false, note })}
+      >
+        <Label htmlFor="reject-note">{l("কারণ (শিক্ষার্থী দেখতে পাবে)", "Reason (shown to the student)")}</Label>
+        <Input id="reject-note" value={note} onChange={(e) => setNote(e.target.value)} placeholder={l("ট্রানজেকশন আইডি মেলেনি", "Transaction ID not found")} />
+      </ConfirmAction>
+    </Card>
+  );
+}
+
+/** Wallet numbers students send money to (bKash, Nagad, Rocket, Upay). */
+function PaymentNumbers({ manage }: { manage: boolean }) {
+  const l = useL();
+  const qc = useQueryClient();
+  const doc = useQuery({ queryKey: ["billing", "payment-settings", "admin"], queryFn: manualPaymentService.adminSettings });
+  const [draft, setDraft] = useState<PaymentSettings | null>(null);
+  const current: PaymentSettings = draft ?? doc.data ?? { id: "payment", methods: [] };
+  const row = (m: ManualPaymentMethod) => current.methods.find((x) => x.method === m) ?? { method: m, number: "", accountType: "personal" as const, enabled: false, instructions: "" };
+  const setRow = (m: ManualPaymentMethod, patch: Partial<PaymentSettings["methods"][number]>) =>
+    setDraft({ id: "payment", methods: MANUAL_METHODS.map((x) => (x === m ? { ...row(x), ...patch } : row(x))) });
+  const save = useMutation({
+    mutationFn: () => {
+      for (const m of current.methods) if (m.enabled && !/^01[3-9]\d{8}$/.test(m.number)) throw new Error(l(`${METHOD_LABEL[m.method]}: সঠিক ১১ সংখ্যার নম্বর দিন`, `${METHOD_LABEL[m.method]}: enter a valid 11-digit number`));
+      return manualPaymentService.saveSettings(current);
+    },
+    onSuccess: () => (toast.success(l("সংরক্ষিত", "Saved")), setDraft(null), void qc.invalidateQueries({ queryKey: ["billing", "payment-settings"] })),
+    onError: (e) => toast.error(errorText(e, l)),
+  });
+  if (doc.isLoading) return <Skeleton className="h-40" />;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{l("পেমেন্ট গ্রহণের নম্বর", "Payment numbers")}</CardTitle>
+        <CardDescription>{l("চালু করা মাধ্যমগুলো শিক্ষার্থী চেকআউটে দেখবে। টাকা পাঠিয়ে তারা ট্রানজেকশন আইডি জমা দেবে।", "Students see the enabled methods at checkout, send money and submit the transaction ID.")}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {MANUAL_METHODS.map((m) => {
+          const r = row(m);
+          return (
+            <div key={m} className="grid gap-2 rounded-lg border p-3 sm:grid-cols-[120px_1fr_160px_auto] sm:items-end">
+              <div className="flex items-center gap-2 font-medium">
+                <Switch checked={r.enabled} onCheckedChange={(v) => setRow(m, { enabled: v })} disabled={!manage} aria-label={METHOD_LABEL[m]} />
+                {METHOD_LABEL[m]}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor={`num-${m}`}>{l("নম্বর", "Number")}</Label>
+                <Input id={`num-${m}`} inputMode="tel" value={r.number} onChange={(e) => setRow(m, { number: e.target.value.replace(/[^\d]/g, "") })} placeholder="01XXXXXXXXX" disabled={!manage} />
+              </div>
+              <div className="space-y-1">
+                <Label>{l("অ্যাকাউন্টের ধরন", "Account type")}</Label>
+                <Select value={r.accountType} onValueChange={(v) => setRow(m, { accountType: v as "personal" | "agent" | "merchant" })} disabled={!manage}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="personal">{l("পার্সোনাল", "Personal")}</SelectItem>
+                    <SelectItem value="agent">{l("এজেন্ট", "Agent")}</SelectItem>
+                    <SelectItem value="merchant">{l("মার্চেন্ট", "Merchant")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1 sm:col-span-4">
+                <Label htmlFor={`ins-${m}`}>{l("নির্দেশনা (ঐচ্ছিক)", "Instructions (optional)")}</Label>
+                <Input id={`ins-${m}`} value={r.instructions ?? ""} onChange={(e) => setRow(m, { instructions: e.target.value })} placeholder={l("রেফারেন্সে আপনার ফোন নম্বর লিখুন", "Put your phone number in the reference")} disabled={!manage} />
+              </div>
+            </div>
+          );
+        })}
+        {manage && (
+          <div className="flex justify-end">
+            <Button onClick={() => save.mutate()} disabled={!draft || save.isPending}>
+              {save.isPending ? <Loader2 className="animate-spin" /> : null} {l("সংরক্ষণ", "Save")}
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

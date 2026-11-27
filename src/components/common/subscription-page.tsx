@@ -18,16 +18,27 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import type { Coupon, Payment, Plan, PlanCode } from "@/contracts";
+import type { Coupon, ManualPaymentMethod, Payment, Plan, PlanCode } from "@/contracts";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useFormat, useL } from "@/i18n";
 import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
-import { billingService, priceWithCoupon } from "@/services/billing.service";
+import { billingService, manualPaymentService, priceWithCoupon } from "@/services/billing.service";
+import { isRemote } from "@/services/core/remote";
 import { usageService } from "@/services/usage.service";
 import type { PortalKey } from "@/types";
 
-const METHOD_LABEL: Record<Payment["method"], [string, string]> = { bkash_mock: ["বিকাশ (ডেমো)", "bKash (demo)"], nagad_mock: ["নগদ (ডেমো)", "Nagad (demo)"], card_mock: ["কার্ড (ডেমো)", "Card (demo)"], bank_mock: ["ব্যাংক (ডেমো)", "Bank (demo)"] };
+const METHOD_LABEL: Record<Payment["method"], [string, string]> = {
+  bkash: ["বিকাশ", "bKash"],
+  nagad: ["নগদ", "Nagad"],
+  rocket: ["রকেট", "Rocket"],
+  upay: ["উপায়", "Upay"],
+  bkash_mock: ["বিকাশ (ডেমো)", "bKash (demo)"],
+  nagad_mock: ["নগদ (ডেমো)", "Nagad (demo)"],
+  card_mock: ["কার্ড (ডেমো)", "Card (demo)"],
+  bank_mock: ["ব্যাংক (ডেমো)", "Bank (demo)"],
+};
+const ACCOUNT_TYPE: Record<"personal" | "agent" | "merchant", [string, string]> = { personal: ["পার্সোনাল — সেন্ড মানি", "Personal — Send Money"], agent: ["এজেন্ট — ক্যাশ ইন", "Agent — Cash In"], merchant: ["মার্চেন্ট — পেমেন্ট", "Merchant — Payment"] };
 
 export function SubscriptionPage(_props: { portal: PortalKey }) {
   const l = useL();
@@ -71,10 +82,19 @@ export function SubscriptionPage(_props: { portal: PortalKey }) {
         <Alert className="mb-4 border-warning/60 bg-warning/10">
           <Clock className="text-warning" />
           <AlertDescription className="flex flex-wrap items-center gap-2">
-            {l(`পেমেন্ট ${pendingPayment.invoiceNo} অপেক্ষমাণ — ওয়ালেট অ্যাপে নিশ্চিত করো।`, `Payment ${pendingPayment.invoiceNo} is pending — confirm it in your wallet app.`)}
-            <Button size="sm" variant="outline" disabled={confirm.isPending} onClick={() => confirm.mutate(pendingPayment.id)}>
-              {l("গেটওয়ে নিশ্চিতকরণ সিমুলেট করো", "Simulate gateway confirmation")}
-            </Button>
+            {pendingPayment.verification === "awaiting" ? (
+              l(
+                `পেমেন্ট ${pendingPayment.invoiceNo} (${METHOD_LABEL[pendingPayment.method][0]} TrxID ${pendingPayment.transactionId}) যাচাইয়ের অপেক্ষায়। অ্যাডমিন যাচাই করলেই প্ল্যান চালু হবে।`,
+                `Payment ${pendingPayment.invoiceNo} (${METHOD_LABEL[pendingPayment.method][1]} TrxID ${pendingPayment.transactionId}) is awaiting verification. The plan activates once an admin verifies it.`,
+              )
+            ) : (
+              <>
+                {l(`পেমেন্ট ${pendingPayment.invoiceNo} অপেক্ষমাণ — ওয়ালেট অ্যাপে নিশ্চিত করো।`, `Payment ${pendingPayment.invoiceNo} is pending — confirm it in your wallet app.`)}
+                <Button size="sm" variant="outline" disabled={confirm.isPending} onClick={() => confirm.mutate(pendingPayment.id)}>
+                  {l("গেটওয়ে নিশ্চিতকরণ সিমুলেট করো", "Simulate gateway confirmation")}
+                </Button>
+              </>
+            )}
           </AlertDescription>
         </Alert>
       )}
@@ -320,7 +340,163 @@ function DowngradeButton({ uid, onDone }: { uid: string; onDone: () => void }) {
   );
 }
 
-function CheckoutDialog({ plan, cycle, isFree, onClose, onDone }: { plan: Plan; cycle: "monthly" | "yearly"; isFree: boolean; onClose: () => void; onDone: () => void }) {
+function CheckoutDialog(props: { plan: Plan; cycle: "monthly" | "yearly"; isFree: boolean; onClose: () => void; onDone: () => void }) {
+  return isRemote() ? <ManualCheckoutDialog {...props} /> : <DemoCheckoutDialog {...props} />;
+}
+
+/**
+ * Manual mobile-wallet payment: the student sends the amount to our bKash/Nagad/Rocket/Upay
+ * number, then submits their number and the transaction id. An admin verifies it.
+ */
+function ManualCheckoutDialog({ plan, cycle, isFree, onClose, onDone }: { plan: Plan; cycle: "monthly" | "yearly"; isFree: boolean; onClose: () => void; onDone: () => void }) {
+  const l = useL();
+  const f = useFormat();
+  const user = useCurrentUser()!;
+  const settings = useQuery({ queryKey: ["billing", "payment-settings"], queryFn: manualPaymentService.settings });
+  const methods = (settings.data?.methods ?? []).filter((m) => m.enabled && m.number);
+  const [method, setMethod] = useState<ManualPaymentMethod | "">("");
+  const active = methods.find((m) => m.method === method) ?? methods[0];
+  const [sender, setSender] = useState("");
+  const [trx, setTrx] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  const [trial, setTrial] = useState(isFree && plan.trialDays > 0);
+  const [result, setResult] = useState<Payment | null>(null);
+  const base = cycle === "yearly" ? plan.priceYearly : plan.priceMonthly;
+  const { total, discount } = priceWithCoupon(base, coupon);
+  const validate = useMutation({ mutationFn: () => billingService.validateCoupon(couponCode, plan.code), onSuccess: (c) => (setCoupon(c), toast.success(l("কুপন প্রয়োগ হয়েছে", "Coupon applied"))), onError: (e) => (setCoupon(null), toast.error(errorText(e, l))) });
+  const pay = useMutation({
+    mutationFn: () => billingService.checkout({ userId: user.id, userName: user.name, planCode: plan.code, cycle, method: active?.method ?? "bkash", account: sender, transactionId: trx, couponCode: coupon?.code, startTrial: trial }),
+    onSuccess: (p) => {
+      setResult(p);
+      onDone();
+    },
+    onError: (e) => toast.error(errorText(e, l)),
+  });
+  const validSender = /^(\+?88)?01[3-9]\d{8}$/.test(sender.replace(/[\s-]/g, ""));
+  const validTrx = /^[A-Za-z0-9]{6,20}$/.test(trx.trim());
+  const canPay = trial || (!!active && validSender && validTrx);
+  const copy = (text: string) => void navigator.clipboard?.writeText(text).then(() => toast.success(l("কপি হয়েছে", "Copied")));
+
+  return (
+    <Dialog open onOpenChange={(o) => !o && !pay.isPending && onClose()}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-md">
+        {result ? (
+          <div className="space-y-4 py-2 text-center">
+            {result.status === "success" ? <CheckCircle2 className="mx-auto size-14 text-success" /> : <Clock className="mx-auto size-14 text-warning" />}
+            <DialogHeader className="items-center">
+              <DialogTitle>{result.status === "success" ? l("ট্রায়াল চালু হয়েছে!", "Trial started!") : l("যাচাইয়ের জন্য জমা হয়েছে", "Submitted for verification")}</DialogTitle>
+              <DialogDescription>
+                {result.status === "success"
+                  ? l(`${f.pick(plan.name)} এখন সক্রিয়।`, `${f.pick(plan.name)} is now active.`)
+                  : l("অ্যাডমিন তোমার লেনদেন যাচাই করলেই প্ল্যান চালু হবে। ফলাফল নোটিফিকেশনে জানানো হবে।", "Your plan activates as soon as an admin verifies the transaction. You'll get a notification.")}
+              </DialogDescription>
+            </DialogHeader>
+            <p className="font-mono text-xs text-muted-foreground">
+              {result.invoiceNo} · {f.currency(result.amount)}
+              {result.transactionId ? ` · TrxID ${result.transactionId}` : ""}
+            </p>
+            <DialogFooter className="sm:justify-center">
+              <Button onClick={onClose}>{l("বন্ধ করো", "Close")}</Button>
+            </DialogFooter>
+          </div>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>{l(`${f.pick(plan.name)} — পেমেন্ট`, `${f.pick(plan.name)} — payment`)}</DialogTitle>
+              <DialogDescription>{l("বিকাশ, নগদ, রকেট বা উপায়ে টাকা পাঠিয়ে ট্রানজেকশন আইডি দাও।", "Send the amount by bKash, Nagad, Rocket or Upay and enter the transaction ID.")}</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              {isFree && plan.trialDays > 0 && (
+                <label className="flex items-center gap-2 rounded-lg border p-3 text-sm">
+                  <input type="checkbox" className="accent-primary" checked={trial} onChange={(e) => setTrial(e.target.checked)} />
+                  {l(`${f.digits(plan.trialDays)} দিনের ফ্রি ট্রায়াল শুরু করো (এখন কোনো চার্জ নেই)`, `Start a ${plan.trialDays}-day free trial (no charge now)`)}
+                </label>
+              )}
+              {!trial && settings.isLoading && <Skeleton className="h-24" />}
+              {!trial && settings.isSuccess && !methods.length && (
+                <Alert>
+                  <AlertTriangle />
+                  <AlertDescription>{l("পেমেন্ট গ্রহণ এখনো চালু হয়নি। পরে আবার চেষ্টা করো।", "Payments aren't set up yet. Please try again later.")}</AlertDescription>
+                </Alert>
+              )}
+              {!trial && active && (
+                <>
+                  <RadioGroup value={active.method} onValueChange={(v) => setMethod(v as ManualPaymentMethod)} className="grid grid-cols-2 gap-2">
+                    {methods.map((m) => (
+                      <Label key={m.method} className={cn("flex cursor-pointer items-center gap-2 rounded-lg border p-3 font-normal", active.method === m.method && "border-primary bg-accent")}>
+                        <RadioGroupItem value={m.method} />
+                        <Smartphone className="size-4" /> {l(...METHOD_LABEL[m.method])}
+                      </Label>
+                    ))}
+                  </RadioGroup>
+                  <div className="space-y-2 rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">
+                    <p className="font-medium">
+                      {l(`১. ${METHOD_LABEL[active.method][0]} থেকে ${f.currency(total)} পাঠাও:`, `1. Send ${f.currency(total)} with ${METHOD_LABEL[active.method][1]} to:`)}
+                    </p>
+                    <div className="flex items-center justify-between gap-2 rounded-md bg-background px-3 py-2">
+                      <span className="font-mono text-base tracking-wide">{active.number}</span>
+                      <Button size="sm" variant="ghost" onClick={() => copy(active.number)}>
+                        {l("কপি", "Copy")}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{l(...ACCOUNT_TYPE[active.accountType])}{active.instructions ? ` · ${active.instructions}` : ""}</p>
+                    <p className="font-medium">{l("২. নিচে তোমার নম্বর ও ট্রানজেকশন আইডি দাও।", "2. Enter your number and the transaction ID below.")}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="sender">{l("যে নম্বর থেকে টাকা পাঠিয়েছ", "Number you sent from")}</Label>
+                    <Input id="sender" inputMode="tel" value={sender} onChange={(e) => setSender(e.target.value)} placeholder="01XXXXXXXXX" aria-invalid={!!sender && !validSender} />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="trx">{l("ট্রানজেকশন আইডি (TrxID)", "Transaction ID (TrxID)")}</Label>
+                    <Input id="trx" value={trx} onChange={(e) => setTrx(e.target.value.toUpperCase())} placeholder="8N7A6D5C4B" className="font-mono" aria-invalid={!!trx && !validTrx} />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="coupon">{l("কুপন কোড", "Coupon code")}</Label>
+                    <div className="flex gap-2">
+                      <Input id="coupon" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="SSC2027" />
+                      <Button variant="outline" disabled={!couponCode.trim() || validate.isPending} onClick={() => validate.mutate()}>
+                        <Tag /> {l("প্রয়োগ", "Apply")}
+                      </Button>
+                    </div>
+                    {coupon && <p className="text-xs text-success">{coupon.description}</p>}
+                  </div>
+                </>
+              )}
+              <div className="space-y-1 rounded-lg bg-muted/60 p-3 text-sm">
+                <div className="flex justify-between">
+                  <span>{cycle === "yearly" ? l("বার্ষিক মূল্য", "Yearly price") : l("মাসিক মূল্য", "Monthly price")}</span>
+                  <span>{f.currency(base)}</span>
+                </div>
+                {!!discount && !trial && (
+                  <div className="flex justify-between text-success">
+                    <span>{l("ছাড়", "Discount")}</span>
+                    <span>−{f.currency(discount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between border-t pt-1 font-semibold">
+                  <span>{l("পাঠাতে হবে", "Amount to send")}</span>
+                  <span>{f.currency(trial ? 0 : total)}</span>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={onClose} disabled={pay.isPending}>
+                {l("বাতিল", "Cancel")}
+              </Button>
+              <Button disabled={!canPay || pay.isPending} onClick={() => pay.mutate()}>
+                {pay.isPending ? <Loader2 className="animate-spin" /> : null}
+                {trial ? l("ট্রায়াল শুরু", "Start trial") : l("যাচাইয়ের জন্য জমা দাও", "Submit for verification")}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DemoCheckoutDialog({ plan, cycle, isFree, onClose, onDone }: { plan: Plan; cycle: "monthly" | "yearly"; isFree: boolean; onClose: () => void; onDone: () => void }) {
   const l = useL();
   const f = useFormat();
   const user = useCurrentUser()!;
@@ -382,7 +558,7 @@ function CheckoutDialog({ plan, cycle, isFree, onClose, onDone }: { plan: Plan; 
               {!trial && (
                 <>
                   <RadioGroup value={method} onValueChange={(v) => (setMethod(v as Payment["method"]), setAccount(""))} className="grid grid-cols-2 gap-2">
-                    {(Object.keys(METHOD_LABEL) as Payment["method"][]).map((m) => (
+                    {(["bkash_mock", "nagad_mock", "card_mock", "bank_mock"] as Payment["method"][]).map((m) => (
                       <Label key={m} className={cn("flex cursor-pointer items-center gap-2 rounded-lg border p-3 font-normal", method === m && "border-primary bg-accent")}>
                         <RadioGroupItem value={m} />
                         {m === "card_mock" ? <CreditCard className="size-4" /> : <Smartphone className="size-4" />} {l(...METHOD_LABEL[m])}

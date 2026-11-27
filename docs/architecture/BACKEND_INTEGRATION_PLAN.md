@@ -61,9 +61,17 @@ Run the backend (`education-backend`, demo mode) and set `NEXT_PUBLIC_USE_MOCK_A
   assignment distribution (`POST /submissions/batch`).
 - Book avatar: avatars and reports through the generic `/book-avatars`, `/avatar-reports`; sessions, answers
   (from the book, on the server), feedback, reports, guardian usage and the staff preview through `/avatar/*`.
-- Still simulated in the browser, results stored on the server: OCR / photo solver, handwriting AI marks,
-  voice tutor replies and audio-lesson generation. The backend has no OCR, speech or evaluator provider
-  configured yet (`integrations/ocr-services`, `speech-services`, `answer-evaluation` are stubs).
+- AI (education-ai, Gemini) through the backend: photo solver (`/ocr/:sid/solve`, `/ocr/:sid/:jobId/solve`),
+  answer-script transcription and marking (`/evaluations/:sid/:id/evaluate`), voice tutor and oral exam
+  (`/voice/:sid/reply`; speech-to-text and TTS stay on the device), audio lessons (`/audio-lessons/generate`),
+  chapter flashcards (`/flashcards/:sid/generate`), notes (`/notes/:sid/generate`), English writing feedback
+  (`/english/:sid/writing`) and the KB query simulator (`/kb/query`). Quotas are counted on the server.
+- Manual payments: checkout shows the bKash/Nagad/Rocket/Upay numbers from `/billing/payment-settings`; the
+  student submits their number and the transaction id; admins verify under Subscriptions → Verify payments and
+  edit the numbers under Payment numbers.
+- Staff lists across students: `/staff/evaluations` (teacher queue), `/staff/exam-attempts` (exam results).
+  Notifications for other people are sent by the server; the client only adds its own reminders.
+- API mode is the default (`NEXT_PUBLIC_USE_MOCK_API=false`); the in-browser mock layer is kept for unit tests.
 
 ## Suggested order
 

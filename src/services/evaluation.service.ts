@@ -1,6 +1,8 @@
 import type { EvaluationPage, HandwritingEvaluation, Question, RubricScore } from "@/contracts";
 import { daysFromNow, hashString } from "@/mock-data/utils";
+import { toImageDataUrl } from "@/lib/image-data-url";
 import { createMockRepository } from "./core/repository";
+import { isRemote, remote } from "./core/remote";
 import { invalid, mockRequest, newId, nowIso } from "./core/mock-runtime";
 import { notificationService } from "./notification.service";
 import { progressService } from "./progress.service";
@@ -159,6 +161,44 @@ export function evaluationRepo(studentId: string) {
 /** Cross-student view used by the teacher portal's evaluation queue. */
 export const TEACHER_VISIBLE_STUDENTS = ["u-student-1", "u-student-2"];
 
+type EvaluateInput = Parameters<typeof evaluationService.evaluate>[1];
+
+/** API mode: store the answer script, then the AI service marks it (pages, or the corrected text). */
+async function evaluateRemote(studentId: string, input: EvaluateInput): Promise<HandwritingEvaluation> {
+  const q = input.question;
+  const sample = "pagesText" in q;
+  const rubric: RubricScore[] = sample
+    ? q.rubric.map((r) => ({ criterion: r.criterion, max: r.max, ai: 0 }))
+    : (q.rubric?.length ? q.rubric : [{ criterion: "সঠিক ধারণা", marks: 3 }, { criterion: "ব্যাখ্যা ও উদাহরণ", marks: 2 }]).map((r) => ({ criterion: r.criterion, max: r.marks, ai: 0 }));
+  const pages = await Promise.all(input.pages.map(async (p) => ({ ...p, preview: await toImageDataUrl(p.preview).catch(() => p.preview) })));
+  const corrected = input.correctedText.trim() !== input.ocrText.trim() ? input.correctedText : "";
+  const draft = await evaluationRepo(studentId).create({
+    id: newId("ev"),
+    studentId,
+    studentName: input.studentName,
+    title: input.title,
+    subjectId: input.subjectId,
+    questionId: sample ? undefined : q.id,
+    questionText: sample ? q.questionText : q.stem,
+    modelAnswer: sample ? q.modelAnswer : q.answer,
+    pages,
+    ocrText: input.ocrText,
+    correctedText: corrected || undefined,
+    stage: "uploaded",
+    rubric,
+    maxMarks: rubric.reduce((n, r) => n + r.max, 0),
+    dimensions: { concept: 0, calculation: 0, presentation: 0 },
+    missingPoints: [],
+    suggestions: [],
+    previousAttemptId: input.previousAttemptId,
+    createdAt: nowIso(),
+    updatedAt: nowIso(),
+  } as HandwritingEvaluation);
+  const ev = await remote.post<HandwritingEvaluation>(`/evaluations/${studentId}/${draft.id}/evaluate`);
+  await progressService.logActivity(studentId, { kind: "practice", minutes: 10, label: "হাতের লেখা উত্তর মূল্যায়ন", xp: 20 });
+  return ev;
+}
+
 export const evaluationService = {
   list: (studentId: string) => evaluationRepo(studentId).all(),
   get: (studentId: string, id: string) => evaluationRepo(studentId).get(id),
@@ -166,6 +206,16 @@ export const evaluationService = {
   /** Simulated OCR over uploaded page images; sample sheets return their seeded text. */
   async ocr(studentId: string, pages: EvaluationPage[], sampleId?: string) {
     if (!pages.length) invalid("NO_PAGES");
+    // API mode: the AI service transcribes each page (nothing is stored; the server counts quota).
+    if (isRemote()) {
+      const texts: string[] = [];
+      for (const [i, p] of pages.entries()) {
+        const image = await toImageDataUrl(p.preview);
+        const res = await remote.post<{ job: { extractedText: string } }>(`/ocr/${studentId}/solve`, { fileName: p.name, image, solve: false, save: false });
+        texts.push(pages.length > 1 ? `[পৃষ্ঠা ${i + 1}]\n${res.job.extractedText}` : res.job.extractedText);
+      }
+      return texts.join("\n\n");
+    }
     await usageService.consume(studentId, "handwriting");
     await mockRequest(1500 + pages.length * 400, { requiresNetwork: true });
     const sample = SAMPLE_SHEETS.find((s) => s.id === sampleId);
@@ -174,6 +224,7 @@ export const evaluationService = {
   },
 
   async evaluate(studentId: string, input: { title: string; subjectId: string; question: Pick<Question, "id" | "stem" | "answer" | "rubric"> | SampleSheet; pages: EvaluationPage[]; ocrText: string; correctedText: string; previousAttemptId?: string; studentName: string }) {
+    if (isRemote()) return evaluateRemote(studentId, input);
     await mockRequest(1300, { requiresNetwork: true });
     const q = input.question;
     let sheet: Pick<SampleSheet, "rubric" | "modelAnswer">;
@@ -213,6 +264,7 @@ export const evaluationService = {
   async requestTeacherReview(studentId: string, id: string) {
     await mockRequest(400);
     const ev = await evaluationRepo(studentId).update(id, { stage: "teacher_review_requested" });
+    if (isRemote()) return ev; // the teacher queue reads review requests from the server
     await notificationService.push({ portal: "teacher", type: "new_assignment", title: "নতুন উত্তরপত্র পর্যালোচনার অনুরোধ", body: `${ev.studentName} — ${ev.title}`, href: "/teacher/evaluations", priority: "normal" });
     return ev;
   },
@@ -221,13 +273,16 @@ export const evaluationService = {
   async teacherReview(studentId: string, id: string, input: { rubric: RubricScore[]; comment: string; reviewerName: string; finalize: boolean }) {
     await mockRequest(500);
     const teacherMarks = input.rubric.reduce((s, r) => s + (r.teacher ?? r.ai), 0);
-    const ev = await evaluationRepo(studentId).update(id, { rubric: input.rubric, teacherMarks, teacherComment: input.comment, reviewerName: input.reviewerName, stage: input.finalize ? "official" : "teacher_reviewed", officialMarks: input.finalize ? teacherMarks : undefined });
-    await notificationService.push({ portal: "student", type: "teacher_feedback", title: input.finalize ? "উত্তরপত্রের চূড়ান্ত নম্বর প্রকাশিত" : "শিক্ষক তোমার উত্তরপত্র দেখেছেন", body: `${ev.title}: ${teacherMarks}/${ev.maxMarks}`, href: `/student/answer-evaluation?id=${id}`, priority: "normal" });
+    const evUpdate = evaluationRepo(studentId).update(id, { rubric: input.rubric, teacherMarks, teacherComment: input.comment, reviewerName: input.reviewerName, stage: input.finalize ? "official" : "teacher_reviewed", officialMarks: input.finalize ? teacherMarks : undefined });
+    const ev = await evUpdate;
+    // API mode: the server notifies the student when the stage changes.
+    if (!isRemote()) await notificationService.push({ portal: "student", type: "teacher_feedback", title: input.finalize ? "উত্তরপত্রের চূড়ান্ত নম্বর প্রকাশিত" : "শিক্ষক তোমার উত্তরপত্র দেখেছেন", body: `${ev.title}: ${teacherMarks}/${ev.maxMarks}`, href: `/student/answer-evaluation?id=${id}`, priority: "normal" });
     return ev;
   },
 
   /** Teacher queue: all review requests across the teacher's students. */
   async queue() {
+    if (isRemote()) return (await remote.get<HandwritingEvaluation[]>("/staff/evaluations")).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     await mockRequest(200);
     const lists = await Promise.all(TEACHER_VISIBLE_STUDENTS.map((s) => evaluationRepo(s).raw()));
     return lists.flat().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));

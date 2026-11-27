@@ -1,4 +1,5 @@
-import type { Coupon, Payment, Plan, PlanCode, RefundRequest, Subscription } from "@/contracts";
+import type { Coupon, Payment, PaymentSettings, Plan, PlanCode, RefundRequest, Subscription } from "@/contracts";
+import { getDocument, saveDocument } from "@/lib/mock-db";
 import { userAccounts } from "@/mock-data/users";
 import { bi, daysFromNow, rng, SEED_EPOCH } from "@/mock-data/utils";
 import { usersRepo } from "./auth.service";
@@ -100,6 +101,8 @@ export interface CheckoutInput {
   planCode: PlanCode;
   cycle: "monthly" | "yearly";
   method: Payment["method"];
+  /** Manual wallets: the transaction id from the payment receipt. */
+  transactionId?: string;
   account: string;
   couponCode?: string;
   startTrial?: boolean;
@@ -135,8 +138,8 @@ export const billingService = {
   /** Checkout simulator: returns the payment (success / failed / pending) and updates the subscription. */
   async checkout(input: CheckoutInput) {
     if (isRemote()) {
-      const { planCode, cycle, method, account, couponCode, startTrial } = input;
-      return remote.post<Payment>("/billing/checkout", { planCode, cycle, method, account, couponCode: couponCode || undefined, startTrial });
+      const { planCode, cycle, method, account, couponCode, startTrial, transactionId } = input;
+      return remote.post<Payment>("/billing/checkout", { planCode, cycle, method, account, couponCode: couponCode || undefined, startTrial, transactionId: transactionId || undefined });
     }
     await mockRequest(1400, { requiresNetwork: true });
     const plan = (await plansRepo.raw()).find((p) => p.code === input.planCode)!;
@@ -230,3 +233,22 @@ export const billingService = {
   },
   myRefunds: async (userId: string) => (isRemote() ? (await remote.get<{ refunds: RefundRequest[] }>("/billing/me")).refunds : (await refundsRepo.raw()).filter((r) => r.userId === userId)),
 };
+
+const PAYMENT_SETTINGS_KEY = "paymentSettings";
+const emptyPaymentSettings = (): PaymentSettings => ({ id: "payment", methods: [] });
+
+/** Manual bKash / Nagad / Rocket / Upay payments: settings, admin verification. */
+export const manualPaymentService = {
+  /** Enabled wallet numbers (what a student sees at checkout). */
+  settings: async (): Promise<PaymentSettings> => (isRemote() ? remote.get<PaymentSettings>("/billing/payment-settings") : getDocument(PAYMENT_SETTINGS_KEY, emptyPaymentSettings)),
+  /** Admin: every method, including disabled ones. */
+  adminSettings: () => getDocument<PaymentSettings>(PAYMENT_SETTINGS_KEY, emptyPaymentSettings),
+  saveSettings: (doc: PaymentSettings) => saveDocument(PAYMENT_SETTINGS_KEY, doc),
+  /** Payments waiting for an admin to check the transaction id. */
+  awaiting: async () => (await paymentsRepo.all({ status: "pending" })).filter((p) => p.verification === "awaiting"),
+  async verify(paymentId: string, approve: boolean, note: string) {
+    if (isRemote()) return remote.post<Payment>(`/billing/payments/${paymentId}/verify`, { approve, note });
+    return paymentsRepo.update(paymentId, { status: approve ? "success" : "failed", verification: approve ? "approved" : "rejected", reviewNote: note || undefined, failureReason: approve ? undefined : note, verifiedAt: nowIso() });
+  },
+};
+
