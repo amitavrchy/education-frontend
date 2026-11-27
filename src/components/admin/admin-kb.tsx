@@ -31,6 +31,7 @@ import { useFormat, useL } from "@/i18n";
 import { analyticsSeries, audit, ingestionService, kbService } from "@/services/admin.service";
 import { PipelineStepper } from "./admin-books";
 import { DemoDataNote, KeyValue } from "./admin-shared";
+import { isRemote } from "@/services/core/remote";
 
 const COLL_TONE: Record<KbCollection["status"], "secondary" | "outline" | "destructive"> = { ready: "secondary", indexing: "outline", stale: "outline", failed: "destructive" };
 /** Mock price per 1K tokens (BDT) used for cost estimates. */
@@ -40,7 +41,7 @@ export function AdminKnowledgeBase() {
   const l = useL();
   return (
     <>
-      <PageHeader title={l("AI জ্ঞানভান্ডার (RAG)", "AI knowledge base (RAG)")} description={l("সংগ্রহ, ইনজেশন, চাংক, রিট্রিভাল সিমুলেটর, প্রম্পট, মডেল রাউটিং, নীতি, খরচ ও মান মূল্যায়ন — সবকিছু লোকাল মক মডেলে চলে", "Collections, ingestion, chunks, retrieval simulator, prompts, model routing, policy, cost and quality evaluation — all on a local mock model")} />
+      <PageHeader title={l("AI জ্ঞানভান্ডার (RAG)", "AI knowledge base (RAG)")} description={isRemote() ? l("সংগ্রহ, ইনজেশন, চাংক, রিট্রিভাল সিমুলেটর, প্রম্পট, নীতি ও মান মূল্যায়ন — উত্তর লেখে AI সার্ভিস (Gemini)", "Collections, ingestion, chunks, retrieval simulator, prompts, policy and quality evaluation — answers are written by the AI service (Gemini)") : l("সংগ্রহ, ইনজেশন, চাংক, রিট্রিভাল সিমুলেটর, প্রম্পট, মডেল রাউটিং, নীতি, খরচ ও মান মূল্যায়ন — সবকিছু লোকাল মক মডেলে চলে", "Collections, ingestion, chunks, retrieval simulator, prompts, model routing, policy, cost and quality evaluation — all on a local mock model")} />
       <Tabs defaultValue="overview">
         <TabsList className="flex-wrap">
           <TabsTrigger value="overview">{l("সারাংশ", "Overview")}</TabsTrigger>

@@ -26,6 +26,7 @@ import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { NOTE_KIND_LABELS, notesService } from "@/services/notes.service";
 import { tutorService } from "@/services/tutor.service";
+import { isRemote } from "@/services/core/remote";
 
 export const notesKeys = { all: (id: string) => ["notes", id] as const, list: (id: string) => ["notes", id, "list"] as const, folders: (id: string) => ["notes", id, "folders"] as const, one: (id: string, noteId: string) => ["notes", id, "one", noteId] as const };
 
@@ -296,7 +297,7 @@ export function GenerateNoteDialog({ folderId, onClose, initial }: { folderId?: 
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="size-4 text-primary" /> {l("AI নোট তৈরি", "Generate notes")}
           </DialogTitle>
-          <DialogDescription>{l("নোট তৈরি স্থানীয় সিমুলেশন — কৃত্রিম ডেমো বিষয়বস্তু।", "Generation is a local simulation — synthetic demo content.")}</DialogDescription>
+          <DialogDescription>{isRemote() ? l("AI পাঠ্যবইয়ের অংশ থেকে নোট লিখবে — একবার মিলিয়ে নিও।", "AI writes the note from the textbook passages — give it a quick check.") : l("নোট তৈরি স্থানীয় সিমুলেশন — কৃত্রিম ডেমো বিষয়বস্তু।", "Generation is a local simulation — synthetic demo content.")}</DialogDescription>
         </DialogHeader>
         <Tabs value={source} onValueChange={(v) => setSource(v as Source)}>
           <TabsList className="grid w-full grid-cols-4">

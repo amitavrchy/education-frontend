@@ -283,13 +283,13 @@ function ExamDetail({ exam, onClose, onDuplicate }: { exam: Exam; onClose: () =>
             ))}
           </TabsContent>
           <TabsContent value="attempts" className="mt-3 space-y-2">
-            <p className="text-xs text-muted-foreground">{l("ডেমো শিক্ষার্থীর জমা দেওয়া প্রচেষ্টা। সংশোধন শিক্ষার্থীর ফল পাতায় শিক্ষকের মন্তব্যসহ দেখা যাবে।", "Submitted attempts from the demo student. Overrides show in the student's result with a teacher note.")}</p>
+            <p className="text-xs text-muted-foreground">{isRemote() ? l("শিক্ষার্থীদের জমা দেওয়া প্রচেষ্টা। সংশোধন শিক্ষার্থীর ফল পাতায় শিক্ষকের মন্তব্যসহ দেখা যাবে।", "Submitted attempts from students. Overrides show in the student's result with a teacher note.") : l("ডেমো শিক্ষার্থীর জমা দেওয়া প্রচেষ্টা। সংশোধন শিক্ষার্থীর ফল পাতায় শিক্ষকের মন্তব্যসহ দেখা যাবে।", "Submitted attempts from the demo student. Overrides show in the student's result with a teacher note.")}</p>
             {attempts.isPending && <Skeleton className="h-24" />}
             {!attempts.isPending && !attempts.data?.length && <p className="py-8 text-center text-sm text-muted-foreground">{l("এখনো কেউ এই পরীক্ষা দেয়নি", "No attempts yet")}</p>}
             {(attempts.data ?? []).map((a: ExamAttempt) => (
               <div key={a.id} className="rounded-lg border p-3 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-medium">{l("রাফি আহমেদ (ডেমো)", "Rafi Ahmed (demo)")}</span>
+                  <span className="font-medium">{isRemote() ? a.studentId : l("রাফি আহমেদ (ডেমো)", "Rafi Ahmed (demo)")}</span>
                   <span className="flex items-center gap-2">
                     <Badge variant="secondary">
                       {f.digits(a.result!.score)}/{f.digits(a.result!.total)} · {a.result!.grade}

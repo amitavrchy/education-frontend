@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { evaluationService, handwritingSvg, SAMPLE_SHEETS, type SampleSheet } from "@/services/evaluation.service";
 import { validateImage } from "@/services/ocr.service";
 import { questionService } from "@/services/question.service";
+import { isRemote } from "@/services/core/remote";
 
 type L = (bn: string, en: string) => string;
 
@@ -71,7 +72,7 @@ function History({ list, pending, onOpen, onNew }: { list?: HandwritingEvaluatio
     <>
       <PageHeader
         title={l("হাতের লেখা উত্তর মূল্যায়ন", "Handwritten answer evaluation")}
-        description={l("উত্তরপত্রের ছবি দাও — AI আনুমানিক নম্বর দেবে (সিমুলেটেড); চূড়ান্ত নম্বর শিক্ষক নির্ধারণ করেন", "Upload your answer sheet — AI gives a simulated estimate; teachers set the final marks")}
+        description={isRemote() ? l("উত্তরপত্রের ছবি দাও — AI আনুমানিক নম্বর দেবে; চূড়ান্ত নম্বর শিক্ষক নির্ধারণ করেন", "Upload your answer sheet — AI gives an estimate; teachers set the final marks") : l("উত্তরপত্রের ছবি দাও — AI আনুমানিক নম্বর দেবে (সিমুলেটেড); চূড়ান্ত নম্বর শিক্ষক নির্ধারণ করেন", "Upload your answer sheet — AI gives a simulated estimate; teachers set the final marks")}
         actions={
           <Button onClick={onNew}>
             <Plus /> {l("নতুন মূল্যায়ন", "New evaluation")}
@@ -324,7 +325,7 @@ function NewEvaluation({ previous, onDone, onCancel }: { previous?: HandwritingE
           <Card>
             <CardHeader>
               <CardTitle className="text-base">{l("শনাক্তকৃত লেখা — প্রয়োজনে সংশোধন করো", "Extracted text — correct if needed")}</CardTitle>
-              <CardDescription>{l("OCR সিমুলেটেড; ভুল থাকলে এখানে ঠিক করো, মূল্যায়ন সংশোধিত লেখা থেকে হবে।", "OCR is simulated; fix mistakes here — evaluation uses the corrected text.")}</CardDescription>
+              <CardDescription>{isRemote() ? l("AI তোমার হাতের লেখা পড়েছে; ভুল থাকলে এখানে ঠিক করো, মূল্যায়ন সংশোধিত লেখা থেকে হবে।", "AI read your handwriting; fix mistakes here — evaluation uses the corrected text.") : l("OCR সিমুলেটেড; ভুল থাকলে এখানে ঠিক করো, মূল্যায়ন সংশোধিত লেখা থেকে হবে।", "OCR is simulated; fix mistakes here — evaluation uses the corrected text.")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
@@ -385,7 +386,7 @@ function EvaluationDetail({ ev, all, onBack, onReattempt }: { ev: HandwritingEva
       ...ev.suggestions.map((s) => `- ${s}`),
       ev.teacherComment ? `${l("শিক্ষকের মন্তব্য", "Teacher comment")}: ${ev.teacherComment}` : "",
       "",
-      l("AI মূল্যায়ন সিমুলেটেড — চূড়ান্ত নয়।", "AI marking is simulated — not final."),
+      isRemote() ? l("AI আনুমানিক মূল্যায়ন — চূড়ান্ত নয়।", "AI estimate — not final.") : l("AI মূল্যায়ন সিমুলেটেড — চূড়ান্ত নয়।", "AI marking is simulated — not final."),
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
     const a = document.createElement("a");
@@ -426,7 +427,7 @@ function EvaluationDetail({ ev, all, onBack, onReattempt }: { ev: HandwritingEva
         }
       />
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
-        <MarksBlock label={l("AI আনুমানিক নম্বর", "AI estimated marks")} value={ev.aiMarks} max={ev.maxMarks} cls="text-warning-foreground dark:text-warning" note={l("সিমুলেটেড — নির্ভরযোগ্য নয়", "Simulated — not authoritative")} />
+        <MarksBlock label={l("AI আনুমানিক নম্বর", "AI estimated marks")} value={ev.aiMarks} max={ev.maxMarks} cls="text-warning-foreground dark:text-warning" note={isRemote() ? l("AI অনুমান — শিক্ষকের নম্বর চূড়ান্ত", "AI estimate — the teacher's mark is final") : l("সিমুলেটেড — নির্ভরযোগ্য নয়", "Simulated — not authoritative")} />
         <MarksBlock label={l("শিক্ষক পর্যালোচিত", "Teacher-reviewed")} value={ev.teacherMarks} max={ev.maxMarks} cls="text-primary" note={ev.reviewerName ? l(`পর্যালোচক: ${ev.reviewerName}`, `Reviewer: ${ev.reviewerName}`) : l("এখনো পর্যালোচনা হয়নি", "Not reviewed yet")} />
         <MarksBlock label={l("চূড়ান্ত অফিসিয়াল নম্বর", "Final official marks")} value={ev.officialMarks} max={ev.maxMarks} cls="text-success" note={ev.officialMarks !== undefined ? l("শিক্ষক কর্তৃক চূড়ান্ত", "Finalised by the teacher") : l("চূড়ান্ত হয়নি", "Not finalised")} />
       </div>

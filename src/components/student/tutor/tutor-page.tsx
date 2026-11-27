@@ -28,6 +28,7 @@ import { usageService } from "@/services/usage.service";
 import { ContextBar, MODE_META } from "./context-bar";
 import { MessageItem } from "./message-item";
 import { TutorSidebar } from "./tutor-sidebar";
+import { isRemote } from "@/services/core/remote";
 
 const keys = {
   conversations: (id: string) => ["tutor", id, "conversations"] as const,
@@ -152,7 +153,7 @@ export function TutorPage() {
 
   const exportMd = () => {
     if (!active) return;
-    const md = `# ${active.title}\n\n> ${l("সিমুলেটেড AI টিউটর কথোপকথন — কৃত্রিম ডেমো", "Simulated AI tutor conversation — synthetic demo")}\n\n${transcript}`;
+    const md = `# ${active.title}\n\n> ${(isRemote() ? l("AI টিউটর কথোপকথন", "AI tutor conversation") : l("সিমুলেটেড AI টিউটর কথোপকথন — কৃত্রিম ডেমো", "Simulated AI tutor conversation — synthetic demo"))}\n\n${transcript}`;
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([md], { type: "text/markdown" }));
     a.download = `${active.title.slice(0, 40)}.md`;
@@ -272,7 +273,7 @@ export function TutorPage() {
             {profile.data?.aiPreferences.integrityReminders !== false && (
               <p className="flex items-center gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs text-muted-foreground">
                 <ShieldCheck className="size-3.5 shrink-0" />
-                {l("একাডেমিক সততা: টিউটর বুঝতে সাহায্য করে — পরীক্ষা বা হোমওয়ার্কের উত্তর কপি করার জন্য নয়। উত্তরগুলো সিমুলেটেড ও কৃত্রিম উৎস থেকে।", "Academic integrity: the tutor helps you understand — not to copy exam or homework answers. Replies are simulated and use synthetic sources.")}
+                {isRemote() ? l("একাডেমিক সততা: টিউটর বুঝতে সাহায্য করে — পরীক্ষা বা হোমওয়ার্কের উত্তর কপি করার জন্য নয়। AI ভুল করতে পারে — উৎস মিলিয়ে নাও।", "Academic integrity: the tutor helps you understand — not to copy exam or homework answers. AI can make mistakes — check the sources.") : l("একাডেমিক সততা: টিউটর বুঝতে সাহায্য করে — পরীক্ষা বা হোমওয়ার্কের উত্তর কপি করার জন্য নয়। উত্তরগুলো সিমুলেটেড ও কৃত্রিম উৎস থেকে।", "Academic integrity: the tutor helps you understand — not to copy exam or homework answers. Replies are simulated and use synthetic sources.")}
               </p>
             )}
             {activeId && messages.isPending ? (

@@ -19,6 +19,7 @@ import { errorText } from "@/lib/errors";
 import { authService } from "@/services/auth.service";
 import { AuthCard } from "./auth-card";
 import { DemoAccounts } from "./demo-accounts";
+import { isRemote } from "@/services/core/remote";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^(?:\+?88)?01[3-9]\d{8}$/;
@@ -129,7 +130,7 @@ export function LoginScreen() {
         </div>
 
         {method === "password" && (
-          <Field label={t("common.password")} error={errors.password} required hint={l("ডেমো: যেকোনো পাসওয়ার্ড চলবে, ‘wrongpass’ দিলে ত্রুটি দেখাবে", "Demo: any password works; ‘wrongpass’ shows the error state")}>
+          <Field label={t("common.password")} error={errors.password} required hint={isRemote() ? undefined : l("ডেমো: যেকোনো পাসওয়ার্ড চলবে, ‘wrongpass’ দিলে ত্রুটি দেখাবে", "Demo: any password works; ‘wrongpass’ shows the error state")}>
             <PasswordInput className="h-10" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </Field>
         )}

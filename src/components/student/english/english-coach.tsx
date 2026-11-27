@@ -22,6 +22,7 @@ import { useFormat, useL } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { CORRECTIONS, englishService, GRAMMAR_QUIZ, LISTENING, PRONUNCIATION, pronunciationScore, READING, SPEAKING_PROMPTS, VOCAB, WRITING_TASKS, type EnglishSkill, type McqItem, type WritingFeedback } from "@/services/english.service";
 import { useDeviceRecognition, useDeviceSpeech } from "../voice/use-voice-io";
+import { isRemote } from "@/services/core/remote";
 
 function useRecord() {
   const studentId = useStudentId();
@@ -100,7 +101,7 @@ export function EnglishCoach() {
 
   return (
     <>
-      <PageHeader title={l("ইংরেজি লার্নিং কোচ", "English learning coach")} description={l("গ্রামার, শব্দ, লেখা, পড়া, শোনা ও বলা — সবকিছু এক জায়গায় (মূল্যায়ন সিমুলেটেড)", "Grammar, vocabulary, writing, reading, listening and speaking in one place (assessment is simulated)")} />
+      <PageHeader title={l("ইংরেজি লার্নিং কোচ", "English learning coach")} description={l(isRemote() ? "গ্রামার, শব্দ, লেখা, পড়া, শোনা ও বলা — সবকিছু এক জায়গায় (লেখার মূল্যায়ন AI দিয়ে)" : "গ্রামার, শব্দ, লেখা, পড়া, শোনা ও বলা — সবকিছু এক জায়গায় (মূল্যায়ন সিমুলেটেড)", isRemote() ? "Grammar, vocabulary, writing, reading, listening and speaking in one place (writing is assessed by AI)" : "Grammar, vocabulary, writing, reading, listening and speaking in one place (assessment is simulated)")} />
       <Tabs defaultValue="overview">
         <TabsList className="mb-4 flex h-auto flex-wrap">
           <TabsTrigger value="overview">{l("সারসংক্ষেপ", "Overview")}</TabsTrigger>

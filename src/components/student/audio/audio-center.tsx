@@ -27,6 +27,7 @@ import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { audioService } from "@/services/audio.service";
 import { useDeviceSpeech } from "../voice/use-voice-io";
+import { isRemote } from "@/services/core/remote";
 
 const mmss = (s: number, digits: (v: string) => string) => digits(`${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`);
 
@@ -141,7 +142,7 @@ export function AudioCenter() {
                     {p && p.positionSec > 0 && <Progress value={p.completed ? 100 : (p.positionSec / a.durationSec) * 100} className="h-1" aria-label={l("শোনার অগ্রগতি", "Listening progress")} />}
                     <div className="flex flex-wrap items-center gap-1">
                       <Badge variant="outline" className="text-[10px]">
-                        {{ chapter_lesson: l("অধ্যায়", "Chapter"), revision_podcast: l("পডকাস্ট", "Podcast"), generated: l("সিমুলেটেড তৈরি", "Generated (simulated)") }[a.kind]}
+                        {{ chapter_lesson: l("অধ্যায়", "Chapter"), revision_podcast: l("পডকাস্ট", "Podcast"), generated: isRemote() ? l("AI তৈরি", "AI-generated") : l("সিমুলেটেড তৈরি", "Generated (simulated)") }[a.kind]}
                       </Badge>
                       {p?.favorite && <Heart className="size-3.5 fill-destructive text-destructive" />}
                       {p?.downloaded && <Download className="size-3.5 text-muted-foreground" />}

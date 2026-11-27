@@ -33,6 +33,7 @@ import { flashcardService } from "@/services/flashcards.service";
 import { notesService } from "@/services/notes.service";
 import { tutorService } from "@/services/tutor.service";
 import { StudySession, type SessionMode } from "./study-session";
+import { isRemote } from "@/services/core/remote";
 
 const isDue = (c: Flashcard) => new Date(c.dueAt).getTime() <= Date.now();
 const SOURCE_LABEL: Record<FlashcardDeck["source"], [string, string]> = {
@@ -41,7 +42,7 @@ const SOURCE_LABEL: Record<FlashcardDeck["source"], [string, string]> = {
   notes: ["নোট থেকে", "From notes"],
   conversation: ["কথোপকথন থেকে", "From conversation"],
   incorrect: ["ভুল প্রশ্ন থেকে", "From mistakes"],
-  ai: ["AI তৈরি (সিমুলেটেড)", "AI-generated (simulated)"],
+  ai: isRemote() ? ["AI তৈরি", "AI-generated"] : ["AI তৈরি (সিমুলেটেড)", "AI-generated (simulated)"],
   english_vocab: ["ইংরেজি শব্দভান্ডার", "English vocabulary"],
 };
 

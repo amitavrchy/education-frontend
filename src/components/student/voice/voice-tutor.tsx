@@ -29,11 +29,12 @@ import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { DEMO_SCRIPTS, voiceService } from "@/services/voice.service";
 import { useDeviceRecognition, useDeviceSpeech, useMicrophone, useNetworkQuality } from "./use-voice-io";
+import { isRemote } from "@/services/core/remote";
 
 type Phase = "idle" | "listening" | "processing" | "speaking" | "paused";
 
 const LANG_CODE: Record<VoiceLanguage, string> = { bn: "bn-BD", en: "en-US", mixed: "bn-BD" };
-const ORIGIN: Record<VoiceTurn["origin"], [string, string]> = { device_speech: ["ডিভাইস স্পিচ", "Device speech"], demo_script: ["ডেমো স্ক্রিপ্ট", "Demo script"], typed: ["টাইপ করা", "Typed"], mock_ai: ["সিমুলেটেড AI", "Simulated AI"] };
+const ORIGIN: Record<VoiceTurn["origin"], [string, string]> = { device_speech: ["ডিভাইস স্পিচ", "Device speech"], demo_script: ["ডেমো স্ক্রিপ্ট", "Demo script"], typed: ["টাইপ করা", "Typed"], mock_ai: isRemote() ? ["AI", "AI"] : ["সিমুলেটেড AI", "Simulated AI"] };
 
 function Waveform({ phase, levels }: { phase: Phase; levels: () => number[] | null }) {
   const [bars, setBars] = useState<number[]>(() => Array(24).fill(0.08));
@@ -257,7 +258,7 @@ export function VoiceTutor() {
     <>
       <PageHeader
         title={l("ভয়েস AI টিউটর", "Voice AI tutor")}
-        description={l("কথা বলে শেখো — AI উত্তর সিমুলেটেড; শোনা/বলা তোমার ডিভাইসের নিজস্ব স্পিচ ফিচার দিয়ে (যদি থাকে)", "Learn by talking — AI replies are simulated; listening/speaking use your device's own speech features (if available)")}
+        description={isRemote() ? l("কথা বলে শেখো — AI উত্তর দেবে ও বাংলায় পড়ে শোনাবে; তোমার কথা শোনে ডিভাইসের স্পিচ রিকগনিশন", "Learn by talking — the AI replies and reads aloud in Bangla; your device's speech recognition listens") : l("কথা বলে শেখো — AI উত্তর সিমুলেটেড; শোনা/বলা তোমার ডিভাইসের নিজস্ব স্পিচ ফিচার দিয়ে (যদি থাকে)", "Learn by talking — AI replies are simulated; listening/speaking use your device's own speech features (if available)")}
         actions={
           quota.data && (
             <div className="w-56 text-sm">

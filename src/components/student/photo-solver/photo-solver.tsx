@@ -29,6 +29,7 @@ import { errorText } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 import { MAX_IMAGE_MB, OCR_FIXTURES, ocrService, svgDataUrl, validateImage } from "@/services/ocr.service";
 import { usageService } from "@/services/usage.service";
+import { isRemote } from "@/services/core/remote";
 
 interface Picked {
   key: string;
@@ -142,7 +143,7 @@ export function PhotoSolver() {
     <>
       <PageHeader
         title={l("ছবি থেকে সমাধান", "Photo question solver")}
-        description={l("প্রশ্নের ছবি তোলো বা আপলোড করো — লেখা শনাক্তকরণ (OCR) ও সমাধান এই ডেমোতে সিমুলেটেড", "Snap or upload a question — text recognition (OCR) and solving are simulated in this demo")}
+        description={isRemote() ? l("প্রশ্নের ছবি তোলো বা আপলোড করো — AI লেখা পড়ে ধাপে ধাপে সমাধান দেখাবে", "Snap or upload a question — AI reads it and solves it step by step") : l("প্রশ্নের ছবি তোলো বা আপলোড করো — লেখা শনাক্তকরণ (OCR) ও সমাধান এই ডেমোতে সিমুলেটেড", "Snap or upload a question — text recognition (OCR) and solving are simulated in this demo")}
         actions={quotaLeft !== null && <Badge variant={quotaLeft > 0 ? "secondary" : "destructive"}>{l(`আজ বাকি ${f.digits(Math.max(0, quotaLeft))}/${f.digits(usage.data!.limits.photoSolvesPerDay)}`, `${Math.max(0, quotaLeft)}/${usage.data!.limits.photoSolvesPerDay} left today`)}</Badge>}
       />
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
@@ -337,7 +338,7 @@ export function PhotoSolver() {
                 <CardTitle className="flex items-center gap-2 text-base">
                   <CheckCircle2 className="size-4 text-success" /> {l("ধাপে ধাপে সমাধান", "Step-by-step solution")}
                   <Badge variant="outline" className="ml-auto">
-                    {l("সিমুলেটেড AI", "Simulated AI")}
+                    {isRemote() ? "AI" : l("সিমুলেটেড AI", "Simulated AI")}
                   </Badge>
                 </CardTitle>
               </CardHeader>

@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/shell/theme-toggle";
 import { siteConfig } from "@/config/site";
 import { useL } from "@/i18n";
 import type { WithChildren } from "@/types";
+import { isRemote } from "@/services/core/remote";
 
 /** Split-screen auth shell: brand panel on large screens, centered form everywhere. */
 export function AuthLayout({ children }: WithChildren) {
@@ -37,7 +38,7 @@ export function AuthLayout({ children }: WithChildren) {
             ))}
           </ul>
         </div>
-        <p className="text-sm">{l("ডেমো সংস্করণ — সব তথ্য কৃত্রিম", "Demo build — all data is synthetic")}</p>
+        {!isRemote() && <p className="text-sm">{l("ডেমো সংস্করণ — সব তথ্য কৃত্রিম", "Demo build — all data is synthetic")}</p>}
       </aside>
       <div className="flex flex-col">
         <div className="flex h-header items-center justify-between px-4 sm:px-6 lg:justify-end">

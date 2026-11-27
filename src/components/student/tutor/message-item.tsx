@@ -156,7 +156,7 @@ export function MessageItem({ message: m, streaming, onStreamDone, onRegenerate,
             {l("আস্থা", "Confidence")} {f.percent(Math.round(m.confidence * 100))}
           </span>
         )}
-        <span className="rounded-full border border-dashed px-2 py-0.5 text-muted-foreground">{l("সিমুলেটেড AI", "Simulated AI")}</span>
+        {m.simulated && <span className="rounded-full border border-dashed px-2 py-0.5 text-muted-foreground">{l("সিমুলেটেড AI", "Simulated AI")}</span>}
         <span className="text-muted-foreground">{f.time(m.createdAt)}</span>
       </div>
 
