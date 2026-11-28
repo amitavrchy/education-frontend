@@ -13,7 +13,17 @@ const CODES: Record<string, [string, string]> = {
   RESET_TOKEN_INVALID: ["রিসেট লিংকটি অবৈধ বা মেয়াদোত্তীর্ণ", "The reset link is invalid or expired"],
   PASSWORD_TOO_SHORT: ["পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে", "Password must be at least 8 characters"],
   OFFLINE: ["আপনি অফলাইনে আছেন। ইন্টারনেট সংযোগ লাগবে।", "You are offline. This needs an internet connection."],
-  SIMULATED_FAILURE: ["নেটওয়ার্ক সমস্যা (ডেমো সিমুলেশন)। আবার চেষ্টা করুন।", "Network problem (demo simulation). Please retry."],
+  SIMULATED_FAILURE: ["নেটওয়ার্ক সমস্যা। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।", "Network problem. Check your connection and try again."],
+  TOO_MANY_REQUESTS: ["অনেকবার চেষ্টা করা হয়েছে। এক মিনিট পরে আবার চেষ্টা করুন।", "Too many attempts. Please try again in a minute."],
+  SERVER_ERROR: ["সার্ভারে সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করুন।", "Something went wrong on our side. Please try again shortly."],
+  AI_UNAVAILABLE: ["AI এই মুহূর্তে পাওয়া যাচ্ছে না। একটু পরে আবার চেষ্টা করুন।", "The AI is unavailable right now. Please try again shortly."],
+  AI_NOT_CONFIGURED: ["AI সেবা চালু করা নেই। অ্যাডমিনকে জানান।", "The AI service is not set up. Please tell an admin."],
+  UPSTREAM_RATE_LIMITED: ["AI এখন ব্যস্ত। এক মিনিট পরে আবার চেষ্টা করুন।", "The AI is busy. Please try again in a minute."],
+  DAILY_QUOTA_EXHAUSTED: ["আজকের AI সীমা শেষ হয়েছে। পরে আবার চেষ্টা করুন।", "Today's AI capacity is used up. Please try again later."],
+  SAFETY_BLOCKED: ["এই অনুরোধের উত্তর দেওয়া যাবে না। প্রশ্নটি অন্যভাবে লেখো।", "This request can't be answered. Try rephrasing it."],
+  NO_ANSWER: ["উত্তর তৈরি করা যায়নি। আবার চেষ্টা করুন।", "No answer could be produced. Please try again."],
+  OTP_DELIVERY_FAILED: ["কোড পাঠানো যায়নি। ইমেইল দিয়ে চেষ্টা করুন।", "The code could not be sent. Try with your email instead."],
+  OTP_RATE_LIMITED: ["অনেকবার কোড চাওয়া হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।", "Too many codes requested. Please wait a little and try again."],
   NOT_FOUND: ["খুঁজে পাওয়া যায়নি", "Not found"],
   FORBIDDEN: ["এই কাজের অনুমতি নেই", "You don't have permission to do this"],
   NO_QUESTIONS: ["এই সেটআপে কোনো প্রশ্ন পাওয়া যায়নি — অধ্যায় বা ধরন পরিবর্তন করুন।", "No questions match this setup — change the chapters or types."],
@@ -51,7 +61,10 @@ export function errorText(error: unknown, l: L): string {
     const key = CODES[error.message] ? error.message : error.code;
     if (key && CODES[key]) return l(...CODES[key]);
     if (error.isNetworkError) return l(...CODES.SIMULATED_FAILURE);
-    return error.message;
+    // Never show raw server text such as "ThrottlerException: Too Many Requests".
+    if (error.status === 429) return l(...CODES.TOO_MANY_REQUESTS);
+    if (error.status >= 500) return l(...CODES.SERVER_ERROR);
+    return /^[A-Z][A-Z0-9_]+$/.test(error.message) || /Exception/.test(error.message) ? l("অনুরোধটি সম্পন্ন করা যায়নি", "The request could not be completed") : error.message;
   }
   if (error instanceof Error) return CODES[error.message] ? l(...CODES[error.message]) : error.message;
   return l("অপ্রত্যাশিত সমস্যা হয়েছে", "Something unexpected happened");
